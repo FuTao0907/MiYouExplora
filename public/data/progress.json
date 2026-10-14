@@ -93,6 +93,26 @@
           "items": { "chest": 134, "challenge": 29, "seelie": 6 }
         }
       }
+    },
+    "natlan": {
+      "areas": {
+        "the_land_of_fire_and_competition_i": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 354, "challenge": 17, "phantasm": 35 }
+        },
+        "the_land_of_fire_and_competition_ii": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 201, "challenge": 11, "phantasm": 12 }
+        },
+        "sacred_mountains_fading_glow": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 215, "challenge": 14, "phantasm": 14 }
+        },
+        "a_summer_of_ash_and_prickly_pears": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 159, "challenge": 32, "phantasm": 6 }
+        }
+      }
     }
   }
 }

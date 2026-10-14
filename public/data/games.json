@@ -258,7 +258,7 @@
           "name": "纳塔",
           "image": "/images/natlan.jpg",
           "sort": 6,
-          "targets": { "chest": 999, "challenge": 74, "phantasm": 66 },
+          "targets": { "chest": 999, "challenge": 74, "phantasm": 72 },
           "areas": [
             {
               "id": "the_land_of_fire_and_competition_i",
@@ -297,11 +297,11 @@
               "id": "a_summer_of_ash_and_prickly_pears",
               "name": "岩灰与刺梨的夏日",
               "sort": 4,
-              "description": "悠悠度假村（5.8 版本限时海岛，现仍计入成就数）。无幻写灵分项。",
+              "description": "悠悠度假村（5.8 版本限时海岛，现仍计入成就数）。幻写灵 6（成就「幻写引路人·其三」）。",
               "items": [
                 { "id": "chest", "name": "宝箱", "target": 169 },
                 { "id": "challenge", "name": "限时挑战", "target": 32 },
-                { "id": "phantasm", "name": "幻写灵", "target": 0 }
+                { "id": "phantasm", "name": "幻写灵", "target": 6 }
               ]
             }
           ]
