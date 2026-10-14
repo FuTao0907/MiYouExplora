@@ -11,17 +11,17 @@
           "name": "蒙德",
           "image": "/images/mondstadt.jpg",
           "sort": 1,
-          "targets": { "chest": 897, "challenge": 54, "seelie": 82 },
+          "targets": { "chest": 975, "challenge": 70, "seelie": 86 },
           "areas": [
             {
               "id": "city_of_winds_and_idylls",
               "name": "风与牧歌的城邦",
               "sort": 1,
-              "description": "蒙德主体区域（蒙德城、坠星山谷、苍风高地、风啸山坡、明冠山地），不含龙脊雪山与风息山。宝箱按本账号成就面板总计 483 记（攻略站「全宝箱数」约 519，含不计入成就面板的宝箱，口径差 36）。",
+              "description": "蒙德主体区域（蒙德城、坠星山谷、苍风高地、风啸山坡、明冠山地），不含龙脊雪山与风息山。宝箱总数按攻略 519 记（另有 3 个 1.3 版本后可获取但不计入成就数的宝箱，区域实际约 522）。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 483 },
+                { "id": "chest", "name": "宝箱", "target": 519 },
                 { "id": "challenge", "name": "限时挑战", "target": 17 },
-                { "id": "seelie", "name": "仙灵", "target": 50 }
+                { "id": "seelie", "name": "仙灵", "target": 51 }
               ]
             },
             {
@@ -39,11 +39,11 @@
               "id": "the_snowy_mountains_visitor",
               "name": "雪山上的来客",
               "sort": 3,
-              "description": "龙脊雪山。宝箱 192、仙灵 29 按本账号成就面板总计；该合集无「限时挑战」成就，挑战分项为 0。",
+              "description": "龙脊雪山。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 192 },
-                { "id": "challenge", "name": "限时挑战", "target": 0 },
-                { "id": "seelie", "name": "仙灵", "target": 29 }
+                { "id": "chest", "name": "宝箱", "target": 234 },
+                { "id": "challenge", "name": "限时挑战", "target": 16 },
+                { "id": "seelie", "name": "仙灵", "target": 32 }
               ]
             }
           ]
