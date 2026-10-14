@@ -1,0 +1,11 @@
+node_modules
+dist
+.preview
+doc-fetch-resources
+draft_*
+.env
+.env.*
+!.env.example
+java-backend/out
+java-backend/data
+java-backend/*.log

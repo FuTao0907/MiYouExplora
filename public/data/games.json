@@ -1,0 +1,1635 @@
+{
+  "version": 2,
+  "games": [
+    {
+      "id": "genshin",
+      "name": "原神",
+      "sort": 1,
+      "regions": [
+        {
+          "id": "mondstadt",
+          "name": "蒙德",
+          "image": "/images/mondstadt.jpg",
+          "sort": 1,
+          "areas": [
+            {
+              "id": "falling_star_valley",
+              "name": "坠星山谷",
+              "sort": 1,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "windwail_highland",
+              "name": "苍风高地",
+              "sort": 2,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "stormbearer_mountains",
+              "name": "风啸山坡",
+              "sort": 3,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "brightcrown_mountains",
+              "name": "明冠山地",
+              "sort": 4,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "dragonspine",
+              "name": "龙脊雪山",
+              "sort": 5,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 234
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 16
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 32
+                }
+              ]
+            },
+            {
+              "id": "wind_rest_mountain",
+              "name": "风息山",
+              "sort": 6,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "sky_temple",
+              "name": "空之神殿",
+              "sort": 7,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            }
+          ],
+          "targets": {
+            "chest": 755,
+            "challenge": 33,
+            "seelie": 83
+          }
+        },
+        {
+          "id": "liyue",
+          "name": "璃月",
+          "image": "/images/liyue.jpg",
+          "sort": 2,
+          "areas": [
+            {
+              "id": "bishui_plain",
+              "name": "碧水原",
+              "sort": 1,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "qiongji_estuary",
+              "name": "琼玑野",
+              "sort": 2,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "minlin",
+              "name": "珉林",
+              "sort": 3,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "lisha_suburb",
+              "name": "璃沙郊",
+              "sort": 4,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "sea_of_clouds",
+              "name": "云来海",
+              "sort": 5,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "chasm",
+              "name": "层岩巨渊",
+              "sort": 6,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 248
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 20
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 37
+                }
+              ]
+            },
+            {
+              "id": "chenyu_vale_upper",
+              "name": "沉玉谷·上谷",
+              "sort": 7,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "chenyu_vale_south",
+              "name": "沉玉谷·南陵",
+              "sort": 8,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "laixin_mountain",
+              "name": "来歆山",
+              "sort": 9,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            }
+          ],
+          "targets": {
+            "chest": 1383,
+            "challenge": 67,
+            "seelie": 118
+          }
+        },
+        {
+          "id": "inazuma",
+          "name": "稻妻",
+          "image": "/images/inazuma.jpg",
+          "sort": 3,
+          "areas": [
+            {
+              "id": "narukami_island",
+              "name": "鸣神岛",
+              "sort": 1,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "kannazuka",
+              "name": "神无冢",
+              "sort": 2,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "yashiori_island",
+              "name": "八酝岛",
+              "sort": 3,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "watatsumi_island",
+              "name": "海祇岛",
+              "sort": 4,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 93
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "seirai_island",
+              "name": "清籁岛",
+              "sort": 5,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 105
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "tsurumi_island",
+              "name": "鹤观",
+              "sort": 6,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 169
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 16
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 6
+                }
+              ]
+            },
+            {
+              "id": "enkanomiya",
+              "name": "渊下宫",
+              "sort": 7,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 185
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            }
+          ],
+          "targets": {
+            "chest": 916,
+            "challenge": 43,
+            "seelie": 70
+          }
+        },
+        {
+          "id": "sumeru",
+          "name": "须弥",
+          "image": "/images/sumeru.jpg",
+          "sort": 4,
+          "areas": [
+            {
+              "id": "avidya_forest",
+              "name": "道成林",
+              "sort": 1,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "lokapala_jungle",
+              "name": "护世森",
+              "sort": 2,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "ardravi_valley",
+              "name": "阿陀河谷",
+              "sort": 3,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "asavran_realm",
+              "name": "善见地",
+              "sort": 4,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "vissudha_field",
+              "name": "二净甸",
+              "sort": 5,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "vanarana",
+              "name": "桓那兰那",
+              "sort": 6,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "lost_nursery",
+              "name": "失落的苗圃",
+              "sort": 7,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "upper_setekh",
+              "name": "上风蚀地",
+              "sort": 8,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "lower_setekh",
+              "name": "下风蚀地",
+              "sort": 9,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "hypostyle_desert",
+              "name": "列柱沙原",
+              "sort": 10,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "desert_of_hadramaveth",
+              "name": "千壑沙地",
+              "sort": 11,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "gavireh_lajavard",
+              "name": "荒石苍漠",
+              "sort": 12,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "land_of_lower_setekh",
+              "name": "浮罗囿",
+              "sort": 13,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            }
+          ],
+          "targets": {
+            "chest": 1219,
+            "challenge": 54,
+            "seelie": 45
+          }
+        },
+        {
+          "id": "fontaine",
+          "name": "枫丹",
+          "image": "/images/fontaine.jpg",
+          "sort": 5,
+          "areas": [
+            {
+              "id": "fontaine_court",
+              "name": "枫丹廷区",
+              "sort": 1,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "belleau_region",
+              "name": "白露区",
+              "sort": 2,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "courcel_region",
+              "name": "苍晶区",
+              "sort": 3,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "morte_region",
+              "name": "莫尔泰区",
+              "sort": 4,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "eryl_region",
+              "name": "伊黎耶林区",
+              "sort": 5,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "liffey_region",
+              "name": "黎翡区",
+              "sort": 6,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "fontaine_research_institute",
+              "name": "枫丹动能工程科学研究院区",
+              "sort": 7,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "nostoi_region",
+              "name": "诺思托伊区",
+              "sort": 8,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "sea_of_bygone_eras",
+              "name": "旧日之海",
+              "sort": 9,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            }
+          ],
+          "targets": {
+            "chest": 794,
+            "challenge": 111,
+            "seelie": 68
+          }
+        },
+        {
+          "id": "natlan",
+          "name": "纳塔",
+          "image": "/images/natlan.jpg",
+          "sort": 6,
+          "areas": [
+            {
+              "id": "teyvat_tezcatepetonco",
+              "name": "坚岩隘谷",
+              "sort": 1,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "phantasm",
+                  "name": "幻写灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "teyvat_toyac_springs",
+              "name": "踞石山",
+              "sort": 2,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 55
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "phantasm",
+                  "name": "幻写灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "teyvat_springs_of_flowing",
+              "name": "涌流地",
+              "sort": 3,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "phantasm",
+                  "name": "幻写灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "teyvat_basin_of_flames",
+              "name": "万火之瓯",
+              "sort": 4,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "phantasm",
+                  "name": "幻写灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "teyvat_quahuacan_cliff",
+              "name": "镜璧山",
+              "sort": 5,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 37
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "phantasm",
+                  "name": "幻写灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "teyvat_wounded_cliff",
+              "name": "翘枝崖",
+              "sort": 6,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "phantasm",
+                  "name": "幻写灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "teyvat_ochkanatlan",
+              "name": "奥奇卡纳塔",
+              "sort": 7,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 78
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "phantasm",
+                  "name": "幻写灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "teyvat_atocpan",
+              "name": "安饶之野",
+              "sort": 8,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "phantasm",
+                  "name": "幻写灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "teyvat_ancient_sacred_mountain",
+              "name": "远古圣山",
+              "sort": 9,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "phantasm",
+                  "name": "幻写灵",
+                  "target": 0
+                }
+              ]
+            }
+          ],
+          "targets": {
+            "chest": 830,
+            "challenge": 42,
+            "phantasm": 66
+          }
+        },
+        {
+          "id": "nod_krai",
+          "name": "挪德卡莱",
+          "image": "/images/nodkrai.jpg",
+          "sort": 7,
+          "areas": [
+            {
+              "id": "paha_island",
+              "name": "帕哈岛",
+              "sort": 1,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "hiisi_island",
+              "name": "希汐岛",
+              "sort": 2,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "lempo_island",
+              "name": "伦波岛",
+              "sort": 3,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "xuha_wang",
+              "name": "虚海望",
+              "sort": 4,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 94
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "zhulang_wilds",
+              "name": "逐浪野",
+              "sort": 5,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 100
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "yan_ge_peak",
+              "name": "烟硌山峰",
+              "sort": 6,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 32
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "du_nan_na_pit",
+              "name": "杜南纳深坑",
+              "sort": 7,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 10
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "moon_highland",
+              "name": "月之高地",
+              "sort": 8,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "moon_surging_sea",
+              "name": "月荡海",
+              "sort": 9,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "moon_dark_side",
+              "name": "月之暗面",
+              "sort": 10,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 0
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            }
+          ],
+          "targets": {
+            "chest": 752,
+            "challenge": 0,
+            "seelie": 0
+          }
+        },
+        {
+          "id": "snezhnaya",
+          "name": "至冬",
+          "image": "/images/snezhnaya.jpg",
+          "sort": 8,
+          "areas": [
+            {
+              "id": "volkodlak_tundra",
+              "name": "古兽冰原",
+              "sort": 1,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 66
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "white_birch_snowgrave",
+              "name": "白桦雪葬地",
+              "sort": 2,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 41
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "everfrozen_earth",
+              "name": "永凝冻土",
+              "sort": 3,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 98
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "flamefeather_valley",
+              "name": "焰羽谷",
+              "sort": 4,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 34
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            },
+            {
+              "id": "fellfrost_peak",
+              "name": "霜殛寒峰",
+              "sort": 5,
+              "items": [
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 103
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 0
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
+              ]
+            }
+          ],
+          "targets": {
+            "chest": 345,
+            "challenge": 11,
+            "seelie": 31
+          }
+        }
+      ]
+    }
+  ],
+  "settings": {}
+}

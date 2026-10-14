@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "updated_at": "2026-10-13",
+  "regions": {
+    "mondstadt": {
+      "areas": {
+        "falling_star_valley": {
+          "updated_at": "2026-10-13",
+          "items": { "chest": 0, "challenge": 0, "seelie": 0 }
+        },
+        "windwail_highland": {
+          "updated_at": "2026-10-13",
+          "items": { "chest": 0, "challenge": 0, "seelie": 0 }
+        }
+      }
+    }
+  }
+}
