@@ -33,6 +33,26 @@
           "items": { "chest": 302, "challenge": 52, "seelie": 18 }
         }
       }
+    },
+    "inazuma": {
+      "areas": {
+        "the_islands_of_thunder_and_eternity_series_i": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 312, "challenge": 32, "seelie": 20, "thunder_spirit": 40 }
+        },
+        "the_islands_of_thunder_and_eternity_series_ii": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 187, "challenge": 27, "seelie": 6, "thunder_spirit": 17 }
+        },
+        "the_chronicles_of_the_sea_of_fog": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 153, "challenge": 16, "seelie": 6, "thunder_spirit": 6 }
+        },
+        "the_light_of_day": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 180, "challenge": 18, "seelie": 36 }
+        }
+      }
     }
   }
 }

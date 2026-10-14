@@ -95,16 +95,16 @@
           "name": "稻妻",
           "image": "/images/inazuma.jpg",
           "sort": 3,
-          "targets": { "chest": 915, "challenge": 34, "seelie": 69, "thunder_spirit": 62 },
+          "targets": { "chest": 915, "challenge": 98, "seelie": 69, "thunder_spirit": 68 },
           "areas": [
             {
               "id": "the_islands_of_thunder_and_eternity_series_i",
               "name": "雷与永恒的群岛·其之一",
               "sort": 1,
-              "description": "鸣神岛、神无冢、八酝岛。宝箱按成就数 357 记，做过限时活动会额外多 1 个（共 358）；该章节无限时挑战分项，第三分项为雷灵 43。",
+              "description": "鸣神岛、神无冢、八酝岛。宝箱按成就数 357 记，做过限时活动会额外多 1 个（共 358）；挑战 35（另有 1 个幻影心流活动挑战）；雷灵 43。",
               "items": [
                 { "id": "chest", "name": "宝箱", "target": 357 },
-                { "id": "challenge", "name": "限时挑战", "target": 0 },
+                { "id": "challenge", "name": "限时挑战", "target": 35 },
                 { "id": "seelie", "name": "仙灵", "target": 21 },
                 { "id": "thunder_spirit", "name": "雷灵", "target": 43 }
               ]
@@ -113,10 +113,10 @@
               "id": "the_islands_of_thunder_and_eternity_series_ii",
               "name": "雷与永恒的群岛·其之二",
               "sort": 2,
-              "description": "海祇岛、清籁岛。该章节无限制时挑战分项，第三分项为雷灵 19。",
+              "description": "海祇岛、清籁岛。挑战 29；雷灵 19。",
               "items": [
                 { "id": "chest", "name": "宝箱", "target": 204 },
-                { "id": "challenge", "name": "限时挑战", "target": 0 },
+                { "id": "challenge", "name": "限时挑战", "target": 29 },
                 { "id": "seelie", "name": "仙灵", "target": 6 },
                 { "id": "thunder_spirit", "name": "雷灵", "target": 19 }
               ]
@@ -125,12 +125,12 @@
               "id": "the_chronicles_of_the_sea_of_fog",
               "name": "雾海纪行",
               "sort": 3,
-              "description": "鹤观。无雷灵分项。",
+              "description": "鹤观。挑战 16；雷灵 6（「雾夜的灼灼电影」）。",
               "items": [
                 { "id": "chest", "name": "宝箱", "target": 169 },
                 { "id": "challenge", "name": "限时挑战", "target": 16 },
                 { "id": "seelie", "name": "仙灵", "target": 6 },
-                { "id": "thunder_spirit", "name": "雷灵", "target": 0 }
+                { "id": "thunder_spirit", "name": "雷灵", "target": 6 }
               ]
             },
             {
