@@ -53,6 +53,26 @@
           "items": { "chest": 180, "challenge": 18, "seelie": 36 }
         }
       }
+    },
+    "sumeru": {
+      "areas": {
+        "rainforest_where_profound_knowledge_hides_deep": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 500, "challenge": 41, "seelie": 48 }
+        },
+        "the_gilded_desert_series_i": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 331, "challenge": 49, "seelie": 52 }
+        },
+        "the_gilded_desert_series_ii": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 276, "challenge": 35, "seelie": 26 }
+        },
+        "blessed_hamada": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 231, "challenge": 25, "seelie": 23 }
+        }
+      }
     }
   }
 }

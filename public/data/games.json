@@ -152,7 +152,7 @@
           "name": "须弥",
           "image": "/images/sumeru.jpg",
           "sort": 4,
-          "targets": { "chest": 1475, "challenge": 160, "seelie": 154 },
+          "targets": { "chest": 1475, "challenge": 160, "seelie": 156 },
           "areas": [
             {
               "id": "rainforest_where_profound_knowledge_hides_deep",
@@ -191,11 +191,11 @@
               "id": "blessed_hamada",
               "name": "佑灵砾漠",
               "sort": 4,
-              "description": "荒石苍漠、浮罗遒（3.6 版本新增）。",
+              "description": "荒石苍漠、浮罗遒（3.6 版本新增）。仙灵按 7.x 成就面板 23 记（3.6 初始约 20/21，后续版本新增 2 只）。",
               "items": [
                 { "id": "chest", "name": "宝箱", "target": 256 },
                 { "id": "challenge", "name": "限时挑战", "target": 26 },
-                { "id": "seelie", "name": "仙灵", "target": 21 }
+                { "id": "seelie", "name": "仙灵", "target": 23 }
               ]
             }
           ]
