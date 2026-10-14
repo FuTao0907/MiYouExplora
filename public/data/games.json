@@ -11,7 +11,7 @@
           "name": "蒙德",
           "image": "/images/mondstadt.jpg",
           "sort": 1,
-          "targets": { "chest": 975, "challenge": 70, "seelie": 86 },
+          "targets": { "chest": 975, "challenge": 54, "seelie": 86 },
           "areas": [
             {
               "id": "city_of_winds_and_idylls",
@@ -39,10 +39,9 @@
               "id": "the_snowy_mountains_visitor",
               "name": "雪山上的来客",
               "sort": 3,
-              "description": "龙脊雪山。",
+              "description": "龙脊雪山。成就集「雪山上的来客」无限时挑战分项（区域存在约 16 个限时挑战点位，但不计入任何成就；蒙德「逐风的冒险家」亦明确排除龙脊雪山），故不设挑战目标。",
               "items": [
                 { "id": "chest", "name": "宝箱", "target": 234 },
-                { "id": "challenge", "name": "限时挑战", "target": 16 },
                 { "id": "seelie", "name": "仙灵", "target": 32 }
               ]
             }
