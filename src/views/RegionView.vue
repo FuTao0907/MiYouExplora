@@ -24,9 +24,10 @@ function areaItem(area, itemId) {
 // 地区板块目标（权威统计，探索度分母）
 const regionTargets = computed(() => region.value?.targets ?? {})
 
-// 录入上限：优先子区域 target，其次地区板块目标
+// 录入上限：以该子区域自身 target 为准（成就章节口径下每个分项都有确定数；
+// target 为 0 表示该章节没有此分项，禁止录入——不再回退地区板块目标）
 function maxOf(area, itemId) {
-  return areaItem(area, itemId)?.target || regionTargets.value[itemId] || 0
+  return areaItem(area, itemId)?.target || 0
 }
 
 const hasTargets = computed(() =>
