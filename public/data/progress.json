@@ -129,6 +129,14 @@
           "items": { "chest": 224, "challenge": 4 }
         }
       }
+    },
+    "snezhnaya": {
+      "areas": {
+        "sacred_city_of_ice_and_pale_star_i": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 345, "challenge": 31, "seelie": 13 }
+        }
+      }
     }
   }
 }
