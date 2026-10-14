@@ -148,16 +148,20 @@ function handleNoteInput(areaId, event) {
             <tr v-if="expanded[area.id]" class="note-row">
               <td :colspan="2 + itemDefs.length * 2">
                 <div class="note-wrap">
-                  <div class="note-label mono">描述</div>
+                  <template v-if="area.description">
+                    <div class="note-label mono">范围说明</div>
+                    <p class="note-view">{{ area.description }}</p>
+                  </template>
+                  <div class="note-label mono">备注</div>
                   <textarea
                     v-if="store.editable.value"
                     class="note-input"
                     :value="noteOf(area.id)"
                     @input="handleNoteInput(area.id, $event)"
                     rows="2"
-                    placeholder="记录该子区域的备注，如剩余宝箱位置、任务进度…"
+                    placeholder="记录该章节的备注，如剩余宝箱位置、任务进度…"
                   ></textarea>
-                  <p v-else class="note-view" :class="{ empty: !noteOf(area.id) }">{{ noteOf(area.id) || '暂无描述' }}</p>
+                  <p v-else class="note-view" :class="{ empty: !noteOf(area.id) }">{{ noteOf(area.id) || '暂无备注' }}</p>
                 </div>
               </td>
             </tr>
