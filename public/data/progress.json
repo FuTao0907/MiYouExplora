@@ -1,16 +1,20 @@
 {
   "version": 2,
-  "updated_at": "2026-10-13",
+  "updated_at": "2026-10-14",
   "regions": {
     "mondstadt": {
       "areas": {
-        "falling_star_valley": {
-          "updated_at": "2026-10-13",
-          "items": { "chest": 0, "challenge": 0, "seelie": 0 }
+        "city_of_winds_and_idylls": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 483, "challenge": 17, "seelie": 50 }
         },
-        "windwail_highland": {
-          "updated_at": "2026-10-13",
-          "items": { "chest": 0, "challenge": 0, "seelie": 0 }
+        "demon_mountains_breath": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 222, "challenge": 37, "seelie": 3 }
+        },
+        "the_snowy_mountains_visitor": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 192, "seelie": 29 }
         }
       }
     }
