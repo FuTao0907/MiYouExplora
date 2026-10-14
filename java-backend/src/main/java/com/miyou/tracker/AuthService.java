@@ -44,14 +44,31 @@ public final class AuthService {
         // 1. 取「真实密码」：优先环境变量，没有就用开发默认值
         String real = System.getenv().getOrDefault(ENV_PASSWORD, DEV_FALLBACK_PASSWORD);
 
-        // 2. 用户输入为空 → 直接拒绝（空密码永远不对，避免 NPE 扩散）
+        // 2. 委托给带参版本（便于单元测试直接注入真实密码，生产入口不变）
+        return verify(candidate, real);
+    }
+
+    /**
+     * 包级可见的校验重载：把「真实密码」作为参数传入，而不是读全局环境变量。
+     *
+     * <p>为什么要有这个版本？{@link #verify(String)} 直接读 {@code System.getenv()}，
+     * 单元测试没法修改进程环境变量。把「比较」这一步抽成纯函数（输入 candidate + real，
+     * 输出 boolean），测试就能直接注入任意密码组合。这是「依赖注入」思想的最小示例：
+     * 外部依赖（环境变量）从函数参数传入，函数本身保持纯净、可预测。
+     *
+     * @param candidate 用户输入（可能为 null）
+     * @param real      当前生效的真实密码（生产来自环境变量，测试直接传）
+     * @return true = 通过；false = 拒绝
+     */
+    static boolean verify(String candidate, String real) {
+        // 用户输入为空 → 直接拒绝（空密码永远不对，避免 NPE 扩散）
         if (candidate == null || candidate.isEmpty()) {
             return false;
         }
 
-        // 3. 恒定时间比较：把两边都转成 UTF-8 字节再整体比较。
-        //    普通 equals 在第一个不同字符处就返回，耗时随「猜对的位数」变化，属于时序侧信道；
-        //    MessageDigest.isEqual 固定遍历全部字节，耗时与内容无关。
+        // 恒定时间比较：把两边都转成 UTF-8 字节再整体比较。
+        // 普通 equals 在第一个不同字符处就返回，耗时随「猜对的位数」变化，属于时序侧信道；
+        // MessageDigest.isEqual 固定遍历全部字节，耗时与内容无关。
         return MessageDigest.isEqual(
                 real.getBytes(java.nio.charset.StandardCharsets.UTF_8),
                 candidate.getBytes(java.nio.charset.StandardCharsets.UTF_8));

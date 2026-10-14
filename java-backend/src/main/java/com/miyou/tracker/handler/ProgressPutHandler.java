@@ -47,7 +47,14 @@ public class ProgressPutHandler implements HttpHandler {
 
         // 3. 读 body 并解析
         String body = HttpUtil.readBody(exchange);
-        var json = HttpUtil.GSON.fromJson(body, com.google.gson.JsonObject.class);
+        com.google.gson.JsonObject json;
+        try {
+            json = HttpUtil.GSON.fromJson(body, com.google.gson.JsonObject.class);
+        } catch (com.google.gson.JsonSyntaxException e) {
+            // 非法 JSON（如不是对象、或语法错误）：按「无效负载」处理，返回 400。
+            // 不捕获的话异常会冒泡成 500，与 EdgeOne 版契约不符。
+            json = null;
+        }
 
         // 4. 结构校验：必须是对象且包含 regions 对象（对齐前端的 progress 数据格式）
         boolean invalid = json == null

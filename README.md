@@ -50,6 +50,21 @@ yarn preview      # 本地预览构建产物（默认 http://localhost:4173）
 
 开发模式（`yarn dev`）不依赖云端：进度数据读静态 `public/data/progress.json`，编辑保存在内存（不落盘），解锁密码用 `.env.development` 中的 `VITE_DEV_PASSWORD`。需要完整调试 Functions/Blob 时，可用 EdgeOne CLI（`npm install -g edgeone`，`edgeone pages init/link/dev`）。
 
+## 单元测试
+
+两条测试线，覆盖项目核心契约：
+
+| 范围 | 框架 | 命令 | 覆盖 |
+| --- | --- | --- | --- |
+| 前端探索度逻辑 `src/utils/status.js` | Vitest | `yarn test` | `regionPercent`：空区域 / 无目标 / 单分项比例 / 多分项平均 / 超上限封顶 100 / 缺失数据按 0 / 四舍五入；`getStatus` 未开始·进行中·已完成三分支 |
+| Java 学习副本 `java-backend/` | JUnit 5（console-standalone，零构建工具） | `pwsh -File java-backend\scripts\test.ps1` | `AuthService` 密码校验（默认值 / 显式密码 / 空输入）、`ProgressStore` 读写一致 / 写前备份 / 恢复 / 状态轨迹、四个 handler 的状态码契约（200 / 204 / 401 / 400 / 404 / 405） |
+
+* 两个脚本都会先编译再运行（Java 脚本编译 main + test 到 `out/`，再自动发现全部测试）。
+* **Java 测试务必用 PowerShell 7（`pwsh`）运行**——脚本是 UTF-8 无 BOM，Windows PowerShell 5.1 会按 ANSI 误读中文导致语法错误。
+* 依赖环境变量的用例（默认密码路径）用 JUnit `Assumptions` 守卫：当前进程设置了 `EDIT_PASSWORD` 时自动跳过，不会误报失败。
+* 历史缺陷：测试曾发现两个真实缺陷——`AuthHandler` / `ProgressPutHandler` 收到非法 JSON 时 Gson 抛 `JsonSyntaxException` 未被捕获，异常冒泡成 500，违反「解析失败 → 401 / 400」的契约。已在两个 handler 补 try/catch 修复，并各加一条回归测试（`非法JSON按拒绝处理` / `密码正确但body非法返回400`）。
+
+
 ## 架构与数据流
 
 ```

@@ -44,7 +44,14 @@ public class AuthHandler implements HttpHandler {
 
         // 2. 读请求体并解析成 JSON：{"password":"xxx"}
         String body = HttpUtil.readBody(exchange);
-        var json = HttpUtil.GSON.fromJson(body, com.google.gson.JsonObject.class);
+        com.google.gson.JsonObject json;
+        try {
+            json = HttpUtil.GSON.fromJson(body, com.google.gson.JsonObject.class);
+        } catch (com.google.gson.JsonSyntaxException e) {
+            // 非法 JSON：按「没有有效请求体」处理（与 EdgeOne 版 try/catch 行为一致）。
+            // 不捕获的话异常会冒泡，ApiServer 只能回 500，而契约要求统一走校验失败。
+            json = null;
+        }
 
         // 3. 取 password 字段；缺字段/解析失败都按「空密码」处理（统一走校验失败）
         String password = (json != null && json.has("password"))
