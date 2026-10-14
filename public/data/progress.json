@@ -17,6 +17,22 @@
           "items": { "chest": 192, "seelie": 29 }
         }
       }
+    },
+    "liyue": {
+      "areas": {
+        "harbor_of_stone_and_contracts": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 1062, "challenge": 45, "seelie": 76 }
+        },
+        "chasmlighter": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 228, "challenge": 19, "seelie": 37 }
+        },
+        "chenyus_splendor": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 302, "challenge": 52, "seelie": 18 }
+        }
+      }
     }
   }
 }
