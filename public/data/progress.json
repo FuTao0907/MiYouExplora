@@ -73,6 +73,26 @@
           "items": { "chest": 231, "challenge": 25, "seelie": 23 }
         }
       }
+    },
+    "fontaine": {
+      "areas": {
+        "dance_of_the_dew_white_springs_i": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 294, "challenge": 45, "seelie": 39 }
+        },
+        "dance_of_the_dew_white_springs_ii": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 213, "challenge": 27, "seelie": 12 }
+        },
+        "dance_of_the_dew_white_springs_iii": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 180, "challenge": 29, "seelie": 9 }
+        },
+        "rhapsodia_in_the_ancient_sea": {
+          "updated_at": "2026-10-14",
+          "items": { "chest": 134, "challenge": 29, "seelie": 6 }
+        }
+      }
     }
   }
 }
