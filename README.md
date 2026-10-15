@@ -2,6 +2,8 @@
 
 个人使用的探索度记录网页应用，记录《原神》各地区及各子区域的探索进度。数据模型与游戏解耦，后续可扩展星穹铁道、绝区零等。
 
+> **想快速上手 / 建立使用认知？先读 [`docs/PROJECT-GUIDE.md`](docs/PROJECT-GUIDE.md)**——它讲清楚了这个项目的使用顺序、数据流动和两条修改路径（target 随部署 / done 存云端），并有日常维护速查表。本文档是结构参考手册。
+
 ## 界面
 
 * **主页面**：按地区（蒙德、璃月、稻妻、须弥…）显示探索度百分比与状态，点击地区卡片进入详情。
@@ -175,15 +177,7 @@ yarn preview      # 本地预览构建产物（默认 http://localhost:4173）
 
 ## 部署（EdgeOne Pages，腾讯云，免费）
 
-> **前置（重要）**：当前项目本地尚未初始化 Git 仓库，而 Functions 的发布方式是「代码推送到远端仓库 → 平台自动构建发布函数」。首次全栈部署前需：
-> ```
-> git init
-> git add -A
-> git commit -m "feat: 全栈化（EdgeOne Functions + Blob）"
-> git remote add origin <你的 GitHub/其他远端仓库地址>
-> git push -u origin main
-> ```
-> （`.gitignore` 已配置，`node_modules` / `dist` / `.env*` 不会入库；`.env.development` 里的开发密码只在本机 dev 生效。）
+> 项目已纳入 Git 版本控制（master 分支），`.gitignore` 已配置（`node_modules` / `dist` / `.env*` / `doc-fetch-resources` / `draft_*` 不入库；`.env.development` 里的开发密码只在本机 dev 生效）。
 
 1. 代码推送到 Git 仓库；在腾讯云 EdgeOne Pages 控制台创建项目并关联该仓库，构建命令 `yarn build`，输出目录 `dist`，安装命令 `yarn install`（或直接使用仓库根 `edgeone.json`，平台自动读取）。
 2. **设置环境变量**：控制台「项目设置 → 环境变量」添加 `EDIT_PASSWORD`（编辑密码，值需 ≤1000 字节），保存后**重新部署**一次使其生效。
