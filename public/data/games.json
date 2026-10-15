@@ -310,7 +310,7 @@
           "name": "挪德卡莱",
           "image": "/images/nodkrai.jpg",
           "sort": 7,
-          "targets": { "chest": 752, "challenge": 25, "seelie": 0 },
+          "targets": { "chest": 752, "challenge": 22, "seelie": 0 },
           "areas": [
             {
               "id": "an_elysium_of_moonlight_and_wanderings_i",
@@ -327,10 +327,10 @@
               "id": "an_elysium_of_moonlight_and_wanderings_ii",
               "name": "月与浪迹的乐园·其之二",
               "sort": 2,
-              "description": "虚海望、逐浪野、烟珞山峰。宝箱按成就数 229 记（部分攻略按三区路线分段合计为 226，差 3 个边域地灵龛）；无仙灵分项。",
+              "description": "虚海望、逐浪野、烟珞山峰。宝箱按成就数 229 记（部分攻略按三区路线分段合计为 226，差 3 个边域地灵龛）；限时挑战按 5 记（成就门槛即 5，随影月月攻略确认区域挑战为 5 个；个别英文站记 8 个位点，未采用）；无仙灵分项。",
               "items": [
                 { "id": "chest", "name": "宝箱", "target": 229 },
-                { "id": "challenge", "name": "限时挑战", "target": 8 },
+                { "id": "challenge", "name": "限时挑战", "target": 5 },
                 { "id": "seelie", "name": "仙灵", "target": 0 }
               ]
             },
