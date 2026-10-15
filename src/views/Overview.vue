@@ -1,6 +1,15 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import {
+  PhDownloadSimple,
+  PhFileCode,
+  PhListBullets,
+  PhPencilSimple,
+  PhPercent,
+  PhTable,
+  PhUploadSimple
+} from '@phosphor-icons/vue'
 import RegionCard from '../components/RegionCard.vue'
 import { importProgress } from '../api/data.js'
 // xlsx 工具动态加载（体积较大，仅用户点击导入/导出时下载，见 doExportXlsx / doImportXlsx）
@@ -112,26 +121,44 @@ function doImportJson(event) {
   </section>
 
   <div class="region-toolbar reveal" style="animation-delay: 0.08s">
-    <button class="btn btn-batch" @click="emit('batch')">一键修改</button>
+    <button class="btn btn-batch" @click="emit('batch')" title="把所有可修改项聚拢到一个面板里批量编辑">
+      <PhPencilSimple :size="16" /> 一键修改
+    </button>
 
     <div class="file-menu-wrap">
-      <button class="btn btn-primary btn-export" @click="exportMenuOpen = !exportMenuOpen">导出数据</button>
+      <button
+        class="btn btn-primary btn-export"
+        @click="exportMenuOpen = !exportMenuOpen"
+        title="导出当前数据（WPS 表格或 JSON 存档）"
+      >
+        <PhDownloadSimple :size="16" /> 导出数据
+      </button>
       <div v-if="exportMenuOpen" class="file-menu" @click.stop>
-        <button class="file-menu-item" @click="doExportXlsx">导出 .xlsx（WPS 表格）</button>
-        <button class="file-menu-item" @click="doExportJson">导出 .json（完整存档）</button>
+        <button class="file-menu-item" @click="doExportXlsx" title="导出为 WPS/Excel 可直接打开的表格">
+          <PhTable :size="16" /> 导出 .xlsx（WPS 表格）
+        </button>
+        <button class="file-menu-item" @click="doExportJson" title="导出完整数据存档（JSON 文件）">
+          <PhFileCode :size="16" /> 导出 .json（完整存档）
+        </button>
         <p class="file-menu-tip">表格方便在 WPS/Excel 里查看和修改；JSON 是完整数据存档。游客导出的只含你自己的数据。</p>
       </div>
     </div>
 
     <div class="file-menu-wrap">
-      <button class="btn btn-ghost" @click="importMenuOpen = !importMenuOpen">导入数据</button>
+      <button
+        class="btn btn-ghost"
+        @click="importMenuOpen = !importMenuOpen"
+        title="从 WPS 表格或 JSON 文件导入数据"
+      >
+        <PhUploadSimple :size="16" /> 导入数据
+      </button>
       <div v-if="importMenuOpen" class="file-menu" @click.stop>
-        <label class="file-menu-item">
-          导入 .xlsx（WPS 表格）
+        <label class="file-menu-item" title="导入 WPS 表格（在表格里改「已搜集」列后导回）">
+          <PhTable :size="16" /> 导入 .xlsx（WPS 表格）
           <input type="file" accept=".xlsx" @change="doImportXlsx" />
         </label>
-        <label class="file-menu-item">
-          导入 .json（完整存档）
+        <label class="file-menu-item" title="导入完整数据存档（JSON 文件）">
+          <PhFileCode :size="16" /> 导入 .json（完整存档）
           <input type="file" accept="application/json,.json" @change="doImportJson" />
         </label>
         <p class="file-menu-tip">表格：在 WPS/Excel 里改「已搜集」列后导回；JSON：完整数据文件。空行不会被修改。</p>
@@ -158,12 +185,18 @@ function doImportJson(event) {
         class="sort-btn mono"
         :class="{ active: store.sortMode.value === 'progress' }"
         @click="store.sortMode.value = 'progress'"
-      >按探索度</button>
+        title="按探索度从低到高排序"
+      >
+        <PhPercent :size="14" /> 按探索度
+      </button>
       <button
         class="sort-btn mono"
         :class="{ active: store.sortMode.value === 'order' }"
         @click="store.sortMode.value = 'order'"
-      >按区域顺序</button>
+        title="按区域顺序排序"
+      >
+        <PhListBullets :size="14" /> 按区域顺序
+      </button>
     </div>
   </section>
 
@@ -344,6 +377,9 @@ function doImportJson(event) {
   gap: var(--sp-1);
 }
 .sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   padding: var(--sp-1) var(--sp-3);
   border-radius: 999px;
   font-size: var(--fz-xs);

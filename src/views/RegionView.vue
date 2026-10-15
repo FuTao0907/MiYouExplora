@@ -1,6 +1,14 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import {
+  PhCaretLeft,
+  PhCaretRight,
+  PhDownloadSimple,
+  PhFileCode,
+  PhPencilSimple,
+  PhTable
+} from '@phosphor-icons/vue'
 import { regionPercent, getStatus, STATUS } from '../utils/status.js'
 import { parseItemInput, sanitizeInputText } from '../utils/guestData.js'
 
@@ -140,8 +148,8 @@ function handleNoteInput(areaId, event) {
   <div v-if="region">
     <section class="region-hero reveal" :style="heroStyle">
       <div class="region-hero-content">
-        <button class="btn btn-ghost" @click="goBack">
-          <span aria-hidden="true">←</span> 返回
+        <button class="btn btn-ghost" @click="goBack" title="返回地区总览">
+          <PhCaretLeft :size="16" /> 返回
         </button>
         <div class="region-title">
           <h1 class="region-title-text">{{ region.name }}</h1>
@@ -158,12 +166,24 @@ function handleNoteInput(areaId, event) {
     </section>
 
     <div class="region-toolbar reveal" style="animation-delay: 0.08s">
-      <button class="btn btn-batch" @click="emit('batch')">一键修改</button>
+      <button class="btn btn-batch" @click="emit('batch')" title="把所有可修改项聚拢到一个面板里批量编辑">
+        <PhPencilSimple :size="16" /> 一键修改
+      </button>
       <div class="file-menu-wrap">
-        <button class="btn btn-primary" @click="exportMenuOpen = !exportMenuOpen">导出数据</button>
+        <button
+          class="btn btn-primary"
+          @click="exportMenuOpen = !exportMenuOpen"
+          title="导出当前数据（WPS 表格或 JSON 存档）"
+        >
+          <PhDownloadSimple :size="16" /> 导出数据
+        </button>
         <div v-if="exportMenuOpen" class="file-menu" @click.stop>
-          <button class="file-menu-item" @click="doExportXlsx">导出 .xlsx（WPS 表格）</button>
-          <button class="file-menu-item" @click="handleExport">导出 .json（完整存档）</button>
+          <button class="file-menu-item" @click="doExportXlsx" title="导出为 WPS/Excel 可直接打开的表格">
+            <PhTable :size="16" /> 导出 .xlsx（WPS 表格）
+          </button>
+          <button class="file-menu-item" @click="handleExport" title="导出完整数据存档（JSON 文件）">
+            <PhFileCode :size="16" /> 导出 .json（完整存档）
+          </button>
           <p class="file-menu-tip">表格方便在 WPS/Excel 里查看和修改；JSON 是完整数据存档。游客导出的只含你自己的数据。</p>
         </div>
       </div>
@@ -194,11 +214,14 @@ function handleNoteInput(areaId, event) {
             <tr>
               <td class="col-expand">
                 <button
-                  class="expand-btn mono"
+                  class="expand-btn"
                   :class="{ open: expanded[area.id] }"
                   @click="toggleExpand(area.id)"
                   :aria-label="`展开${area.name}描述`"
-                >▸</button>
+                  :title="expanded[area.id] ? '收起说明' : '展开范围说明与备注'"
+                >
+                  <PhCaretRight :size="14" />
+                </button>
               </td>
               <td class="col-name area-name">{{ area.name }}</td>
               <template v-for="item in itemDefs" :key="item.id">
@@ -447,7 +470,6 @@ function handleNoteInput(areaId, event) {
   border: 1px solid var(--line);
   background: transparent;
   color: var(--text-3);
-  font-size: var(--fz-sm);
   line-height: 1;
   transition: var(--t);
   cursor: pointer;

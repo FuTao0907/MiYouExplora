@@ -1,6 +1,15 @@
 <script setup>
 import { ref } from 'vue'
 import { useProgress } from './composables/useProgress.js'
+import {
+  PhArrowClockwise,
+  PhArchiveBox,
+  PhEye,
+  PhEyeSlash,
+  PhLock,
+  PhLockOpen,
+  PhPlayCircle
+} from '@phosphor-icons/vue'
 import BatchEditPanel from './components/BatchEditPanel.vue'
 import TourGuide from './components/TourGuide.vue'
 
@@ -110,15 +119,46 @@ function tryRestore() {
             <template v-if="store.saveState.value === 'error'">{{ store.saveText.value }}：{{ store.saveError.value }}</template>
             <template v-else>{{ store.saveText.value }}</template>
           </span>
-          <button v-if="store.saveState.value === 'error'" class="btn btn-ghost btn-sm" @click="store.doCloudSave">重试保存</button>
-          <button class="btn btn-ghost btn-sm" @click="tryRestore">从备份恢复</button>
-          <button class="btn btn-ghost btn-sm" @click="lockNow">锁定（游客）</button>
+          <button
+            v-if="store.saveState.value === 'error'"
+            class="btn btn-ghost btn-sm"
+            @click="store.doCloudSave"
+            title="重新尝试保存到云端"
+          >
+            <PhArrowClockwise :size="16" /> 重试保存
+          </button>
+          <button
+            class="btn btn-ghost btn-sm"
+            @click="tryRestore"
+            title="用云端自动备份（上一次保存前的数据）覆盖当前进度"
+          >
+            <PhArchiveBox :size="16" /> 从备份恢复
+          </button>
+          <button
+            class="btn btn-ghost btn-sm"
+            @click="lockNow"
+            title="锁定为游客模式：之后的改动只保存到本机"
+          >
+            <PhLock :size="16" /> 锁定（游客）
+          </button>
         </template>
         <template v-else>
-          <button class="btn btn-ghost btn-sm" :class="{ active: store.showReference.value }" @click="store.toggleReference">
+          <button
+            class="btn btn-ghost btn-sm"
+            :class="{ active: store.showReference.value }"
+            @click="store.toggleReference"
+            :title="store.showReference.value ? '正在显示主人的进度作参考，点击关闭' : '点击显示主人的进度作参考'"
+          >
+            <component :is="store.showReference.value ? PhEye : PhEyeSlash" :size="16" />
             参考：{{ store.showReference.value ? '开' : '关' }}
           </button>
-          <button class="btn btn-ghost btn-sm" @click="unlockOpen = !unlockOpen">解锁编辑</button>
+          <button
+            class="btn btn-ghost btn-sm"
+            @click="unlockOpen = !unlockOpen"
+            title="输入密码进入主人模式，录入保存到云端"
+          >
+            <PhLockOpen :size="16" /> 解锁编辑
+          </button>
           <template v-if="unlockOpen">
             <input
               class="pwd-input mono"
@@ -128,7 +168,7 @@ function tryRestore() {
               placeholder="编辑密码"
               autocomplete="off"
             />
-            <button class="btn btn-primary btn-sm" :disabled="unlocking" @click="tryUnlock">{{ unlocking ? '校验中…' : '确认' }}</button>
+            <button class="btn btn-primary btn-sm" :disabled="unlocking" @click="tryUnlock" title="校验密码进入主人模式">{{ unlocking ? '校验中…' : '确认' }}</button>
             <span v-if="unlockError" class="pwd-error">密码错误</span>
           </template>
           <span v-if="store.saveText.value" class="save-state" :class="'save-' + store.saveState.value">
@@ -155,7 +195,9 @@ function tryRestore() {
       />
 
       <footer class="site-foot">
-        <button class="foot-link mono" @click="replayTour">重播引导</button>
+        <button class="foot-link mono" @click="replayTour" title="重新播放新手引导（分步气泡）">
+          <PhPlayCircle :size="14" /> 重播引导
+        </button>
       </footer>
     </template>
   </div>
@@ -246,6 +288,9 @@ function tryRestore() {
   justify-content: center;
 }
 .foot-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: var(--fz-xs);
   color: var(--text-3);
   letter-spacing: 0.08em;

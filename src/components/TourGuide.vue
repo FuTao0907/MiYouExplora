@@ -2,6 +2,7 @@
 // Tour 漫游式引导：轻量气泡组件（无第三方依赖）。
 // 高亮目标元素（selector 定位），气泡定位在目标下方/上方，支持上一步/下一步/跳过。
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { PhCaretLeft, PhCaretRight, PhCheck, PhX } from '@phosphor-icons/vue'
 
 const props = defineProps({
   steps: { type: Array, required: true } // [{ selector, title, body, placement }]
@@ -78,14 +79,22 @@ function skip() {
     >
       <div class="tour-head">
         <span class="tour-step mono">{{ index + 1 }} / {{ steps.length }}</span>
-        <button class="tour-skip" @click="skip">跳过</button>
+        <button class="tour-skip" @click="skip" title="跳过新手引导">
+          <PhX :size="13" /> 跳过
+        </button>
       </div>
       <h3 class="tour-title">{{ step.title }}</h3>
       <p class="tour-body">{{ step.body }}</p>
       <div class="tour-actions">
-        <button v-if="index > 0" class="btn btn-ghost btn-sm" @click="prev">上一步</button>
-        <button v-if="index < steps.length - 1" class="btn btn-primary btn-sm" @click="next">下一步</button>
-        <button v-else class="btn btn-primary btn-sm" @click="done">开始使用</button>
+        <button v-if="index > 0" class="btn btn-ghost btn-sm" @click="prev" title="上一步">
+          <PhCaretLeft :size="15" /> 上一步
+        </button>
+        <button v-if="index < steps.length - 1" class="btn btn-primary btn-sm" @click="next" title="下一步">
+          下一步 <PhCaretRight :size="15" />
+        </button>
+        <button v-else class="btn btn-primary btn-sm" @click="done" title="完成引导，开始使用">
+          <PhCheck :size="15" /> 开始使用
+        </button>
       </div>
     </div>
   </div>
@@ -121,6 +130,9 @@ function skip() {
   letter-spacing: 0.14em;
 }
 .tour-skip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: none;
   border: none;
   color: var(--text-3);

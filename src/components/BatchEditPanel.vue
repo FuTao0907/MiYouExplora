@@ -2,6 +2,7 @@
 // 一键修改：集中编辑面板。把所有可修改项聚拢，按地区折叠分组；
 // 只收集"改动过的项"，关闭时写入当前模式数据（游客→本机，主人→云端）。
 import { ref } from 'vue'
+import { PhArrowsIn, PhArrowsOut, PhCaretRight, PhCheck, PhTrash } from '@phosphor-icons/vue'
 import { parseItemInput, sanitizeInputText } from '../utils/guestData.js'
 
 const props = defineProps({
@@ -82,16 +83,28 @@ function clearGuest() {
           </p>
         </div>
         <div class="batch-head-actions">
-          <button class="btn btn-ghost btn-sm" @click="expandAll">全部展开</button>
-          <button class="btn btn-ghost btn-sm" @click="collapseAll">全部收起</button>
-          <button class="btn btn-primary btn-sm" @click="close">完成</button>
+          <button class="btn btn-ghost btn-sm" @click="expandAll" title="展开全部地区的编辑项">
+            <PhArrowsOut :size="15" /> 全部展开
+          </button>
+          <button class="btn btn-ghost btn-sm" @click="collapseAll" title="收起全部地区的编辑项">
+            <PhArrowsIn :size="15" /> 全部收起
+          </button>
+          <button class="btn btn-primary btn-sm" @click="close" title="保存本次修改并关闭面板">
+            <PhCheck :size="15" /> 完成
+          </button>
         </div>
       </header>
 
       <div class="batch-body">
         <section v-for="region in store.regions.value" :key="region.id" class="batch-region">
-          <button class="batch-region-head" @click="toggleRegion(region.id)">
-            <span class="batch-caret mono" :class="{ open: !collapsed[region.id] }">▸</span>
+          <button
+            class="batch-region-head"
+            @click="toggleRegion(region.id)"
+            :title="collapsed[region.id] ? `展开${region.name}的编辑项` : `收起${region.name}的编辑项`"
+          >
+            <span class="batch-caret" :class="{ open: !collapsed[region.id] }">
+              <PhCaretRight :size="14" />
+            </span>
             <span class="batch-region-name">{{ region.name }}</span>
             <span class="batch-region-meta mono">{{ region.areas.length }} 章</span>
           </button>
@@ -124,7 +137,10 @@ function clearGuest() {
           v-if="!store.editable.value"
           class="btn btn-ghost btn-sm batch-clear"
           @click="clearGuest"
-        >清除本机数据</button>
+          title="清空本机保存的游客数据（回到只显示主人参考）"
+        >
+          <PhTrash :size="15" /> 清除本机数据
+        </button>
       </footer>
     </div>
   </div>
@@ -207,8 +223,8 @@ function clearGuest() {
   color: var(--gold);
 }
 .batch-caret {
-  display: inline-block;
-  font-size: var(--fz-sm);
+  display: inline-flex;
+  align-items: center;
   color: var(--gold);
   transition: transform 0.2s var(--ease);
 }
