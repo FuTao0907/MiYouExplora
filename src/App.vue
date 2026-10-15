@@ -1,25 +1,79 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useProgress } from './composables/useProgress.js'
 import Overview from './views/Overview.vue'
 import RegionView from './views/RegionView.vue'
+import BatchEditPanel from './components/BatchEditPanel.vue'
+import TourGuide from './components/TourGuide.vue'
 
 const store = useProgress()
 store.init()
 
 const view = ref('overview')
 const regionId = ref('')
+const batchOpen = ref(false)
 
+// ---- Tour 漫游引导：首次访问自动播放（localStorage 标记），可重播 ----
+const TOUR_KEY = 'miyou_tour_done'
+const tourOpen = ref(!localStorage.getItem(TOUR_KEY))
+
+const tourSteps = [
+  {
+    selector: '.hero',
+    title: '欢迎来到米游探索度记录',
+    body: '这是一个记录《原神》探索进度的个人网站。你不需要注册：直接就能录入自己的游戏数据，用来整理进度、查漏补缺。',
+    placement: 'bottom'
+  },
+  {
+    selector: '.region-card',
+    title: '看探索度',
+    body: '每张卡片是一个地区，显示探索进度百分比。点击卡片进入表格，可以看到每个章节的宝箱 / 限时挑战 / 仙灵（幻写灵）已搜集数量。',
+    placement: 'bottom'
+  },
+  {
+    selector: '.edit-bar',
+    title: '直接录入',
+    body: '表格里的输入框可以直接修改。游客的改动只保存在这台电脑上（本机），不会影响网站数据；主人的数据（UID 212114083）会作为参考显示，可以随时开关。',
+    placement: 'bottom'
+  },
+  {
+    selector: '.btn-batch',
+    title: '一键修改',
+    body: '不想一个一个改？点「一键修改」，把所有修改项聚拢到一个面板里，一次改完。',
+    placement: 'top'
+  },
+  {
+    selector: '.btn-export',
+    title: '导入导出',
+    body: '支持导出 / 导入 WPS 表格（.xlsx）或 JSON 文件。游客导出的文件只包含自己的数据，不会和主人的数据混淆。',
+    placement: 'top'
+  }
+]
+
+function tourDone() {
+  localStorage.setItem(TOUR_KEY, '1')
+  tourOpen.value = false
+}
+function tourClose() {
+  tourOpen.value = false
+}
+function replayTour() {
+  tourOpen.value = true
+}
+
+// ---- 路由 ----
 function openRegion(id) {
   regionId.value = id
   view.value = 'region'
 }
-
 function backToOverview() {
   view.value = 'overview'
 }
+function openBatch() {
+  batchOpen.value = true
+}
 
-// 解锁编辑（默认只读，其他人只能看；生产环境密码校验在服务端）
+// 解锁编辑（默认游客模式；生产环境密码校验在服务端）
 const unlockOpen = ref(false)
 const unlockInput = ref('')
 const unlockError = ref(false)
@@ -51,14 +105,6 @@ function tryRestore() {
   if (!confirmed) return
   store.restoreFromBackup()
 }
-
-const saveText = computed(() => {
-  const s = store.saveState.value
-  if (s === 'saving') return '保存中…'
-  if (s === 'saved') return '已保存到云端'
-  if (s === 'error') return '保存失败'
-  return ''
-})
 </script>
 
 <template>
@@ -71,17 +117,20 @@ const saveText = computed(() => {
     <template v-else>
       <div class="edit-bar reveal">
         <template v-if="store.editable.value">
-          <span class="mode-badge editable">编辑模式</span>
-          <span v-if="saveText" class="save-state" :class="'save-' + store.saveState.value">
-            <template v-if="store.saveState.value === 'error'">{{ saveText }}：{{ store.saveError.value }}</template>
-            <template v-else>{{ saveText }}</template>
+          <span class="mode-badge editable">主人模式</span>
+          <span v-if="store.saveText.value" class="save-state" :class="'save-' + store.saveState.value">
+            <template v-if="store.saveState.value === 'error'">{{ store.saveText.value }}：{{ store.saveError.value }}</template>
+            <template v-else>{{ store.saveText.value }}</template>
           </span>
-          <button v-if="store.saveState.value === 'error'" class="btn btn-ghost btn-sm" @click="store.doSave">重试保存</button>
+          <button v-if="store.saveState.value === 'error'" class="btn btn-ghost btn-sm" @click="store.doCloudSave">重试保存</button>
           <button class="btn btn-ghost btn-sm" @click="tryRestore">从备份恢复</button>
-          <button class="btn btn-ghost btn-sm" @click="lockNow">锁定（只读）</button>
+          <button class="btn btn-ghost btn-sm" @click="lockNow">锁定（游客）</button>
         </template>
         <template v-else>
-          <span class="mode-badge readonly">只读模式</span>
+          <span class="mode-badge guest">游客模式</span>
+          <button class="btn btn-ghost btn-sm" :class="{ active: store.showReference.value }" @click="store.toggleReference">
+            参考：{{ store.showReference.value ? '开' : '关' }}
+          </button>
           <button class="btn btn-ghost btn-sm" @click="unlockOpen = !unlockOpen">解锁编辑</button>
           <template v-if="unlockOpen">
             <input
@@ -95,18 +144,33 @@ const saveText = computed(() => {
             <button class="btn btn-primary btn-sm" :disabled="unlocking" @click="tryUnlock">{{ unlocking ? '校验中…' : '确认' }}</button>
             <span v-if="unlockError" class="pwd-error">密码错误</span>
           </template>
+          <span v-if="store.saveText.value" class="save-state" :class="'save-' + store.saveState.value">
+            {{ store.saveText.value }}
+          </span>
+          <button class="btn btn-ghost btn-sm" @click="replayTour">重播引导</button>
         </template>
       </div>
+
       <Overview
         v-if="view === 'overview'"
         :store="store"
         @edit="openRegion"
+        @batch="openBatch"
       />
       <RegionView
         v-else
         :store="store"
         :region-id="regionId"
         @back="backToOverview"
+        @batch="openBatch"
+      />
+
+      <BatchEditPanel v-if="batchOpen" :store="store" @close="batchOpen = false" />
+      <TourGuide
+        v-if="tourOpen"
+        :steps="tourSteps"
+        @done="tourDone"
+        @close="tourClose"
       />
     </template>
   </div>
@@ -140,6 +204,7 @@ const saveText = computed(() => {
   background: rgba(16, 24, 40, 0.7);
   backdrop-filter: blur(8px);
   width: fit-content;
+  flex-wrap: wrap;
 }
 .mode-badge {
   font-size: var(--fz-xs);
@@ -147,13 +212,18 @@ const saveText = computed(() => {
   padding: 2px 10px;
   border-radius: 999px;
 }
-.mode-badge.readonly {
-  color: var(--text-3);
-  border: 1px solid var(--line);
+.mode-badge.guest {
+  color: #6fcf97;
+  border: 1px solid rgba(111, 207, 151, 0.4);
 }
 .mode-badge.editable {
   color: var(--gold);
   border: 1px solid var(--line-gold);
+  background: var(--gold-tint);
+}
+.btn.active {
+  color: var(--gold);
+  border-color: var(--line-gold);
   background: var(--gold-tint);
 }
 .pwd-input {

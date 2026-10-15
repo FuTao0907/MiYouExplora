@@ -1,32 +1,72 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import RegionCard from '../components/RegionCard.vue'
 import { importProgress } from '../api/data.js'
+// xlsx 工具动态加载（体积较大，仅用户点击导入/导出时下载，见 doExportXlsx / doImportXlsx）
 
 const props = defineProps({
   store: { type: Object, required: true }
 })
-const emit = defineEmits(['edit'])
+const emit = defineEmits(['edit', 'batch'])
 
 const overallPercent = computed(() => {
   const { done, total } = props.store.overall.value
   return total ? Math.round((done / total) * 100) : 0
 })
 
-function handleExport() {
-  props.store.exportProgress(props.store.progress.value)
+// ---- 导入 / 导出（XLSX 与 JSON 双格式，用户选择并提示） ----
+const exportMenuOpen = ref(false)
+const importMenuOpen = ref(false)
+
+async function doExportXlsx() {
+  const { exportProgressXlsx } = await import('../utils/xlsx.js')
+  const game = props.store.activeGame.value
+  const my = props.store.editable.value
+    ? props.store.cloudProgress.value
+    : props.store.guestProgress.value
+  const ref = props.store.editable.value ? null : props.store.cloudProgress.value
+  exportProgressXlsx(game, my, ref)
+  exportMenuOpen.value = false
+}
+function doExportJson() {
+  props.store.exportMyProgress()
+  exportMenuOpen.value = false
 }
 
-function handleImport(event) {
+async function doImportXlsx(event) {
   const file = event.target.files?.[0]
+  event.target.value = ''
+  if (!file) return
+  try {
+    const { importProgressXlsx } = await import('../utils/xlsx.js')
+    const { progress, errors } = await importProgressXlsx(file, props.store.activeGame.value)
+    if (errors.length) {
+      const head = errors
+        .slice(0, 5)
+        .map((e) => `第 ${e.row} 行：${e.message}`)
+        .join('\n')
+      const more = errors.length > 5 ? `\n…共 ${errors.length} 行无法识别` : ''
+      if (!window.confirm(`有 ${errors.length} 行无法识别：\n${head}${more}\n\n继续导入其余有效行吗？`)) return
+    }
+    props.store.applyImported(progress)
+    alert(`导入成功${errors.length ? `（忽略 ${errors.length} 行问题）` : ''}`)
+    importMenuOpen.value = false
+  } catch (e) {
+    alert('导入失败：' + e.message)
+  }
+}
+
+function doImportJson(event) {
+  const file = event.target.files?.[0]
+  event.target.value = ''
   if (!file) return
   importProgress(file)
     .then((data) => {
       props.store.applyImported(data)
       alert('导入成功')
+      importMenuOpen.value = false
     })
     .catch((err) => alert(err.message))
-  event.target.value = ''
 }
 </script>
 
@@ -35,14 +75,7 @@ function handleImport(event) {
     <div class="hero-content reveal">
       <p class="hero-eyebrow mono">GENSHIN IMPACT · PERSONAL TRACKER</p>
       <h1 class="hero-title">米游探索度记录</h1>
-      <p class="hero-sub">记录提瓦特每一块土地的探索进度。个人使用 · 默认只读，解锁后录入，编辑自动保存到云端。</p>
-      <div class="hero-actions">
-        <button class="btn btn-primary" :disabled="!store.editable.value" @click="handleExport">导出 progress.json</button>
-        <label class="btn btn-ghost" :class="{ 'is-disabled': !store.editable.value }">
-          导入 JSON
-          <input type="file" accept="application/json,.json" :disabled="!store.editable.value" @change="handleImport" />
-        </label>
-      </div>
+      <p class="hero-sub">记录提瓦特每一块土地的探索进度。游客可直接录入自己的进度（保存在本机）；主人解锁后录入，编辑自动保存到云端。</p>
     </div>
     <div class="hero-stat reveal" style="animation-delay: 0.12s">
       <div class="hero-stat-label mono">OVERALL</div>
@@ -55,6 +88,34 @@ function handleImport(event) {
       </div>
     </div>
   </section>
+
+  <div class="region-toolbar reveal" style="animation-delay: 0.08s">
+    <button class="btn btn-batch" @click="emit('batch')">一键修改</button>
+
+    <div class="file-menu-wrap">
+      <button class="btn btn-primary btn-export" @click="exportMenuOpen = !exportMenuOpen">导出数据</button>
+      <div v-if="exportMenuOpen" class="file-menu" @click.stop>
+        <button class="file-menu-item" @click="doExportXlsx">导出 .xlsx（WPS 表格）</button>
+        <button class="file-menu-item" @click="doExportJson">导出 .json（完整存档）</button>
+        <p class="file-menu-tip">表格方便在 WPS/Excel 里查看和修改；JSON 是完整数据存档。游客导出的只含你自己的数据。</p>
+      </div>
+    </div>
+
+    <div class="file-menu-wrap">
+      <button class="btn btn-ghost" @click="importMenuOpen = !importMenuOpen">导入数据</button>
+      <div v-if="importMenuOpen" class="file-menu" @click.stop>
+        <label class="file-menu-item">
+          导入 .xlsx（WPS 表格）
+          <input type="file" accept=".xlsx" @change="doImportXlsx" />
+        </label>
+        <label class="file-menu-item">
+          导入 .json（完整存档）
+          <input type="file" accept="application/json,.json" @change="doImportJson" />
+        </label>
+        <p class="file-menu-tip">表格：在 WPS/Excel 里改「已搜集」列后导回；JSON：完整数据文件。空行不会被修改。</p>
+      </div>
+    </div>
+  </div>
 
   <section class="game-switch reveal" v-if="store.games.value.length > 1" style="animation-delay: 0.18s">
     <button
@@ -90,7 +151,7 @@ function handleImport(event) {
       :key="region.id"
       :region="region"
       :index="i"
-      :progress="store.progress.value"
+      :progress="store.displayProgress.value"
       class="reveal"
       :style="{ animationDelay: (0.26 + i * 0.08) + 's' }"
       @edit="(id) => emit('edit', id)"
@@ -160,22 +221,19 @@ function handleImport(event) {
 }
 .hero-sub {
   margin: 0 0 var(--sp-6);
-  max-width: 480px;
+  max-width: 500px;
   font-size: var(--fz-base);
   color: var(--text-2);
 }
-.hero-actions {
+.region-toolbar {
   display: flex;
   gap: var(--sp-3);
   flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: var(--sp-6);
 }
-.hero-actions input {
+.region-toolbar input {
   display: none;
-}
-.hero-actions .is-disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  pointer-events: none;
 }
 .hero-stat {
   background: rgba(11, 17, 29, 0.55);
@@ -314,6 +372,52 @@ function handleImport(event) {
   font-weight: 600;
 }
 
+.file-menu-wrap {
+  position: relative;
+}
+.file-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
+  min-width: 260px;
+  padding: var(--sp-2);
+  background: var(--bg-1);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.file-menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: var(--sp-2) var(--sp-3);
+  border: none;
+  background: transparent;
+  color: var(--text-1);
+  font-size: var(--fz-sm);
+  text-align: left;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: var(--t);
+}
+.file-menu-item:hover {
+  background: var(--gold-tint);
+  color: var(--gold);
+}
+.file-menu-item input {
+  display: none;
+}
+.file-menu-tip {
+  margin: var(--sp-1) var(--sp-3) var(--sp-2);
+  font-size: var(--fz-xs);
+  color: var(--text-3);
+  line-height: 1.6;
+}
+
 @media (max-width: 720px) {
   .hero {
     grid-template-columns: 1fr;
@@ -322,6 +426,10 @@ function handleImport(event) {
   .note-item {
     flex-direction: column;
     gap: var(--sp-1);
+  }
+  .file-menu {
+    position: static;
+    box-shadow: none;
   }
 }
 </style>
