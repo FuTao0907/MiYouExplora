@@ -96,6 +96,11 @@ function handleImport(event) {
       @edit="(id) => emit('edit', id)"
     />
   </main>
+
+  <footer class="data-note reveal" style="animation-delay: 0.6s">
+    <span class="mono">DATA SOURCE</span>
+    <p>目标数量（宝箱 / 限时挑战 / 仙灵 / 雷灵 / 幻写灵）以 B 站攻略博主「你的影月月」的全收集攻略为准，截至 7.1 版本。</p>
+  </footer>
 </template>
 
 <style scoped>
@@ -274,10 +279,34 @@ function handleImport(event) {
   gap: var(--sp-5);
 }
 
+.data-note {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-4);
+  margin-top: var(--sp-8);
+  padding: var(--sp-4) var(--sp-5);
+  border-top: 1px solid var(--line);
+  font-size: var(--fz-xs);
+  color: var(--text-3);
+}
+.data-note .mono {
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  white-space: nowrap;
+}
+.data-note p {
+  margin: 0;
+  line-height: 1.6;
+}
+
 @media (max-width: 720px) {
   .hero {
     grid-template-columns: 1fr;
     padding: var(--sp-6) var(--sp-5);
+  }
+  .data-note {
+    flex-direction: column;
+    gap: var(--sp-2);
   }
 }
 </style>
