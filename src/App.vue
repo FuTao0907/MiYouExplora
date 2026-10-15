@@ -1,16 +1,12 @@
 <script setup>
 import { ref } from 'vue'
 import { useProgress } from './composables/useProgress.js'
-import Overview from './views/Overview.vue'
-import RegionView from './views/RegionView.vue'
 import BatchEditPanel from './components/BatchEditPanel.vue'
 import TourGuide from './components/TourGuide.vue'
 
 const store = useProgress()
 store.init()
 
-const view = ref('overview')
-const regionId = ref('')
 const batchOpen = ref(false)
 
 // ---- Tour 漫游引导：首次访问自动播放（localStorage 标记），可重播 ----
@@ -33,7 +29,7 @@ const tourSteps = [
   {
     selector: '.edit-bar',
     title: '直接录入',
-    body: '表格里的输入框可以直接修改。游客的改动只保存在这台电脑上（本机），不会影响网站数据；主人的数据（UID 212114083）会作为参考显示，可以随时开关。',
+    body: '表格里的输入框可以直接修改（数字 0 到目标数之间；输入 -1 表示该分项对你不适用）。游客的改动只保存在这台电脑上；主人的数据（UID 212114083）会作为参考显示，可以随时开关。',
     placement: 'bottom'
   },
   {
@@ -61,19 +57,11 @@ function replayTour() {
   tourOpen.value = true
 }
 
-// ---- 路由 ----
-function openRegion(id) {
-  regionId.value = id
-  view.value = 'region'
-}
-function backToOverview() {
-  view.value = 'overview'
-}
 function openBatch() {
   batchOpen.value = true
 }
 
-// 解锁编辑（默认游客模式；生产环境密码校验在服务端）
+// ---- 解锁编辑（默认游客模式；生产环境密码校验在服务端） ----
 const unlockOpen = ref(false)
 const unlockInput = ref('')
 const unlockError = ref(false)
@@ -127,7 +115,6 @@ function tryRestore() {
           <button class="btn btn-ghost btn-sm" @click="lockNow">锁定（游客）</button>
         </template>
         <template v-else>
-          <span class="mode-badge guest">游客模式</span>
           <button class="btn btn-ghost btn-sm" :class="{ active: store.showReference.value }" @click="store.toggleReference">
             参考：{{ store.showReference.value ? '开' : '关' }}
           </button>
@@ -147,23 +134,17 @@ function tryRestore() {
           <span v-if="store.saveText.value" class="save-state" :class="'save-' + store.saveState.value">
             {{ store.saveText.value }}
           </span>
-          <button class="btn btn-ghost btn-sm" @click="replayTour">重播引导</button>
         </template>
       </div>
 
-      <Overview
-        v-if="view === 'overview'"
-        :store="store"
-        @edit="openRegion"
-        @batch="openBatch"
-      />
-      <RegionView
-        v-else
-        :store="store"
-        :region-id="regionId"
-        @back="backToOverview"
-        @batch="openBatch"
-      />
+      <router-view v-slot="{ Component, route }">
+        <component
+          :is="Component"
+          :store="store"
+          :region-id="route.params.regionId"
+          @batch="openBatch"
+        />
+      </router-view>
 
       <BatchEditPanel v-if="batchOpen" :store="store" @close="batchOpen = false" />
       <TourGuide
@@ -172,25 +153,29 @@ function tryRestore() {
         @done="tourDone"
         @close="tourClose"
       />
+
+      <footer class="site-foot">
+        <button class="foot-link mono" @click="replayTour">重播引导</button>
+      </footer>
     </template>
   </div>
 </template>
 
 <style scoped>
 .state-box {
-  background: #fff;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 40px 24px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--sp-8) var(--sp-6);
   text-align: center;
-  color: var(--color-text-secondary);
+  color: var(--text-2);
 }
 .state-box.error {
-  color: #d14343;
+  color: #d97a7a;
 }
 .state-hint {
-  font-size: 13px;
-  color: var(--color-text-secondary);
+  font-size: var(--fz-sm);
+  color: var(--text-3);
 }
 
 .edit-bar {
@@ -212,10 +197,6 @@ function tryRestore() {
   padding: 2px 10px;
   border-radius: 999px;
 }
-.mode-badge.guest {
-  color: #6fcf97;
-  border: 1px solid rgba(111, 207, 151, 0.4);
-}
 .mode-badge.editable {
   color: var(--gold);
   border: 1px solid var(--line-gold);
@@ -231,7 +212,7 @@ function tryRestore() {
   padding: 5px 12px;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
-  background: var(--bg-1);
+  background: var(--bg);
   color: var(--text-1);
   font-size: var(--fz-sm);
 }
@@ -257,5 +238,23 @@ function tryRestore() {
 }
 .save-state.save-error {
   color: #e5484d;
+}
+
+.site-foot {
+  margin-top: var(--sp-8);
+  display: flex;
+  justify-content: center;
+}
+.foot-link {
+  font-size: var(--fz-xs);
+  color: var(--text-3);
+  letter-spacing: 0.08em;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-sm);
+  transition: var(--t);
+}
+.foot-link:hover {
+  color: var(--gold);
+  background: var(--gold-tint);
 }
 </style>

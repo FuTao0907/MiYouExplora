@@ -1,5 +1,6 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import RegionCard from '../components/RegionCard.vue'
 import { importProgress } from '../api/data.js'
 // xlsx 工具动态加载（体积较大，仅用户点击导入/导出时下载，见 doExportXlsx / doImportXlsx）
@@ -7,7 +8,28 @@ import { importProgress } from '../api/data.js'
 const props = defineProps({
   store: { type: Object, required: true }
 })
-const emit = defineEmits(['edit', 'batch'])
+const emit = defineEmits(['batch'])
+
+const route = useRoute()
+const router = useRouter()
+
+// 路由驱动游戏：进入 /game/:gameId 时切换到对应游戏
+watch(
+  () => route.params.gameId,
+  (id) => {
+    if (typeof id === 'string' && id) props.store.setActiveGame(id)
+  },
+  { immediate: true }
+)
+
+// 游戏标签切换 → 走路由（URL 可直达/分享/刷新不丢状态）
+function switchGame(id) {
+  if (id !== props.store.activeGameId.value) router.push(`/game/${id}`)
+}
+
+function openRegion(id) {
+  router.push(`/game/${props.store.activeGameId.value}/region/${id}`)
+}
 
 const overallPercent = computed(() => {
   const { done, total } = props.store.overall.value
@@ -73,7 +95,7 @@ function doImportJson(event) {
 <template>
   <section class="hero">
     <div class="hero-content reveal">
-      <p class="hero-eyebrow mono">GENSHIN IMPACT · PERSONAL TRACKER</p>
+      <p class="hero-eyebrow mono">{{ (store.activeGame.value?.name ?? 'GENSHIN') }} · PERSONAL TRACKER</p>
       <h1 class="hero-title">米游探索度记录</h1>
       <p class="hero-sub">记录提瓦特每一块土地的探索进度。游客可直接录入自己的进度（保存在本机）；主人解锁后录入，编辑自动保存到云端。</p>
     </div>
@@ -123,7 +145,7 @@ function doImportJson(event) {
       :key="game.id"
       class="game-tab"
       :class="{ active: game.id === store.activeGameId.value }"
-      @click="store.activeGameId.value = game.id"
+      @click="switchGame(game.id)"
     >
       {{ game.name }}
     </button>
@@ -154,7 +176,7 @@ function doImportJson(event) {
       :progress="store.displayProgress.value"
       class="reveal"
       :style="{ animationDelay: (0.26 + i * 0.08) + 's' }"
-      @edit="(id) => emit('edit', id)"
+      @edit="openRegion"
     />
   </main>
 

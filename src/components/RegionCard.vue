@@ -37,7 +37,6 @@ const targetSummary = computed(() => {
   >
     <div class="card-top">
       <span class="card-index mono">{{ String(index + 1).padStart(2, '0') }}</span>
-      <span class="badge" :class="status">{{ status }}</span>
     </div>
     <div class="card-bottom">
       <div class="card-name">{{ region.name }}</div>

@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest'
-import { displayValue, isGuestOwned, isReferenceShown } from './guestData.js'
+import {
+  displayValue,
+  isGuestOwned,
+  isReferenceShown,
+  parseItemInput,
+  sanitizeInputText
+} from './guestData.js'
 
 // 反例表（每个测试对应一个不同错误实现）：
 // T1 主人模式 → 云端值      错误实现：返回 guest / 0
@@ -61,5 +67,46 @@ describe('isReferenceShown 参考标记', () => {
 
   it('T11 游客 + 本地有 → 不显示参考（false，已是自己的数据）', () => {
     expect(isReferenceShown(false, true, 500)).toBe(false)
+  })
+})
+
+describe('parseItemInput 录入解析（-1=无，0..max 合法，其余收紧/忽略）', () => {
+  it('T12 空串 → 0（未输入按 0）', () => {
+    expect(parseItemInput('', 100)).toBe(0)
+    expect(parseItemInput('   ', 100)).toBe(0)
+  })
+
+  it('T13 -1 保留为「无」', () => {
+    expect(parseItemInput('-1', 100)).toBe(-1)
+  })
+
+  it('T14 范围 0..max 内整数原样返回', () => {
+    expect(parseItemInput('0', 100)).toBe(0)
+    expect(parseItemInput('48', 100)).toBe(48)
+    expect(parseItemInput('100', 100)).toBe(100)
+  })
+
+  it('T15 超过上限 → 收紧到 max', () => {
+    expect(parseItemInput('150', 100)).toBe(100)
+  })
+
+  it('T16 小于 -1 → 收紧到 -1（不允许 -2、-3 等负数）', () => {
+    expect(parseItemInput('-2', 100)).toBe(-1)
+    expect(parseItemInput('-99', 100)).toBe(-1)
+  })
+
+  it('T17 非整数/非数字文本 → null（忽略该次输入）', () => {
+    expect(parseItemInput('12.5', 100)).toBe(null)
+    expect(parseItemInput('abc', 100)).toBe(null)
+    expect(parseItemInput('1-2', 100)).toBe(null)
+  })
+})
+
+describe('sanitizeInputText 输入过程过滤', () => {
+  it('T18 只保留数字与单个前导负号', () => {
+    expect(sanitizeInputText('12ab-3')).toBe('123')
+    expect(sanitizeInputText('-1')).toBe('-1')
+    expect(sanitizeInputText('4-5')).toBe('45')
+    expect(sanitizeInputText('')).toBe('')
   })
 })

@@ -66,6 +66,30 @@ describe('regionPercent 探索度计算', () => {
     expect(regionPercent(region, one)).toBe(33)
     expect(regionPercent(region, two)).toBe(67)
   })
+
+  it('T11 章节标记 -1（无）时：分母扣除该章 target、分子不计（不影响其余章节进度）', () => {
+    const region = {
+      id: 'r',
+      targets: { chest: 10 },
+      areas: [
+        { id: 'a1', items: [{ id: 'chest', target: 6 }] },
+        { id: 'a2', items: [{ id: 'chest', target: 4 }] }
+      ]
+    }
+    const progress = { regions: { r: { areas: { a1: { items: { chest: -1 } }, a2: { items: { chest: 4 } } } } } }
+    // effective 分母 = 10 - 6 = 4，done = 4 → 100%
+    expect(regionPercent(region, progress)).toBe(100)
+  })
+
+  it('T12 全部分项标记 -1 → 该分项被排除（分母为 0），若因此无有效分项则返回 0', () => {
+    const region = {
+      id: 'r',
+      targets: { chest: 10 },
+      areas: [{ id: 'a', items: [{ id: 'chest', target: 10 }] }]
+    }
+    const progress = { regions: { r: { areas: { a: { items: { chest: -1 } } } } } }
+    expect(regionPercent(region, progress)).toBe(0)
+  })
 })
 
 describe('getStatus 状态推导', () => {

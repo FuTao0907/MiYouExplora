@@ -117,8 +117,14 @@ export function importProgress(file) {
         reject(new Error('文件不是有效的 JSON'))
         return
       }
-      if (!data || typeof data !== 'object' || !data.regions || typeof data.regions !== 'object') {
-        reject(new Error('文件格式不正确：缺少 regions 字段'))
+      if (
+        !data ||
+        typeof data !== 'object' ||
+        (!data.regions && !data.games) ||
+        (data.regions && typeof data.regions !== 'object') ||
+        (data.games && typeof data.games !== 'object')
+      ) {
+        reject(new Error('文件格式不正确：缺少 regions 或 games 字段'))
         return
       }
       resolve(data)

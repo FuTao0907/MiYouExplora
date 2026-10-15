@@ -15,3 +15,24 @@ export function isGuestOwned(editable, guestValue) {
 export function isReferenceShown(editable, showReference, guestValue) {
   return !editable && showReference && guestValue == null
 }
+
+// 解析录入输入（text 输入框 → 合法值）：
+// - 合法值：-1（无/不适用）、0..max 的整数
+// - 空串 → 0（未输入按 0）
+// - 超上限（> max）→ 收紧到 max；小于 -1 → 收紧到 -1
+// - 其他（非整数文本）→ null（忽略该次输入）
+export function parseItemInput(raw, max) {
+  const s = String(raw ?? '').trim()
+  if (s === '') return 0
+  if (!/^-?\d+$/.test(s)) return null
+  const n = Number(s)
+  if (n === -1) return -1
+  if (n < -1) return -1
+  if (n > max) return max
+  return Math.floor(n)
+}
+
+// 输入过程中只保留可解析前缀字符（数字与单个前导负号），供 @input 过滤
+export function sanitizeInputText(raw) {
+  return String(raw ?? '').replace(/[^\d-]/g, '').replace(/(?!^)-/g, '')
+}

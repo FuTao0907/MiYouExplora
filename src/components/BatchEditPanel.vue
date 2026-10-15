@@ -2,6 +2,7 @@
 // 一键修改：集中编辑面板。把所有可修改项聚拢，按地区折叠分组；
 // 只收集"改动过的项"，关闭时写入当前模式数据（游客→本机，主人→云端）。
 import { ref } from 'vue'
+import { parseItemInput, sanitizeInputText } from '../utils/guestData.js'
 
 const props = defineProps({
   store: { type: Object, required: true }
@@ -30,14 +31,14 @@ function currentValue(regionId, areaId, itemId) {
   )
 }
 
+// 输入：过滤非法字符 → 解析（-1/0..max 合法，超上限收紧到 max）→ 存草稿
 function onInput(regionId, areaId, itemId, event) {
-  const raw = event.target.value
-  const n = raw === '' ? 0 : Number(raw)
-  if (!Number.isFinite(n)) return
+  const raw = sanitizeInputText(event.target.value)
   const def = areaItemDef(regionId, areaId, itemId)
   const max = def?.target || 0
-  const clamped = Math.min(Math.max(0, n), max)
-  drafts.value = { ...drafts.value, [keyOf(regionId, areaId, itemId)]: clamped }
+  const n = parseItemInput(raw, max)
+  if (n === null) return
+  drafts.value = { ...drafts.value, [keyOf(regionId, areaId, itemId)]: n }
 }
 
 function toggleRegion(regionId) {
@@ -55,9 +56,10 @@ function collapseAll() {
 
 // 关闭：把改动过的项逐项写入当前模式数据
 function close() {
+  const gameId = props.store.activeGameId.value
   for (const [k, value] of Object.entries(drafts.value)) {
     const [rid, aid, iid] = k.split('|')
-    props.store.saveAreaItem(rid, aid, iid, value)
+    props.store.saveAreaItem(gameId, rid, aid, iid, value)
   }
   emit('close')
 }
@@ -101,11 +103,11 @@ function clearGuest() {
                   <span class="batch-item-name">{{ item.name }}</span>
                   <input
                     class="batch-input mono"
-                    type="number"
-                    min="0"
-                    :max="item.target || undefined"
+                    type="text"
+                    inputmode="numeric"
                     :value="currentValue(region.id, area.id, item.id)"
                     @input="onInput(region.id, area.id, item.id, $event)"
+                    title="填写 0 到目标数之间的整数；-1 表示该分项无 / 不适用（不参与探索度）"
                   />
                 </label>
               </div>

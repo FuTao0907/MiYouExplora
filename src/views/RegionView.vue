@@ -1,12 +1,22 @@
 <script setup>
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { regionPercent, getStatus, STATUS } from '../utils/status.js'
+import { parseItemInput, sanitizeInputText } from '../utils/guestData.js'
+
 const props = defineProps({
   store: { type: Object, required: true },
   regionId: { type: String, required: true }
 })
-const emit = defineEmits(['back', 'batch'])
+const emit = defineEmits(['batch'])
+const router = useRouter()
 
+// 返回地区总览（走路由：/game/:gameId）
+function goBack() {
+  router.push(`/game/${gameId.value}`)
+}
+
+const gameId = computed(() => props.store.activeGameId.value)
 const region = computed(
   () => props.store.regions.value.find((r) => r.id === props.regionId) ?? null
 )
@@ -46,19 +56,52 @@ const heroStyle = computed(() =>
   region.value?.image ? { '--hero-bg': `url('${region.value.image}')` } : {}
 )
 
+// ---- 单格输入（text 输入 + 上下限校验；-1 表示「无/不适用」） ----
+// 编辑草稿：key = areaId|itemId → 输入框当前文本（未 blur 前原样显示）
+const drafts = ref({})
+const keyOf = (areaId, itemId) => `${areaId}|${itemId}`
+
 function valueOf(areaId, itemId) {
-  return (
+  const v =
     props.store.displayProgress.value.regions?.[props.regionId]?.areas?.[areaId]?.items?.[itemId] ?? 0
-  )
+  return v
 }
 
-function handleInput(areaId, itemId, event) {
-  const raw = event.target.value
-  const n = raw === '' ? 0 : Number(raw)
-  if (!Number.isFinite(n)) return
+// 输入框显示文本：编辑中显示草稿原文；否则显示保存值（-1 显示为 -1）
+function cellText(areaId, itemId) {
+  const k = keyOf(areaId, itemId)
+  if (drafts.value[k] !== undefined) return drafts.value[k]
+  const v = valueOf(areaId, itemId)
+  return v === -1 ? '-1' : String(v)
+}
+
+// 输入中：过滤非法字符 → 存草稿 → 可解析则立即保存（合法值 0..max / -1）
+function onCellInput(areaId, itemId, event) {
+  const raw = sanitizeInputText(event.target.value)
+  const k = keyOf(areaId, itemId)
+  drafts.value = { ...drafts.value, [k]: raw }
   const area = areas.value.find((a) => a.id === areaId)
   const max = maxOf(area, itemId)
-  props.store.saveAreaItem(props.regionId, areaId, itemId, Math.min(Math.max(0, n), max))
+  const n = parseItemInput(raw, max)
+  if (n !== null) {
+    props.store.saveAreaItem(gameId.value, props.regionId, areaId, itemId, n)
+  }
+}
+
+// 失焦：草稿收敛（超上限→max、<-1→-1、空→0）并保存，随后回到保存值显示
+function onCellBlur(areaId, itemId) {
+  const k = keyOf(areaId, itemId)
+  const raw = drafts.value[k]
+  if (raw === undefined) return
+  const area = areas.value.find((a) => a.id === areaId)
+  const max = maxOf(area, itemId)
+  const n = parseItemInput(raw, max)
+  if (n !== null) {
+    props.store.saveAreaItem(gameId.value, props.regionId, areaId, itemId, n)
+  }
+  const next = { ...drafts.value }
+  delete next[k]
+  drafts.value = next
 }
 
 function handleExport() {
@@ -84,10 +127,12 @@ function toggleExpand(areaId) {
   expanded.value = { ...expanded.value, [areaId]: !expanded.value[areaId] }
 }
 function noteOf(areaId) {
-  return props.store.displayProgress.value.regions?.[props.regionId]?.areas?.[areaId]?.note ?? ''
+  return (
+    props.store.displayProgress.value.regions?.[props.regionId]?.areas?.[areaId]?.note ?? ''
+  )
 }
 function handleNoteInput(areaId, event) {
-  props.store.saveAreaNote(props.regionId, areaId, event.target.value)
+  props.store.saveAreaNote(gameId.value, props.regionId, areaId, event.target.value)
 }
 </script>
 
@@ -95,12 +140,14 @@ function handleNoteInput(areaId, event) {
   <div v-if="region">
     <section class="region-hero reveal" :style="heroStyle">
       <div class="region-hero-content">
-        <button class="btn btn-ghost" @click="emit('back')">
+        <button class="btn btn-ghost" @click="goBack">
           <span aria-hidden="true">←</span> 返回
         </button>
         <div class="region-title">
           <h1 class="region-title-text">{{ region.name }}</h1>
-          <span class="badge" :class="status">{{ status }} · {{ percent }}%</span>
+          <span class="region-percent mono" :class="{ done: status === STATUS.COMPLETED }">
+            {{ percent }}%
+          </span>
         </div>
         <div class="region-targets mono" v-if="hasTargets">
           <template v-for="item in itemDefs" :key="item.id">
@@ -124,6 +171,10 @@ function handleNoteInput(areaId, event) {
 
     <p class="region-hint reveal" v-if="!hasTargets" style="animation-delay: 0.06s">
       分项目标数量（games.json 中地区 targets）尚未配置，配置后即可录入已搜集数量；探索度将按板块目标完成比例自动计算。
+    </p>
+
+    <p class="region-legend mono reveal" style="animation-delay: 0.06s">
+      金色数字为参考（主人已搜集）；输入 <strong>-1</strong> 表示该分项对你不适用 / 没有（不参与探索度，也不计入完成）。
     </p>
 
     <div class="region-table-wrap reveal" style="animation-delay: 0.1s">
@@ -156,18 +207,15 @@ function handleNoteInput(areaId, event) {
                   <span v-else class="target-empty">—</span>
                 </td>
                 <td class="col-num">
-                  <div class="cell-wrap" v-if="store.isReferenceShown(region.id, area.id, item.id)">
-                    <span class="cell-ref-tag mono">参考</span>
-                  </div>
                   <input
                     class="cell-input mono"
-                    :class="{ 'cell-ref': store.isReferenceShown(region.id, area.id, item.id) }"
-                    type="number"
-                    min="0"
-                    :max="maxOf(area, item.id) || undefined"
+                    :class="{ 'cell-ref': store.isReferenceShown(gameId, region.id, area.id, item.id) }"
+                    type="text"
+                    inputmode="numeric"
                     :disabled="!areaItem(area, item.id)?.target"
-                    :value="valueOf(area.id, item.id)"
-                    @input="handleInput(area.id, item.id, $event)"
+                    :value="cellText(area.id, item.id)"
+                    @input="onCellInput(area.id, item.id, $event)"
+                    @blur="onCellBlur(area.id, item.id)"
                   />
                 </td>
               </template>
@@ -246,8 +294,14 @@ function handleNoteInput(areaId, event) {
 }
 .region-title {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: var(--sp-3);
+}
+.region-percent {
+  font-size: var(--fz-xl);
+  font-weight: 700;
+  color: var(--gold-bright);
+  line-height: 1;
 }
 .region-targets {
   display: flex;
@@ -277,6 +331,17 @@ function handleNoteInput(areaId, event) {
   padding: var(--sp-3) var(--sp-4);
   font-size: var(--fz-sm);
   margin: 0 0 var(--sp-5);
+}
+
+.region-legend {
+  margin: 0 0 var(--sp-3);
+  font-size: var(--fz-xs);
+  color: var(--text-2);
+  letter-spacing: 0.03em;
+}
+.region-legend strong {
+  color: var(--gold);
+  font-weight: 600;
 }
 
 .region-table-wrap {
@@ -336,20 +401,6 @@ function handleNoteInput(areaId, event) {
 .target-empty {
   color: var(--text-3);
 }
-.cell-wrap {
-  display: inline-flex;
-  justify-content: flex-end;
-  margin-bottom: 2px;
-}
-.cell-ref-tag {
-  font-size: 10px;
-  color: var(--gold);
-  letter-spacing: 0.08em;
-  background: var(--gold-tint);
-  border: 1px solid var(--line-gold);
-  border-radius: 999px;
-  padding: 0 6px;
-}
 .cell-input {
   width: 78px;
   padding: 6px 10px;
@@ -358,7 +409,6 @@ function handleNoteInput(areaId, event) {
   background: rgba(11, 17, 29, 0.6);
   color: var(--text-1);
   font-size: var(--fz-base);
-  font-family: var(--font-sans);
   text-align: right;
   transition: var(--t);
   font-variant-numeric: tabular-nums;
@@ -460,7 +510,7 @@ function handleNoteInput(areaId, event) {
   gap: var(--sp-3);
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: var(--sp-5);
+  margin-bottom: var(--sp-3);
 }
 .region-toolbar input {
   display: none;
