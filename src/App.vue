@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProgress } from './composables/useProgress.js'
 import {
@@ -23,6 +23,19 @@ import TourGuide from './components/TourGuide.vue'
 const store = useProgress()
 store.init()
 const router = useRouter()
+
+// ---- 顶部阅读进度条（滚动即动，Mizuki 式 3px 纯色条；纯色不触发渐变规则） ----
+const readProgress = ref(0)
+function onScroll() {
+  const doc = document.documentElement
+  const total = doc.scrollHeight - doc.clientHeight
+  readProgress.value = total > 0 ? Math.min(100, (doc.scrollTop / total) * 100) : 0
+}
+onMounted(() => {
+  window.addEventListener('scroll', onScroll, { passive: true })
+  onScroll()
+})
+onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
 
 const batchOpen = ref(false)
 const menuOpen = ref(false)
@@ -180,6 +193,7 @@ function doImportJson(event) {
 
 <template>
   <div class="container">
+    <div class="page-progress" :style="{ width: readProgress + '%' }" aria-hidden="true"></div>
     <div v-if="store.loading.value" class="state-box">正在加载数据…</div>
     <div v-else-if="store.error.value" class="state-box error">
       <p>数据加载失败：{{ store.error.value }}</p>
@@ -289,6 +303,13 @@ function doImportJson(event) {
         </div>
       </header>
 
+      <TourGuide
+        v-if="tourOpen"
+        :steps="tourSteps"
+        @done="tourDone"
+        @close="tourClose"
+      />
+
       <router-view v-slot="{ Component, route }">
         <component
           :is="Component"
@@ -298,17 +319,23 @@ function doImportJson(event) {
       </router-view>
 
       <BatchEditPanel v-if="batchOpen" :store="store" @close="batchOpen = false" />
-      <TourGuide
-        v-if="tourOpen"
-        :steps="tourSteps"
-        @done="tourDone"
-        @close="tourClose"
-      />
     </template>
   </div>
 </template>
 
 <style scoped>
+/* 顶部阅读进度条：fixed 3px 金色纯色条，随滚动增长 */
+.page-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  z-index: 120;
+  background: var(--gold);
+  transition: width 0.1s linear;
+  pointer-events: none;
+}
+
 .state-box {
   background: var(--bg-2);
   border: 1px solid var(--line);

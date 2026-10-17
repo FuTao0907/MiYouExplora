@@ -67,18 +67,14 @@ function done() {
 </template>
 
 <style scoped>
-/* 右下角锚定的引导卡：不遮罩、不遮挡正文（弹层允许阴影） */
+/* 页面内嵌引导条：跟随内容流，不遮挡任何正文/数字（避免浮层盖住大文字） */
 .tour-bubble {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 80;
-  width: 360px;
-  max-width: calc(100vw - 32px);
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto var(--sp-5);
   padding: var(--sp-4) var(--sp-5);
   background: var(--bg-3);
   border-radius: var(--r-md);
-  box-shadow: var(--shadow-card); /* 引导浮层阴影（house rule 允许）taste-skill-ignore */
   color: var(--text-1);
 }
 .tour-head {

@@ -404,17 +404,20 @@ function handleNoteInput(areaId, event) {
   white-space: nowrap;
 }
 .region-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   font-size: var(--fz-sm);
   font-weight: 600;
   color: var(--text-2);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-2);
   font-family: var(--font-sans);
 }
 .region-table tbody tr {
   transition: background 0.15s var(--ease);
 }
 .region-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.05);
 }
 .region-table tbody tr:last-child td {
   border-bottom: none;

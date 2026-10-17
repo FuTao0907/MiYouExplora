@@ -14,14 +14,11 @@ const status = computed(() => getStatus(props.region, props.progress))
 const percent = computed(() => regionPercent(props.region, props.progress))
 // 探索度数字滚动动效（卡片进入时 0 → 目标值）
 const animPercent = useCountUp(() => percent.value, 800)
-// 板块目标摘要（权威统计，如「宝箱 755 · 挑战 33 · 仙灵 83」）
-const targetSummary = computed(() => {
+// 板块目标摘要（权威统计）：拆成 3 组分列 mini 统计（数字 + 标签）
+const targetItems = computed(() => {
   const t = props.region.targets ?? {}
   const defs = props.region.areas?.[0]?.items ?? []
-  return defs
-    .filter((d) => t[d.id])
-    .map((d) => `${d.name} ${t[d.id]}`)
-    .join(' · ')
+  return defs.filter((d) => t[d.id]).map((d) => ({ id: d.id, name: d.name, value: t[d.id] }))
 })
 // 实景图（games.json 的 image 字段；没有图时回退纯色）
 const img = computed(() => props.region.image || '')
@@ -46,7 +43,12 @@ const img = computed(() => props.region.image || '')
           <span class="card-unit">%</span>
         </div>
         <ProgressBar :percent="percent" :status="status" />
-        <div class="card-targets tnum" v-if="targetSummary">{{ targetSummary }}</div>
+        <div class="card-targets tnum" v-if="targetItems.length">
+          <div v-for="it in targetItems" :key="it.id" class="target-item">
+            <span class="target-num">{{ it.value }}</span>
+            <span class="target-label">{{ it.name }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </button>
@@ -128,10 +130,24 @@ const img = computed(() => props.region.image || '')
   color: var(--gold);
 }
 .card-targets {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-2);
+  margin-top: 2px;
+}
+.target-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.target-num {
+  font-size: var(--fz-base);
+  font-weight: 600;
+  color: var(--text-1);
+  line-height: 1.2;
+}
+.target-label {
   font-size: var(--fz-xs);
-  color: var(--text-2);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: var(--text-3);
 }
 </style>
