@@ -263,7 +263,6 @@ function doImportJson(event) {
           <button class="menu-item" @click="openBatch" title="把所有可修改项聚拢到一个面板里批量编辑">
             <PhPencilSimple :size="16" /> 一键修改
           </button>
-          <div class="menu-sep"></div>
           <button class="menu-item" @click="doExportXlsx" title="导出为 WPS/Excel 可直接打开的表格">
             <PhTable :size="16" /> 导出 .xlsx（WPS 表格）
           </button>
@@ -279,12 +278,10 @@ function doImportJson(event) {
             <input type="file" accept="application/json,.json" @change="doImportJson" />
           </label>
           <template v-if="store.editable.value">
-            <div class="menu-sep"></div>
             <button class="menu-item" @click="tryRestore" title="用云端自动备份覆盖当前进度">
               <PhArchiveBox :size="16" /> 从备份恢复
             </button>
           </template>
-          <div class="menu-sep"></div>
           <button class="menu-item" @click="replayTour" title="重新播放新手引导（分步气泡）">
             <PhPlayCircle :size="16" /> 重播引导
           </button>
@@ -338,13 +335,14 @@ function doImportJson(event) {
   padding: 0 var(--sp-5);
   background: rgba(10, 11, 13, 0.82);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--line);
 }
 .topbar-inner {
   display: flex;
   align-items: center;
-  gap: var(--sp-6);
-  height: 52px;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-6);
+  min-height: 52px;
+  padding: var(--sp-2) 0;
 }
 .site-brand {
   display: inline-flex;
@@ -416,12 +414,10 @@ function doImportJson(event) {
   background: rgba(255, 255, 255, 0.08);
 }
 .mode-badge {
-  font-size: var(--fz-xs);
-  letter-spacing: 0.1em;
+  font-size: var(--fz-sm);
   padding: 2px 10px;
   border-radius: var(--r-sm);
   color: var(--text-2);
-  border: 1px solid var(--line-strong);
   background: rgba(255, 255, 255, 0.05);
 }
 .save-state {
@@ -456,7 +452,7 @@ function doImportJson(event) {
 .pwd-input:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1); /* 输入框 focus ring taste-skill-ignore */
 }
 .pwd-error {
   font-size: var(--fz-xs);
@@ -472,9 +468,8 @@ function doImportJson(event) {
   min-width: 270px;
   padding: var(--sp-2);
   background: var(--bg-3);
-  border: 1px solid var(--line-strong);
   border-radius: var(--r-md);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-card); /* 浮动菜单阴影（house rule 允许）taste-skill-ignore */
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -500,15 +495,27 @@ function doImportJson(event) {
 .menu-item input {
   display: none;
 }
-.menu-sep {
-  height: 1px;
-  margin: var(--sp-1) var(--sp-2);
-  background: var(--line);
-}
 .menu-tip {
   margin: var(--sp-1) var(--sp-3) var(--sp-2);
   font-size: var(--fz-xs);
   color: var(--text-3);
   line-height: 1.6;
+}
+
+/* ---- 窄屏：导航紧凑换行，保持单项不折行 ---- */
+@media (max-width: 640px) {
+  .topbar-inner {
+    gap: var(--sp-1) var(--sp-4);
+  }
+  .game-tab {
+    font-size: var(--fz-sm);
+    padding: var(--sp-1) var(--sp-2);
+  }
+  .topbar-right {
+    gap: var(--sp-2);
+  }
+  .text-link {
+    font-size: var(--fz-sm);
+  }
 }
 </style>

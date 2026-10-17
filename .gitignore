@@ -1,6 +1,7 @@
 node_modules
 dist
 .preview
+.taste-skill
 doc-fetch-resources
 draft_*
 .env

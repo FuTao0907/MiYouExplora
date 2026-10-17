@@ -5,17 +5,17 @@
   --bg-2: #101114;
   --bg-3: #17181c;
 
-  /* 文字三级（中性灰白，主文近白/次文灰/弱化深灰） */
+  /* 文字三级（中性灰白，主文近白/次文灰/弱化深灰；弱化字已提亮到 ≥4.5:1 对比） */
   --text-1: #f2f3f5;
-  --text-2: #9ea2a8;
-  --text-3: #63666d;
+  --text-2: #a6abb2;
+  --text-3: #8a8e96;
 
   /* 金色：只作数据信号（探索度数字/进度条/完成状态），不作装饰 */
   --gold: #d3bc8e;
   --gold-bright: #f2ddb0;
   --gold-tint: rgba(211, 188, 142, 0.1);
 
-  /* 边框（hairline：1px 半透明白） */
+  /* 边框（仅真实表格/表单/弹出层使用） */
   --line: rgba(255, 255, 255, 0.08);
   --line-strong: rgba(255, 255, 255, 0.14);
   --line-gold: rgba(211, 188, 142, 0.35);
@@ -25,15 +25,14 @@
   --blue: #79b6f0;
   --orange: #e0a458;
 
-  /* 字体 */
+  /* 字体：单一文本面；数字用 tabular-nums 对齐 */
   --font-sans: -apple-system, 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', sans-serif;
-  --font-mono: 'SF Mono', 'Cascadia Code', Consolas, 'JetBrains Mono', monospace;
 
-  /* 字号阶梯（版式承担层级，不靠颜色轰炸） */
-  --fz-xs: 12px;
-  --fz-sm: 13px;
-  --fz-base: 14px;
-  --fz-md: 16px;
+  /* 字号阶梯（正文 16px 起步，说明 ≥15px；版式承担层级） */
+  --fz-xs: 13px;
+  --fz-sm: 15px;
+  --fz-base: 16px;
+  --fz-md: 18px;
   --fz-lg: 20px;
   --fz-xl: 26px;
   --fz-display: clamp(36px, 5.6vw, 64px);
@@ -60,7 +59,10 @@
   --t-fast: all 0.15s var(--ease);
   --t: all 0.25s var(--ease);
 
-  --shadow-card: 0 8px 28px rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.45);
+
+  /* 图片压字 scrim（唯一允许的渐变：真实图片上的中性暗化） */
+  --scrim-bottom: linear-gradient(180deg, rgba(10, 11, 13, 0) 30%, rgba(10, 11, 13, 0.88) 100%); /* taste-skill-ignore */
 }
 
 * {
@@ -77,10 +79,7 @@ body {
   font-size: var(--fz-base);
   line-height: 1.7;
   color: var(--text-1);
-  background:
-    radial-gradient(900px 500px at 80% -10%, rgba(255, 255, 255, 0.035), transparent 60%),
-    var(--bg);
-  background-attachment: fixed;
+  background: var(--bg);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -167,57 +166,40 @@ button {
 }
 .btn-primary:hover {
   background: #ffffff;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2); /* hover 反馈环 taste-skill-ignore */
 }
 .btn-ghost {
-  border: 1px solid var(--line-strong);
   color: var(--text-2);
   background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(6px);
 }
 .btn-ghost:hover {
   color: var(--text-1);
-  border-color: rgba(255, 255, 255, 0.28);
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
   padding: 2px 10px;
   border-radius: var(--r-sm);
   font-size: var(--fz-xs);
-  letter-spacing: 0.04em;
-  border: 1px solid;
-  backdrop-filter: blur(6px);
   white-space: nowrap;
 }
-.badge::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-}
 .badge.未开始 {
-  color: var(--text-3);
-  border-color: rgba(255, 255, 255, 0.16);
+  color: var(--text-2);
   background: rgba(255, 255, 255, 0.05);
 }
 .badge.进行中 {
   color: var(--orange);
-  border-color: rgba(224, 164, 88, 0.45);
   background: rgba(224, 164, 88, 0.12);
 }
 .badge.已完成 {
   color: var(--green);
-  border-color: rgba(126, 207, 138, 0.45);
   background: rgba(126, 207, 138, 0.12);
 }
 
-.mono {
-  font-family: var(--font-mono);
+/* 数字对齐（文本面 + 表格数字列宽） */
+.tnum {
   font-variant-numeric: tabular-nums;
 }
 
@@ -233,7 +215,6 @@ button {
 /* ============ 状态框 ============ */
 .state-box {
   background: var(--bg-2);
-  border: 1px solid var(--line);
   border-radius: var(--r-lg);
   padding: var(--sp-8) var(--sp-6);
   text-align: center;

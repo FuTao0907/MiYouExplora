@@ -6,7 +6,6 @@ import ProgressBar from './ProgressBar.vue'
 
 const props = defineProps({
   region: { type: Object, required: true },
-  index: { type: Number, default: 0 },
   progress: { type: Object, required: true }
 })
 const emit = defineEmits(['edit'])
@@ -24,26 +23,31 @@ const targetSummary = computed(() => {
     .map((d) => `${d.name} ${t[d.id]}`)
     .join(' · ')
 })
+// 实景图（games.json 的 image 字段；没有图时回退纯色）
+const img = computed(() => props.region.image || '')
 </script>
 
 <template>
   <button
     type="button"
     class="region-card"
+    :style="img ? { '--region-img': `url(${img})` } : {}"
+    :aria-label="`查看${region.name}探索详情`"
     @click="emit('edit', region.id)"
   >
-    <div class="card-top">
-      <span class="card-index mono">{{ String(index + 1).padStart(2, '0') }}</span>
-      <span class="card-status" :class="status" v-if="status === '已完成'">{{ status }}</span>
-    </div>
-    <div class="card-bottom">
-      <div class="card-name">{{ region.name }}</div>
-      <div class="card-stat">
-        <span class="card-percent mono">{{ animPercent }}</span>
-        <span class="card-unit">%</span>
+    <div class="card-inner">
+      <div class="card-top">
+        <span class="card-status" :class="status" v-if="status === '已完成'">{{ status }}</span>
       </div>
-      <ProgressBar :percent="percent" :status="status" />
-      <div class="card-targets mono" v-if="targetSummary">{{ targetSummary }}</div>
+      <div class="card-bottom">
+        <div class="card-name">{{ region.name }}</div>
+        <div class="card-stat">
+          <span class="card-percent tnum">{{ animPercent }}</span>
+          <span class="card-unit">%</span>
+        </div>
+        <ProgressBar :percent="percent" :status="status" />
+        <div class="card-targets tnum" v-if="targetSummary">{{ targetSummary }}</div>
+      </div>
     </div>
   </button>
 </template>
@@ -53,34 +57,46 @@ const targetSummary = computed(() => {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 190px;
+  justify-content: flex-end;
+  height: 210px;
   padding: var(--sp-5);
   text-align: left;
   color: var(--text-1);
-  border-radius: var(--r-lg);
-  border: 1px solid var(--line);
+  border: none;
+  border-radius: var(--r-md);
   background: var(--bg-2);
-  transition: var(--t);
+  background-image: var(--region-img, none);
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  transition: transform 0.3s var(--ease);
+}
+/* 图片底部中性压字 scrim（house rule 唯一允许的渐变）taste-skill-ignore */
+.region-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--scrim-bottom);
+  pointer-events: none;
 }
 .region-card:hover {
-  border-color: rgba(255, 255, 255, 0.22);
-  box-shadow: var(--shadow-card);
-  transform: translateY(-2px);
+  transform: scale(1.02);
 }
 .region-card:active {
-  transform: translateY(0);
+  transform: scale(0.99);
+}
+.card-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
 }
 .card-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-3);
-}
-.card-index {
-  font-size: var(--fz-xs);
-  color: var(--text-3);
-  letter-spacing: 0.12em;
+  justify-content: flex-end;
+  min-height: 20px;
 }
 .card-status {
   font-size: var(--fz-xs);
@@ -113,9 +129,7 @@ const targetSummary = computed(() => {
 }
 .card-targets {
   font-size: var(--fz-xs);
-  color: var(--text-3);
-  letter-spacing: 0.03em;
-  opacity: 0.9;
+  color: var(--text-2);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

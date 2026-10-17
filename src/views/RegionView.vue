@@ -230,10 +230,9 @@ function handleNoteInput(areaId, event) {
   display: flex;
   align-items: flex-end;
   padding: var(--sp-6) var(--sp-6);
-  min-height: 150px;
+  min-height: 170px;
   margin-bottom: var(--sp-6);
   border-radius: var(--r-lg);
-  border: 1px solid var(--line);
   overflow: hidden;
   isolation: isolate;
   background: var(--bg-2);
@@ -252,7 +251,8 @@ function handleNoteInput(areaId, event) {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(
+  /* 地区实景图上的中性压字 scrim（house rule 唯一允许的渐变）taste-skill-ignore */
+  background: linear-gradient( /* taste-skill-ignore */
     180deg,
     rgba(10, 11, 13, 0.4) 0%,
     rgba(10, 11, 13, 0.6) 55%,
@@ -289,9 +289,8 @@ function handleNoteInput(areaId, event) {
 .rt-item {
   padding: 2px 10px;
   border-radius: var(--r-sm);
-  border: 1px solid var(--line-strong);
   color: var(--text-2);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.08);
 }
 .region-title-text {
   margin: 0;
@@ -302,11 +301,10 @@ function handleNoteInput(areaId, event) {
 
 .region-hint {
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--line-strong);
   color: var(--text-2);
   border-radius: var(--r-sm);
   padding: var(--sp-3) var(--sp-4);
-  font-size: var(--fz-sm);
+  font-size: var(--fz-base);
   margin: 0 0 var(--sp-5);
 }
 
@@ -322,12 +320,9 @@ function handleNoteInput(areaId, event) {
 }
 
 .region-table-wrap {
-  background: rgba(16, 17, 20, 0.6);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--line);
+  background: var(--bg-2);
   border-radius: var(--r-lg);
   overflow-x: auto;
-  box-shadow: var(--shadow-card);
 }
 .region-table {
   width: 100%;
@@ -342,10 +337,9 @@ function handleNoteInput(areaId, event) {
   white-space: nowrap;
 }
 .region-table thead th {
-  font-size: var(--fz-xs);
+  font-size: var(--fz-sm);
   font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--text-3);
+  color: var(--text-2);
   background: rgba(255, 255, 255, 0.03);
   font-family: var(--font-sans);
 }
@@ -398,7 +392,7 @@ function handleNoteInput(areaId, event) {
 .cell-input:focus-visible {
   outline: none;
   border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1); /* 输入框 focus ring taste-skill-ignore */
 }
 .cell-input:disabled {
   background: rgba(255, 255, 255, 0.03);
@@ -467,7 +461,7 @@ function handleNoteInput(areaId, event) {
 .note-input:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1); /* 输入框 focus ring taste-skill-ignore */
 }
 .note-view {
   margin: 0;

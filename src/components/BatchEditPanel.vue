@@ -151,8 +151,7 @@ function clearGuest() {
   position: fixed;
   inset: 0;
   z-index: 60;
-  background: rgba(6, 10, 18, 0.72);
-  backdrop-filter: blur(4px);
+  background: rgba(6, 10, 18, 0.78);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -164,9 +163,8 @@ function clearGuest() {
   display: flex;
   flex-direction: column;
   background: var(--bg-1);
-  border: 1px solid var(--line-strong);
   border-radius: var(--r-lg);
-  box-shadow: var(--shadow-card), var(--shadow-glow);
+  box-shadow: var(--shadow-card); /* 弹层阴影（house rule 允许）taste-skill-ignore */
   overflow: hidden;
 }
 .batch-head {
@@ -175,7 +173,6 @@ function clearGuest() {
   justify-content: space-between;
   gap: var(--sp-4);
   padding: var(--sp-5) var(--sp-6);
-  border-bottom: 1px solid var(--line);
   flex-wrap: wrap;
 }
 .batch-title {
@@ -186,9 +183,8 @@ function clearGuest() {
 }
 .batch-sub {
   margin: 0;
-  font-size: var(--fz-xs);
-  color: var(--text-3);
-  letter-spacing: 0.04em;
+  font-size: var(--fz-base);
+  color: var(--text-2);
 }
 .batch-head-actions {
   display: flex;
@@ -198,12 +194,6 @@ function clearGuest() {
 .batch-body {
   overflow-y: auto;
   padding: var(--sp-3) var(--sp-5);
-}
-.batch-region {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-.batch-region:last-child {
-  border-bottom: none;
 }
 .batch-region-head {
   display: flex;
@@ -225,7 +215,7 @@ function clearGuest() {
 .batch-caret {
   display: inline-flex;
   align-items: center;
-  color: var(--text-3);
+  color: var(--text-2);
   transition: transform 0.2s var(--ease);
 }
 .batch-caret.open {
@@ -234,9 +224,8 @@ function clearGuest() {
 }
 .batch-region-meta {
   margin-left: auto;
-  font-size: var(--fz-xs);
-  color: var(--text-3);
-  letter-spacing: 0.08em;
+  font-size: var(--fz-sm);
+  color: var(--text-2);
 }
 .batch-areas {
   padding: 0 var(--sp-3) var(--sp-4) var(--sp-6);
@@ -245,9 +234,8 @@ function clearGuest() {
   margin-bottom: var(--sp-3);
 }
 .batch-area-name {
-  font-size: var(--fz-xs);
-  color: var(--text-3);
-  letter-spacing: 0.1em;
+  font-size: var(--fz-sm);
+  color: var(--text-2);
   margin-bottom: var(--sp-2);
 }
 .batch-items {
@@ -279,7 +267,7 @@ function clearGuest() {
 .batch-input:focus-visible {
   outline: none;
   border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1); /* 输入框 focus ring taste-skill-ignore */
 }
 .batch-foot {
   display: flex;
@@ -287,13 +275,12 @@ function clearGuest() {
   justify-content: space-between;
   gap: var(--sp-3);
   padding: var(--sp-4) var(--sp-6);
-  border-top: 1px solid var(--line);
   flex-wrap: wrap;
 }
 .batch-tip {
   margin: 0;
-  font-size: var(--fz-xs);
-  color: var(--text-3);
+  font-size: var(--fz-base);
+  color: var(--text-2);
 }
 .batch-clear {
   color: #e5484d;

@@ -25,6 +25,11 @@ function openRegion(id) {
   router.push(`/game/${props.store.activeGameId.value}/region/${id}`)
 }
 
+// 首屏主操作：平滑滚动到地区卡片区
+function scrollToCards() {
+  document.querySelector('.region-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
 const overallPercent = computed(() => {
   const { done, total } = props.store.overall.value
   return total ? Math.round((done / total) * 100) : 0
@@ -37,16 +42,15 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
 <template>
   <section class="hero">
     <div class="hero-content reveal">
-      <p class="hero-eyebrow mono">{{ (store.activeGame.value?.name ?? 'GENSHIN') }} · PERSONAL TRACKER</p>
       <h1 class="hero-title">米游探索度记录</h1>
       <p class="hero-sub">记录提瓦特每一块土地的探索进度。游客可直接录入自己的进度（保存在本机）；主人解锁后录入，编辑自动保存到云端。</p>
+      <button class="btn btn-primary hero-cta" @click="scrollToCards" title="浏览全部地区的探索进度">查看地区进度</button>
     </div>
     <div class="hero-stat reveal" style="animation-delay: 0.14s">
-      <div class="hero-stat-label mono">OVERALL PROGRESS</div>
       <div class="hero-stat-value">
-        <span class="mono">{{ overallAnim }}</span><span class="hero-stat-unit">%</span>
+        <span class="tnum">{{ overallAnim }}</span><span class="hero-stat-unit">%</span>
       </div>
-      <div class="hero-stat-meta mono">{{ store.overall.value.done }} / {{ store.overall.value.total }} 个地区已完成</div>
+      <div class="hero-stat-meta tnum">{{ store.overall.value.done }} / {{ store.overall.value.total }} 个地区已完成</div>
       <div class="hero-bar">
         <div class="hero-bar-fill" :style="{ width: overallPercent + '%' }"></div>
       </div>
@@ -54,19 +58,18 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
   </section>
 
   <section class="list-head reveal" style="animation-delay: 0.22s">
-    <span class="list-count">共 {{ store.sortedRegions.value.length }} 个地区</span>
+    <span class="list-count tnum">共 {{ store.sortedRegions.value.length }} 个地区</span>
     <div class="sort-switch">
       <button
-        class="sort-btn mono"
+        class="sort-btn tnum"
         :class="{ active: store.sortMode.value === 'progress' }"
         @click="store.sortMode.value = 'progress'"
         title="按探索度从低到高排序"
       >
         <PhPercent :size="14" /> 按探索度
       </button>
-      <span class="sort-sep"></span>
       <button
-        class="sort-btn mono"
+        class="sort-btn tnum"
         :class="{ active: store.sortMode.value === 'order' }"
         @click="store.sortMode.value = 'order'"
         title="按区域顺序排序"
@@ -81,7 +84,6 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
       v-for="(region, i) in store.sortedRegions.value"
       :key="region.id"
       :region="region"
-      :index="i"
       :progress="store.displayProgress.value"
       class="reveal"
       :style="{ animationDelay: (0.26 + i * 0.08) + 's' }"
@@ -96,12 +98,10 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
 
   <footer class="data-note reveal" style="animation-delay: 0.6s">
     <div class="note-item">
-      <span class="mono">DATA SOURCE</span>
-      <p>目标数量（宝箱 / 限时挑战 / 仙灵 / 雷灵 / 幻写灵）以 B 站攻略博主「你的影月月」的全收集攻略为准，截至 7.1 版本。</p>
+      <p><strong>数据来源</strong>：目标数量（宝箱 / 限时挑战 / 仙灵 / 雷灵 / 幻写灵）以 B 站攻略博主「你的影月月」的全收集攻略为准，截至 7.1 版本。</p>
     </div>
     <div class="note-item">
-      <span class="mono">PLAYER UID</span>
-      <p>已搜集进度数据来自原神账号 <strong>212114083</strong>（游戏内成就「总计」口径）。</p>
+      <p><strong>账号 UID 212114083</strong>：已搜集进度数据来自该原神账号（游戏内成就「总计」口径）。</p>
     </div>
   </footer>
 </template>
@@ -113,11 +113,10 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
   grid-template-columns: 1.35fr 1fr;
   gap: var(--sp-7);
   align-items: center;
-  min-height: 280px;
+  min-height: 320px;
   padding: var(--sp-9) var(--sp-8);
   margin-bottom: var(--sp-7);
   border-radius: var(--r-lg);
-  border: 1px solid var(--line);
   overflow: hidden;
   isolation: isolate;
   background: var(--bg-2);
@@ -145,18 +144,13 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(
+  /* 图片上的中性压字 scrim（house rule 唯一允许的渐变）taste-skill-ignore */
+  background: linear-gradient( /* taste-skill-ignore */
     100deg,
     rgba(10, 11, 13, 0.96) 0%,
     rgba(10, 11, 13, 0.84) 45%,
     rgba(10, 11, 13, 0.66) 100%
   );
-}
-.hero-eyebrow {
-  margin: 0 0 var(--sp-3);
-  font-size: var(--fz-xs);
-  color: var(--text-3);
-  letter-spacing: 0.2em;
 }
 .hero-title {
   margin: 0 0 var(--sp-3);
@@ -166,26 +160,18 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
   line-height: 1.2;
 }
 .hero-sub {
-  margin: 0 0 var(--sp-6);
-  max-width: 480px;
+  margin: 0 0 var(--sp-5);
+  max-width: 54ch;
   font-size: var(--fz-base);
   color: var(--text-2);
 }
-.region-toolbar input {
-  display: none;
+.hero-cta {
+  align-self: flex-start;
 }
 .hero-stat {
-  background: rgba(10, 11, 13, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--line-strong);
+  background: rgba(10, 11, 13, 0.72);
   border-radius: var(--r-md);
   padding: var(--sp-6);
-}
-.hero-stat-label {
-  font-size: var(--fz-xs);
-  color: var(--text-3);
-  letter-spacing: 0.2em;
-  margin-bottom: var(--sp-2);
 }
 .hero-stat-value {
   display: flex;
@@ -199,14 +185,13 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
   font-weight: 700;
   color: var(--gold-bright);
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 40px rgba(242, 221, 176, 0.18);
 }
 .hero-stat-unit {
   font-size: var(--fz-xl);
   color: var(--gold);
 }
 .hero-stat-meta {
-  font-size: var(--fz-xs);
+  font-size: var(--fz-sm);
   color: var(--text-2);
   margin-bottom: var(--sp-4);
 }
@@ -263,21 +248,14 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
 .sort-btn.active {
   color: var(--text-1);
 }
-.sort-sep {
-  width: 1px;
-  height: 14px;
-  background: var(--line-strong);
-}
-
 .empty-regions {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--sp-3);
   padding: var(--sp-9) var(--sp-6);
-  border: 1px dashed var(--line-strong);
   border-radius: var(--r-lg);
-  color: var(--text-3);
+  color: var(--text-2);
   text-align: center;
   font-size: var(--fz-sm);
 }
@@ -297,28 +275,25 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
-  margin-top: var(--sp-8);
+  margin-top: var(--sp-9);
   padding: var(--sp-4) var(--sp-5);
-  border-top: 1px solid var(--line);
-  font-size: var(--fz-xs);
-  color: var(--text-3);
+  border-radius: var(--r-md);
+  background: var(--bg-2);
+  font-size: var(--fz-base);
+  color: var(--text-2);
 }
 .note-item {
   display: flex;
   align-items: baseline;
   gap: var(--sp-4);
 }
-.note-item .mono {
-  color: var(--text-3);
-  letter-spacing: 0.2em;
-  white-space: nowrap;
-}
 .note-item p {
   margin: 0;
+  max-width: 70ch;
   line-height: 1.6;
 }
 .note-item strong {
-  color: var(--text-2);
+  color: var(--text-1);
   font-weight: 600;
 }
 
