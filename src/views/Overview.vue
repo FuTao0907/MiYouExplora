@@ -5,6 +5,7 @@ import {
   PhDownloadSimple,
   PhFileCode,
   PhListBullets,
+  PhMapTrifold,
   PhPencilSimple,
   PhPercent,
   PhTable,
@@ -217,6 +218,11 @@ function doImportJson(event) {
     />
   </main>
 
+  <div class="empty-regions reveal" style="animation-delay: 0.3s" v-else>
+    <PhMapTrifold :size="22" />
+    <p>该游戏还没有地区数据。等主人配置好 games.json 并重新部署后，这里就会出现探索进度卡片。</p>
+  </div>
+
   <footer class="data-note reveal" style="animation-delay: 0.6s">
     <div class="note-item">
       <span class="mono">DATA SOURCE</span>
@@ -360,7 +366,7 @@ function doImportJson(event) {
 }
 .game-tab {
   padding: var(--sp-2) var(--sp-5);
-  border-radius: 999px;
+  border-radius: var(--r-sm);
   border: 1px solid var(--line);
   color: var(--text-2);
   font-size: var(--fz-base);
@@ -397,7 +403,7 @@ function doImportJson(event) {
   align-items: center;
   gap: 5px;
   padding: var(--sp-1) var(--sp-3);
-  border-radius: 999px;
+  border-radius: var(--r-sm);
   font-size: var(--fz-xs);
   color: var(--text-3);
   letter-spacing: 0.06em;
@@ -409,6 +415,24 @@ function doImportJson(event) {
 .sort-btn.active {
   color: var(--text-1);
   background: rgba(255, 255, 255, 0.07);
+}
+
+.empty-regions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-9) var(--sp-6);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-lg);
+  color: var(--text-3);
+  text-align: center;
+  font-size: var(--fz-sm);
+}
+.empty-regions p {
+  margin: 0;
+  max-width: 360px;
+  line-height: 1.7;
 }
 
 .region-grid {

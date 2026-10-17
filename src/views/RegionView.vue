@@ -337,7 +337,7 @@ function handleNoteInput(areaId, event) {
 }
 .rt-item {
   padding: 2px 10px;
-  border-radius: 999px;
+  border-radius: var(--r-sm);
   border: 1px solid var(--line-strong);
   color: var(--text-2);
   background: rgba(255, 255, 255, 0.05);

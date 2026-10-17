@@ -234,7 +234,7 @@ function tryRestore() {
   margin-bottom: var(--sp-5);
   padding: var(--sp-2) var(--sp-4);
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--r-md);
   background: rgba(10, 11, 13, 0.85);
   backdrop-filter: blur(14px);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
@@ -272,7 +272,7 @@ function tryRestore() {
   width: 160px;
   padding: 5px 12px;
   border: 1px solid var(--line-strong);
-  border-radius: 999px;
+  border-radius: var(--r-sm);
   background: var(--bg);
   color: var(--text-1);
   font-size: var(--fz-sm);

@@ -367,7 +367,14 @@
             }
           ]
         }
-      ]
+      ],
+      "settings": {}
+    },
+    {
+      "id": "starrail",
+      "name": "崩坏·星穹铁道",
+      "sort": 2,
+      "regions": []
     }
   ],
   "settings": {}
