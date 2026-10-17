@@ -55,15 +55,8 @@ const status = computed(() =>
 
 const doneLabel = (item) => (item.name === '宝箱' ? '已搜集' : '已完成')
 
-// 地区景观切片（同一实景图的不同裁切，背景定位错开，构成一行景观带）
-const galleryShots = computed(() => {
-  if (!region.value?.image) return []
-  return [
-    { pos: '20% 30%', label: `${region.value.name} · 远景` },
-    { pos: '55% 55%', label: `${region.value.name} · 中景` },
-    { pos: '85% 70%', label: `${region.value.name} · 近景` }
-  ]
-})
+// 地区景观带：直接使用该地区 3 张不同的实景图（games.json 的 region.gallery）
+const galleryShots = computed(() => region.value?.gallery ?? [])
 
 // ---- 单格输入（text 输入 + 上下限校验；-1 表示「无/不适用」） ----
 // 编辑草稿：key = areaId|itemId → 输入框当前文本（未 blur 前原样显示）
@@ -158,12 +151,12 @@ function handleNoteInput(areaId, event) {
 
     <div class="region-gallery reveal" v-if="galleryShots.length" style="animation-delay: 0.08s">
       <figure
-        v-for="(shot, i) in galleryShots"
+        v-for="(img, i) in galleryShots"
         :key="i"
         class="gallery-card reveal"
-        :style="{ '--shot-img': `url('${region.image}')`, '--shot-pos': shot.pos, animationDelay: (0.1 + i * 0.07) + 's' }"
+        :style="{ '--shot-img': `url('${img}')`, animationDelay: (0.1 + i * 0.07) + 's' }"
       >
-        <figcaption>{{ shot.label }}</figcaption>
+        <figcaption>{{ region.name }} · 景观 {{ i + 1 }}</figcaption>
       </figure>
     </div>
 
@@ -345,7 +338,7 @@ function handleNoteInput(areaId, event) {
   border-radius: var(--r-md);
   background-image: var(--shot-img, none);
   background-size: cover;
-  background-position: var(--shot-pos, center);
+  background-position: center;
   overflow: hidden;
   transition: transform 0.3s var(--ease);
 }

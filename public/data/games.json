@@ -81,6 +81,11 @@
                 }
               ]
             }
+          ],
+          "gallery": [
+            "/images/region-mondstadt-1.jpg",
+            "/images/region-mondstadt-2.jpg",
+            "/images/region-mondstadt-3.jpg"
           ]
         },
         {
@@ -163,6 +168,11 @@
                 }
               ]
             }
+          ],
+          "gallery": [
+            "/images/region-liyue-1.jpg",
+            "/images/region-liyue-2.jpg",
+            "/images/region-liyue-3.jpg"
           ]
         },
         {
@@ -289,6 +299,11 @@
                 }
               ]
             }
+          ],
+          "gallery": [
+            "/images/region-inazuma-1.jpg",
+            "/images/region-inazuma-2.jpg",
+            "/images/region-inazuma-3.jpg"
           ]
         },
         {
@@ -394,6 +409,11 @@
                 }
               ]
             }
+          ],
+          "gallery": [
+            "/images/region-sumeru-1.jpg",
+            "/images/region-sumeru-2.jpg",
+            "/images/region-sumeru-3.jpg"
           ]
         },
         {
@@ -499,6 +519,11 @@
                 }
               ]
             }
+          ],
+          "gallery": [
+            "/images/region-fontaine-1.jpg",
+            "/images/region-fontaine-2.jpg",
+            "/images/region-fontaine-3.jpg"
           ]
         },
         {
@@ -604,6 +629,11 @@
                 }
               ]
             }
+          ],
+          "gallery": [
+            "/images/region-natlan-1.jpg",
+            "/images/region-natlan-2.jpg",
+            "/images/region-natlan-3.jpg"
           ]
         },
         {
@@ -686,6 +716,11 @@
                 }
               ]
             }
+          ],
+          "gallery": [
+            "/images/region-nodkrai-1.jpg",
+            "/images/region-nodkrai-2.jpg",
+            "/images/region-nodkrai-3.jpg"
           ]
         },
         {
@@ -722,6 +757,11 @@
                 }
               ]
             }
+          ],
+          "gallery": [
+            "/images/region-snezhnaya-1.jpg",
+            "/images/region-snezhnaya-2.jpg",
+            "/images/region-snezhnaya-3.jpg"
           ]
         }
       ],
