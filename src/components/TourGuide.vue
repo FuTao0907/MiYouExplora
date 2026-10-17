@@ -66,6 +66,10 @@ function prev() {
 function skip() {
   emit('close')
 }
+// 最后一步「开始使用」：与 next 的末尾分支等价，独立成函数供按钮绑定
+function done() {
+  emit('done')
+}
 </script>
 
 <template>

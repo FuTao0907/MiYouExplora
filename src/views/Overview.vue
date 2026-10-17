@@ -12,6 +12,7 @@ import {
 } from '@phosphor-icons/vue'
 import RegionCard from '../components/RegionCard.vue'
 import { importProgress } from '../api/data.js'
+import { useCountUp } from '../composables/useCountUp.js'
 // xlsx 工具动态加载（体积较大，仅用户点击导入/导出时下载，见 doExportXlsx / doImportXlsx）
 
 const props = defineProps({
@@ -44,6 +45,9 @@ const overallPercent = computed(() => {
   const { done, total } = props.store.overall.value
   return total ? Math.round((done / total) * 100) : 0
 })
+
+// 总探索度数字滚动动效（进入页面时 0 → 目标值）
+const overallAnim = useCountUp(() => overallPercent.value, 1100)
 
 // ---- 导入 / 导出（XLSX 与 JSON 双格式，用户选择并提示） ----
 const exportMenuOpen = ref(false)
@@ -108,12 +112,12 @@ function doImportJson(event) {
       <h1 class="hero-title">米游探索度记录</h1>
       <p class="hero-sub">记录提瓦特每一块土地的探索进度。游客可直接录入自己的进度（保存在本机）；主人解锁后录入，编辑自动保存到云端。</p>
     </div>
-    <div class="hero-stat reveal" style="animation-delay: 0.12s">
-      <div class="hero-stat-label mono">OVERALL</div>
+    <div class="hero-stat reveal" style="animation-delay: 0.14s">
+      <div class="hero-stat-label mono">OVERALL PROGRESS</div>
       <div class="hero-stat-value">
-        <span class="mono">{{ overallPercent }}</span><span class="hero-stat-unit">%</span>
+        <span class="mono">{{ overallAnim }}</span><span class="hero-stat-unit">%</span>
       </div>
-      <div class="hero-stat-meta mono">{{ store.overall.value.done }}/{{ store.overall.value.total }} 个地区已完成</div>
+      <div class="hero-stat-meta mono">{{ store.overall.value.done }} / {{ store.overall.value.total }} 个地区已完成</div>
       <div class="hero-bar">
         <div class="hero-bar-fill" :style="{ width: overallPercent + '%' }"></div>
       </div>
@@ -179,7 +183,7 @@ function doImportJson(event) {
   </section>
 
   <section class="list-head reveal" style="animation-delay: 0.22s">
-    <span class="list-count mono">{{ store.sortedRegions.value.length }} REGIONS</span>
+    <span class="list-count">共 {{ store.sortedRegions.value.length }} 个地区</span>
     <div class="sort-switch">
       <button
         class="sort-btn mono"
@@ -229,10 +233,11 @@ function doImportJson(event) {
 .hero {
   position: relative;
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
+  grid-template-columns: 1.35fr 1fr;
   gap: var(--sp-7);
   align-items: center;
-  padding: var(--sp-8) var(--sp-7);
+  min-height: 340px;
+  padding: var(--sp-9) var(--sp-8);
   margin-bottom: var(--sp-7);
   border-radius: var(--r-lg);
   border: 1px solid var(--line);
@@ -248,6 +253,15 @@ function doImportJson(event) {
   background-image: url('/images/hero.jpg');
   background-size: cover;
   background-position: center 60%;
+  animation: kenburns 16s ease-in-out infinite alternate;
+}
+@keyframes kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
 }
 .hero::after {
   content: '';
@@ -256,16 +270,29 @@ function doImportJson(event) {
   z-index: -1;
   background: linear-gradient(
     100deg,
-    rgba(11, 17, 29, 0.92) 0%,
-    rgba(11, 17, 29, 0.78) 45%,
-    rgba(11, 17, 29, 0.55) 100%
+    rgba(11, 17, 29, 0.94) 0%,
+    rgba(11, 17, 29, 0.8) 45%,
+    rgba(11, 17, 29, 0.6) 100%
   );
 }
 .hero-eyebrow {
+  position: relative;
   margin: 0 0 var(--sp-3);
+  padding-bottom: var(--sp-3);
   font-size: var(--fz-xs);
   color: var(--gold);
   letter-spacing: 0.2em;
+}
+.hero-eyebrow::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 48px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gold);
+  opacity: 0.85;
 }
 .hero-title {
   margin: 0 0 var(--sp-3);
@@ -273,10 +300,11 @@ function doImportJson(event) {
   font-weight: 700;
   letter-spacing: 0.04em;
   line-height: 1.2;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
 }
 .hero-sub {
   margin: 0 0 var(--sp-6);
-  max-width: 500px;
+  max-width: 480px;
   font-size: var(--fz-base);
   color: var(--text-2);
 }
@@ -292,7 +320,7 @@ function doImportJson(event) {
 }
 .hero-stat {
   background: rgba(11, 17, 29, 0.55);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--line-strong);
   border-radius: var(--r-md);
   padding: var(--sp-6);
@@ -306,17 +334,19 @@ function doImportJson(event) {
 .hero-stat-value {
   display: flex;
   align-items: baseline;
-  gap: 2px;
+  gap: 4px;
   line-height: 1;
-  margin-bottom: var(--sp-1);
+  margin-bottom: var(--sp-2);
 }
 .hero-stat-value span {
-  font-size: var(--fz-display);
+  font-size: var(--fz-hero);
   font-weight: 700;
   color: var(--gold-bright);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 40px rgba(242, 221, 176, 0.25);
 }
 .hero-stat-unit {
-  font-size: var(--fz-lg);
+  font-size: var(--fz-xl);
   color: var(--gold);
 }
 .hero-stat-meta {
@@ -368,9 +398,9 @@ function doImportJson(event) {
   margin-bottom: var(--sp-4);
 }
 .list-count {
-  font-size: var(--fz-xs);
+  font-size: var(--fz-sm);
   color: var(--text-3);
-  letter-spacing: 0.2em;
+  letter-spacing: 0.06em;
 }
 .sort-switch {
   display: flex;
@@ -479,6 +509,7 @@ function doImportJson(event) {
 @media (max-width: 720px) {
   .hero {
     grid-template-columns: 1fr;
+    min-height: 0;
     padding: var(--sp-6) var(--sp-5);
   }
   .note-item {

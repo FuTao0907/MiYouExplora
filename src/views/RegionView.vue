@@ -11,6 +11,7 @@ import {
 } from '@phosphor-icons/vue'
 import { regionPercent, getStatus, STATUS } from '../utils/status.js'
 import { parseItemInput, sanitizeInputText } from '../utils/guestData.js'
+import { useCountUp } from '../composables/useCountUp.js'
 
 const props = defineProps({
   store: { type: Object, required: true },
@@ -54,6 +55,8 @@ const hasTargets = computed(() =>
 const percent = computed(() =>
   region.value ? regionPercent(region.value, props.store.displayProgress.value) : 0
 )
+// 地区探索度数字滚动动效
+const animPercent = useCountUp(() => percent.value, 900)
 const status = computed(() =>
   region.value ? getStatus(region.value, props.store.displayProgress.value) : STATUS.NOT_STARTED
 )
@@ -154,7 +157,7 @@ function handleNoteInput(areaId, event) {
         <div class="region-title">
           <h1 class="region-title-text">{{ region.name }}</h1>
           <span class="region-percent mono" :class="{ done: status === STATUS.COMPLETED }">
-            {{ percent }}%
+            {{ animPercent }}%
           </span>
         </div>
         <div class="region-targets mono" v-if="hasTargets">

@@ -36,7 +36,8 @@
   --fz-md: 16px;
   --fz-lg: 20px;
   --fz-xl: 26px;
-  --fz-display: clamp(28px, 4.2vw, 44px);
+  --fz-display: clamp(36px, 5.6vw, 64px);
+  --fz-hero: clamp(64px, 11vw, 128px);
 
   /* 间距（4px 网格） */
   --sp-1: 4px;
@@ -83,6 +84,17 @@ body {
     var(--bg);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
+}
+
+/* 全局纸感噪点纹理（Shiro 式，深色下仅 2.5% 透明度，几乎不可见但消除纯色塑料感） */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 ::selection {
@@ -139,6 +151,9 @@ button {
   transition: var(--t);
   white-space: nowrap;
   user-select: none;
+}
+.btn:active {
+  transform: scale(0.97);
 }
 .btn-primary {
   background: var(--gold);
@@ -202,6 +217,8 @@ button {
 
 /* ============ 容器 ============ */
 .container {
+  position: relative;
+  z-index: 1;
   max-width: 1120px;
   margin: 0 auto;
   padding: var(--sp-6) var(--sp-5) var(--sp-9);

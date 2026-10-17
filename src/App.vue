@@ -6,6 +6,7 @@ import {
   PhArchiveBox,
   PhEye,
   PhEyeSlash,
+  PhGameController,
   PhLock,
   PhLockOpen,
   PhPlayCircle
@@ -113,6 +114,9 @@ function tryRestore() {
     </div>
     <template v-else>
       <div class="edit-bar reveal">
+        <span class="site-brand" title="米游探索度记录">
+          <PhGameController :size="18" /> 米游探索度记录
+        </span>
         <template v-if="store.editable.value">
           <span class="mode-badge editable">主人模式</span>
           <span v-if="store.saveText.value" class="save-state" :class="'save-' + store.saveState.value">
@@ -221,6 +225,9 @@ function tryRestore() {
 }
 
 .edit-bar {
+  position: sticky;
+  top: 12px;
+  z-index: 60;
   display: flex;
   align-items: center;
   gap: var(--sp-3);
@@ -228,10 +235,22 @@ function tryRestore() {
   padding: var(--sp-2) var(--sp-4);
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(16, 24, 40, 0.7);
-  backdrop-filter: blur(8px);
+  background: rgba(16, 24, 40, 0.8);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
   width: fit-content;
   flex-wrap: wrap;
+}
+.site-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-right: var(--sp-2);
+  font-size: var(--fz-base);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  white-space: nowrap;
 }
 .mode-badge {
   font-size: var(--fz-xs);

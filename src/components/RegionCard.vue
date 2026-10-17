@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { regionPercent, getStatus } from '../utils/status.js'
+import { useCountUp } from '../composables/useCountUp.js'
 import ProgressBar from './ProgressBar.vue'
 
 const props = defineProps({
@@ -12,6 +13,8 @@ const emit = defineEmits(['edit'])
 
 const status = computed(() => getStatus(props.region, props.progress))
 const percent = computed(() => regionPercent(props.region, props.progress))
+// 探索度数字滚动动效（卡片进入时 0 → 目标值）
+const animPercent = useCountUp(() => percent.value, 800)
 const hasImage = computed(() => Boolean(props.region.image))
 const cardStyle = computed(() =>
   props.region.image ? { '--card-bg': `url('${props.region.image}')` } : {}
@@ -41,7 +44,7 @@ const targetSummary = computed(() => {
     <div class="card-bottom">
       <div class="card-name">{{ region.name }}</div>
       <div class="card-stat">
-        <span class="card-percent mono">{{ percent }}</span>
+        <span class="card-percent mono">{{ animPercent }}</span>
         <span class="card-unit">%</span>
       </div>
       <ProgressBar :percent="percent" :status="status" />
@@ -129,7 +132,7 @@ const targetSummary = computed(() => {
   gap: 2px;
 }
 .card-percent {
-  font-size: var(--fz-display);
+  font-size: clamp(30px, 3.6vw, 42px);
   font-weight: 700;
   color: var(--gold-bright);
   line-height: 1;
@@ -140,8 +143,9 @@ const targetSummary = computed(() => {
 }
 .card-targets {
   font-size: var(--fz-xs);
-  color: var(--text-2);
-  letter-spacing: 0.04em;
+  color: var(--text-3);
+  letter-spacing: 0.03em;
+  opacity: 0.9;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
