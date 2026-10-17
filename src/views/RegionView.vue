@@ -1,14 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import {
-  PhCaretLeft,
-  PhCaretRight,
-  PhDownloadSimple,
-  PhFileCode,
-  PhPencilSimple,
-  PhTable
-} from '@phosphor-icons/vue'
+import { PhCaretLeft, PhCaretRight } from '@phosphor-icons/vue'
 import { regionPercent, getStatus, STATUS } from '../utils/status.js'
 import { parseItemInput, sanitizeInputText } from '../utils/guestData.js'
 import { useCountUp } from '../composables/useCountUp.js'
@@ -17,7 +10,6 @@ const props = defineProps({
   store: { type: Object, required: true },
   regionId: { type: String, required: true }
 })
-const emit = defineEmits(['batch'])
 const router = useRouter()
 
 // 返回地区总览（走路由：/game/:gameId）
@@ -115,23 +107,6 @@ function onCellBlur(areaId, itemId) {
   drafts.value = next
 }
 
-function handleExport() {
-  props.store.exportMyProgress()
-}
-
-// 导出数据（XLSX / JSON 双格式，动态加载 xlsx 库）
-const exportMenuOpen = ref(false)
-async function doExportXlsx() {
-  const { exportProgressXlsx } = await import('../utils/xlsx.js')
-  const game = props.store.activeGame.value
-  const my = props.store.editable.value
-    ? props.store.cloudProgress.value
-    : props.store.guestProgress.value
-  const ref = props.store.editable.value ? null : props.store.cloudProgress.value
-  exportProgressXlsx(game, my, ref)
-  exportMenuOpen.value = false
-}
-
 // 展开行：子区域描述
 const expanded = ref({})
 function toggleExpand(areaId) {
@@ -151,8 +126,8 @@ function handleNoteInput(areaId, event) {
   <div v-if="region">
     <section class="region-hero reveal" :style="heroStyle">
       <div class="region-hero-content">
-        <button class="btn btn-ghost" @click="goBack" title="返回地区总览">
-          <PhCaretLeft :size="16" /> 返回
+        <button class="back-link" @click="goBack" title="返回地区总览">
+          <PhCaretLeft :size="15" /> 返回总览
         </button>
         <div class="region-title">
           <h1 class="region-title-text">{{ region.name }}</h1>
@@ -167,30 +142,6 @@ function handleNoteInput(areaId, event) {
         </div>
       </div>
     </section>
-
-    <div class="region-toolbar reveal" style="animation-delay: 0.08s">
-      <button class="btn btn-batch" @click="emit('batch')" title="把所有可修改项聚拢到一个面板里批量编辑">
-        <PhPencilSimple :size="16" /> 一键修改
-      </button>
-      <div class="file-menu-wrap">
-        <button
-          class="btn btn-primary"
-          @click="exportMenuOpen = !exportMenuOpen"
-          title="导出当前数据（WPS 表格或 JSON 存档）"
-        >
-          <PhDownloadSimple :size="16" /> 导出数据
-        </button>
-        <div v-if="exportMenuOpen" class="file-menu" @click.stop>
-          <button class="file-menu-item" @click="doExportXlsx" title="导出为 WPS/Excel 可直接打开的表格">
-            <PhTable :size="16" /> 导出 .xlsx（WPS 表格）
-          </button>
-          <button class="file-menu-item" @click="handleExport" title="导出完整数据存档（JSON 文件）">
-            <PhFileCode :size="16" /> 导出 .json（完整存档）
-          </button>
-          <p class="file-menu-tip">表格方便在 WPS/Excel 里查看和修改；JSON 是完整数据存档。游客导出的只含你自己的数据。</p>
-        </div>
-      </div>
-    </div>
 
     <p class="region-hint reveal" v-if="!hasTargets" style="animation-delay: 0.06s">
       分项目标数量（games.json 中地区 targets）尚未配置，配置后即可录入已搜集数量；探索度将按板块目标完成比例自动计算。
@@ -530,57 +481,19 @@ function handleNoteInput(areaId, event) {
   font-style: italic;
 }
 
-.region-toolbar {
-  display: flex;
-  gap: var(--sp-3);
-  flex-wrap: wrap;
+.back-link {
+  display: inline-flex;
   align-items: center;
+  gap: 4px;
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-sm);
+  font-size: var(--fz-sm);
+  color: var(--text-3);
+  transition: var(--t);
   margin-bottom: var(--sp-3);
 }
-.region-toolbar input {
-  display: none;
-}
-
-.file-menu-wrap {
-  position: relative;
-}
-.file-menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  z-index: 30;
-  min-width: 260px;
-  padding: var(--sp-2);
-  background: var(--bg-1);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--r-md);
-  box-shadow: var(--shadow-card);
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
-}
-.file-menu-item {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: var(--sp-2) var(--sp-3);
-  border: none;
-  background: transparent;
+.back-link:hover {
   color: var(--text-1);
-  font-size: var(--fz-sm);
-  text-align: left;
-  border-radius: var(--r-sm);
-  cursor: pointer;
-  transition: var(--t);
-}
-.file-menu-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-1);
-}
-.file-menu-tip {
-  margin: var(--sp-1) var(--sp-3) var(--sp-2);
-  font-size: var(--fz-xs);
-  color: var(--text-3);
-  line-height: 1.6;
+  background: rgba(255, 255, 255, 0.05);
 }
 </style>

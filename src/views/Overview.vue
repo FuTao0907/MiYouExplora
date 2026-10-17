@@ -1,25 +1,13 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import {
-  PhDownloadSimple,
-  PhFileCode,
-  PhListBullets,
-  PhMapTrifold,
-  PhPencilSimple,
-  PhPercent,
-  PhTable,
-  PhUploadSimple
-} from '@phosphor-icons/vue'
+import { PhListBullets, PhMapTrifold, PhPercent } from '@phosphor-icons/vue'
 import RegionCard from '../components/RegionCard.vue'
-import { importProgress } from '../api/data.js'
 import { useCountUp } from '../composables/useCountUp.js'
-// xlsx 工具动态加载（体积较大，仅用户点击导入/导出时下载，见 doExportXlsx / doImportXlsx）
 
 const props = defineProps({
   store: { type: Object, required: true }
 })
-const emit = defineEmits(['batch'])
 
 const route = useRoute()
 const router = useRouter()
@@ -33,11 +21,6 @@ watch(
   { immediate: true }
 )
 
-// 游戏标签切换 → 走路由（URL 可直达/分享/刷新不丢状态）
-function switchGame(id) {
-  if (id !== props.store.activeGameId.value) router.push(`/game/${id}`)
-}
-
 function openRegion(id) {
   router.push(`/game/${props.store.activeGameId.value}/region/${id}`)
 }
@@ -49,61 +32,6 @@ const overallPercent = computed(() => {
 
 // 总探索度数字滚动动效（进入页面时 0 → 目标值）
 const overallAnim = useCountUp(() => overallPercent.value, 1100)
-
-// ---- 导入 / 导出（XLSX 与 JSON 双格式，用户选择并提示） ----
-const exportMenuOpen = ref(false)
-const importMenuOpen = ref(false)
-
-async function doExportXlsx() {
-  const { exportProgressXlsx } = await import('../utils/xlsx.js')
-  const game = props.store.activeGame.value
-  const my = props.store.editable.value
-    ? props.store.cloudProgress.value
-    : props.store.guestProgress.value
-  const ref = props.store.editable.value ? null : props.store.cloudProgress.value
-  exportProgressXlsx(game, my, ref)
-  exportMenuOpen.value = false
-}
-function doExportJson() {
-  props.store.exportMyProgress()
-  exportMenuOpen.value = false
-}
-
-async function doImportXlsx(event) {
-  const file = event.target.files?.[0]
-  event.target.value = ''
-  if (!file) return
-  try {
-    const { importProgressXlsx } = await import('../utils/xlsx.js')
-    const { progress, errors } = await importProgressXlsx(file, props.store.activeGame.value)
-    if (errors.length) {
-      const head = errors
-        .slice(0, 5)
-        .map((e) => `第 ${e.row} 行：${e.message}`)
-        .join('\n')
-      const more = errors.length > 5 ? `\n…共 ${errors.length} 行无法识别` : ''
-      if (!window.confirm(`有 ${errors.length} 行无法识别：\n${head}${more}\n\n继续导入其余有效行吗？`)) return
-    }
-    props.store.applyImported(progress)
-    alert(`导入成功${errors.length ? `（忽略 ${errors.length} 行问题）` : ''}`)
-    importMenuOpen.value = false
-  } catch (e) {
-    alert('导入失败：' + e.message)
-  }
-}
-
-function doImportJson(event) {
-  const file = event.target.files?.[0]
-  event.target.value = ''
-  if (!file) return
-  importProgress(file)
-    .then((data) => {
-      props.store.applyImported(data)
-      alert('导入成功')
-      importMenuOpen.value = false
-    })
-    .catch((err) => alert(err.message))
-}
 </script>
 
 <template>
@@ -125,64 +53,6 @@ function doImportJson(event) {
     </div>
   </section>
 
-  <div class="region-toolbar reveal" style="animation-delay: 0.08s">
-    <button class="btn btn-batch" @click="emit('batch')" title="把所有可修改项聚拢到一个面板里批量编辑">
-      <PhPencilSimple :size="16" /> 一键修改
-    </button>
-
-    <div class="file-menu-wrap">
-      <button
-        class="btn btn-primary btn-export"
-        @click="exportMenuOpen = !exportMenuOpen"
-        title="导出当前数据（WPS 表格或 JSON 存档）"
-      >
-        <PhDownloadSimple :size="16" /> 导出数据
-      </button>
-      <div v-if="exportMenuOpen" class="file-menu" @click.stop>
-        <button class="file-menu-item" @click="doExportXlsx" title="导出为 WPS/Excel 可直接打开的表格">
-          <PhTable :size="16" /> 导出 .xlsx（WPS 表格）
-        </button>
-        <button class="file-menu-item" @click="doExportJson" title="导出完整数据存档（JSON 文件）">
-          <PhFileCode :size="16" /> 导出 .json（完整存档）
-        </button>
-        <p class="file-menu-tip">表格方便在 WPS/Excel 里查看和修改；JSON 是完整数据存档。游客导出的只含你自己的数据。</p>
-      </div>
-    </div>
-
-    <div class="file-menu-wrap">
-      <button
-        class="btn btn-ghost"
-        @click="importMenuOpen = !importMenuOpen"
-        title="从 WPS 表格或 JSON 文件导入数据"
-      >
-        <PhUploadSimple :size="16" /> 导入数据
-      </button>
-      <div v-if="importMenuOpen" class="file-menu" @click.stop>
-        <label class="file-menu-item" title="导入 WPS 表格（在表格里改「已搜集」列后导回）">
-          <PhTable :size="16" /> 导入 .xlsx（WPS 表格）
-          <input type="file" accept=".xlsx" @change="doImportXlsx" />
-        </label>
-        <label class="file-menu-item" title="导入完整数据存档（JSON 文件）">
-          <PhFileCode :size="16" /> 导入 .json（完整存档）
-          <input type="file" accept="application/json,.json" @change="doImportJson" />
-        </label>
-        <p class="file-menu-tip">表格：在 WPS/Excel 里改「已搜集」列后导回；JSON：完整数据文件。空行不会被修改。</p>
-      </div>
-    </div>
-  </div>
-
-  <section class="game-switch reveal" v-if="store.games.value.length > 1" style="animation-delay: 0.18s">
-    <button
-      v-for="game in store.games.value"
-      :key="game.id"
-      class="game-tab"
-      :class="{ active: game.id === store.activeGameId.value }"
-      @click="switchGame(game.id)"
-    >
-      {{ game.name }}
-    </button>
-  </section>
-
   <section class="list-head reveal" style="animation-delay: 0.22s">
     <span class="list-count">共 {{ store.sortedRegions.value.length }} 个地区</span>
     <div class="sort-switch">
@@ -194,6 +64,7 @@ function doImportJson(event) {
       >
         <PhPercent :size="14" /> 按探索度
       </button>
+      <span class="sort-sep"></span>
       <button
         class="sort-btn mono"
         :class="{ active: store.sortMode.value === 'order' }"
@@ -242,7 +113,7 @@ function doImportJson(event) {
   grid-template-columns: 1.35fr 1fr;
   gap: var(--sp-7);
   align-items: center;
-  min-height: 340px;
+  min-height: 280px;
   padding: var(--sp-9) var(--sp-8);
   margin-bottom: var(--sp-7);
   border-radius: var(--r-lg);
@@ -299,13 +170,6 @@ function doImportJson(event) {
   max-width: 480px;
   font-size: var(--fz-base);
   color: var(--text-2);
-}
-.region-toolbar {
-  display: flex;
-  gap: var(--sp-3);
-  flex-wrap: wrap;
-  align-items: center;
-  margin-bottom: var(--sp-6);
 }
 .region-toolbar input {
   display: none;
@@ -364,24 +228,6 @@ function doImportJson(event) {
   gap: var(--sp-2);
   margin-bottom: var(--sp-6);
 }
-.game-tab {
-  padding: var(--sp-2) var(--sp-5);
-  border-radius: var(--r-sm);
-  border: 1px solid var(--line);
-  color: var(--text-2);
-  font-size: var(--fz-base);
-  transition: var(--t);
-}
-.game-tab:hover {
-  color: var(--text-1);
-  border-color: var(--line-strong);
-}
-.game-tab.active {
-  color: #0a0b0d;
-  background: #f2f3f5;
-  border-color: #f2f3f5;
-  font-weight: 600;
-}
 
 .list-head {
   display: flex;
@@ -396,25 +242,31 @@ function doImportJson(event) {
 }
 .sort-switch {
   display: flex;
-  gap: var(--sp-1);
+  align-items: center;
+  gap: var(--sp-2);
 }
 .sort-btn {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: var(--sp-1) var(--sp-3);
-  border-radius: var(--r-sm);
+  padding: var(--sp-1) var(--sp-2);
   font-size: var(--fz-xs);
   color: var(--text-3);
   letter-spacing: 0.06em;
   transition: var(--t);
+  border-radius: var(--r-sm);
 }
 .sort-btn:hover {
   color: var(--text-1);
+  background: rgba(255, 255, 255, 0.05);
 }
 .sort-btn.active {
   color: var(--text-1);
-  background: rgba(255, 255, 255, 0.07);
+}
+.sort-sep {
+  width: 1px;
+  height: 14px;
+  background: var(--line-strong);
 }
 
 .empty-regions {
@@ -470,52 +322,6 @@ function doImportJson(event) {
   font-weight: 600;
 }
 
-.file-menu-wrap {
-  position: relative;
-}
-.file-menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  z-index: 30;
-  min-width: 260px;
-  padding: var(--sp-2);
-  background: var(--bg-1);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--r-md);
-  box-shadow: var(--shadow-card);
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
-}
-.file-menu-item {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: var(--sp-2) var(--sp-3);
-  border: none;
-  background: transparent;
-  color: var(--text-1);
-  font-size: var(--fz-sm);
-  text-align: left;
-  border-radius: var(--r-sm);
-  cursor: pointer;
-  transition: var(--t);
-}
-.file-menu-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-1);
-}
-.file-menu-item input {
-  display: none;
-}
-.file-menu-tip {
-  margin: var(--sp-1) var(--sp-3) var(--sp-2);
-  font-size: var(--fz-xs);
-  color: var(--text-3);
-  line-height: 1.6;
-}
-
 @media (max-width: 720px) {
   .hero {
     grid-template-columns: 1fr;
@@ -525,10 +331,6 @@ function doImportJson(event) {
   .note-item {
     flex-direction: column;
     gap: var(--sp-1);
-  }
-  .file-menu {
-    position: static;
-    box-shadow: none;
   }
 }
 </style>
