@@ -12,6 +12,11 @@ const props = defineProps({
 const route = useRoute()
 const router = useRouter()
 
+// 当前游戏（含 image/gallery 字段，供 hero 背景与空态景观带使用）
+const activeGame = computed(
+  () => props.store.games.value.find((g) => g.id === props.store.activeGameId.value) ?? null
+)
+
 // 路由驱动游戏：进入 /game/:gameId 时切换到对应游戏
 watch(
   () => route.params.gameId,
@@ -35,15 +40,30 @@ const overallPercent = computed(() => {
   return total ? Math.round((done / total) * 100) : 0
 })
 
+// 首屏副文：原神保留「提瓦特」表述，其他游戏用通用说法
+const heroSub = computed(() => {
+  if (activeGame.value?.id === 'genshin') {
+    return '记录提瓦特每一块土地的探索进度。游客可直接录入自己的进度（保存在本机）；主人解锁后录入，编辑自动保存到云端。'
+  }
+  const name = activeGame.value?.name ?? '米游'
+  return `记录${name}每一块地图的探索进度。游客可直接录入自己的进度（保存在本机）；主人解锁后录入，编辑自动保存到云端。`
+})
+
 // 总探索度数字滚动动效（进入页面时 0 → 目标值）
 const overallAnim = useCountUp(() => overallPercent.value, 1100)
 </script>
 
 <template>
   <section class="hero">
+    <img
+      class="hero-img"
+      :src="activeGame?.image ?? '/images/hero.jpg'"
+      :alt="`${activeGame?.name ?? '米游'}实景`"
+      loading="eager"
+    />
     <div class="hero-content">
       <h1 class="hero-title reveal" style="animation-delay: 0s">米游探索度记录</h1>
-      <p class="hero-sub reveal" style="animation-delay: 0.08s">记录提瓦特每一块土地的探索进度。游客可直接录入自己的进度（保存在本机）；主人解锁后录入，编辑自动保存到云端。</p>
+      <p class="hero-sub reveal" style="animation-delay: 0.08s">{{ heroSub }}</p>
       <button class="btn btn-primary hero-cta reveal" style="animation-delay: 0.16s" @click="scrollToCards" title="浏览全部地区的探索进度">查看地区进度</button>
     </div>
     <div class="hero-stat reveal" style="animation-delay: 0.22s">
@@ -96,6 +116,17 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
     <p>该游戏还没有地区数据。等主人配置好 games.json 并重新部署后，这里就会出现探索进度卡片。</p>
   </div>
 
+  <div class="game-gallery reveal" v-if="!store.sortedRegions.value.length && activeGame?.gallery?.length" style="animation-delay: 0.36s">
+    <figure
+      v-for="(img, i) in activeGame.gallery"
+      :key="i"
+      class="game-gallery-card reveal"
+      :style="{ '--shot-img': `url('${img}')`, animationDelay: (0.4 + i * 0.08) + 's' }"
+    >
+      <figcaption>{{ activeGame.name }} · 世界景观 {{ i + 1 }}</figcaption>
+    </figure>
+  </div>
+
   <footer class="data-note reveal" style="animation-delay: 0.6s">
     <div class="note-item">
       <p><strong>数据来源</strong>：目标数量（宝箱 / 限时挑战 / 仙灵 / 雷灵 / 幻写灵）以 B 站攻略博主「你的影月月」的全收集攻略为准，截至 7.1 版本。</p>
@@ -121,14 +152,14 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
   isolation: isolate;
   background: var(--bg-2);
 }
-.hero::before {
-  content: '';
+.hero-img {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 60%;
   z-index: -1;
-  background-image: url('/images/hero.jpg');
-  background-size: cover;
-  background-position: center 60%;
   animation: kenburns 16s ease-in-out infinite alternate;
 }
 @keyframes kenburns {
@@ -263,6 +294,48 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
   margin: 0;
   max-width: 360px;
   line-height: 1.7;
+}
+
+/* 空态游戏世界景观带（该游戏实景，桌面展示） */
+.game-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}
+.game-gallery-card {
+  position: relative;
+  margin: 0;
+  height: 150px;
+  border-radius: var(--r-md);
+  background-image: var(--shot-img, none);
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  transition: transform 0.3s var(--ease);
+}
+.game-gallery-card:hover {
+  transform: scale(1.02);
+}
+/* 景观卡脚注压字 scrim（house rule 唯一允许的渐变）taste-skill-ignore */
+.game-gallery-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 11, 13, 0) 55%, rgba(10, 11, 13, 0.8) 100%); /* taste-skill-ignore */
+}
+.game-gallery-card figcaption {
+  position: absolute;
+  left: var(--sp-3);
+  bottom: var(--sp-2);
+  z-index: 1;
+  font-size: var(--fz-xs);
+  color: var(--text-2);
+}
+@media (max-width: 720px) {
+  .game-gallery {
+    display: none;
+  }
 }
 
 .region-grid {

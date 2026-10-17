@@ -11,7 +11,11 @@
           "name": "蒙德",
           "image": "/images/mondstadt.jpg",
           "sort": 1,
-          "targets": { "chest": 975, "challenge": 54, "seelie": 86 },
+          "targets": {
+            "chest": 975,
+            "challenge": 54,
+            "seelie": 86
+          },
           "areas": [
             {
               "id": "city_of_winds_and_idylls",
@@ -19,9 +23,21 @@
               "sort": 1,
               "description": "蒙德主体区域（蒙德城、坠星山谷、苍风高地、风啸山坡、明冠山地），不含龙脊雪山与风息山/空之神殿。宝箱按成就口径 519 记（BWiki 记区域物理总数 521，为另一口径，差异为 1.3 版本后不计入成就的 3 个箱子）；其中约 21/22 个宝箱位于璃月境内但计入本区成就（不计入璃月成就）。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 519 },
-                { "id": "challenge", "name": "限时挑战", "target": 17 },
-                { "id": "seelie", "name": "仙灵", "target": 51 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 519
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 17
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 51
+                }
               ]
             },
             {
@@ -30,9 +46,21 @@
               "sort": 2,
               "description": "风息山、空之神殿（6.5 版本新增成就集）。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 222 },
-                { "id": "challenge", "name": "限时挑战", "target": 37 },
-                { "id": "seelie", "name": "仙灵", "target": 3 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 222
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 37
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 3
+                }
               ]
             },
             {
@@ -41,8 +69,16 @@
               "sort": 3,
               "description": "龙脊雪山。成就集「雪山上的来客」无限时挑战分项（区域存在约 16 个限时挑战点位，但不计入任何成就；蒙德「逐风的冒险家」亦明确排除龙脊雪山），故不设挑战目标。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 234 },
-                { "id": "seelie", "name": "仙灵", "target": 32 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 234
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 32
+                }
               ]
             }
           ]
@@ -52,7 +88,11 @@
           "name": "璃月",
           "image": "/images/liyue.jpg",
           "sort": 2,
-          "targets": { "chest": 1716, "challenge": 130, "seelie": 138 },
+          "targets": {
+            "chest": 1716,
+            "challenge": 130,
+            "seelie": 138
+          },
           "areas": [
             {
               "id": "harbor_of_stone_and_contracts",
@@ -60,9 +100,21 @@
               "sort": 1,
               "description": "璃月主体（碧水原、琼玑野、珉林、璃沙郊、云来海），不含层岩巨渊与沉玉谷。仙灵 81 为区域实际数。含 5.8 纳塔海岛雕像解锁的 3 个宝箱（同时计入纳塔·岩灰与刺梨的夏日成就）。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 1135 },
-                { "id": "challenge", "name": "限时挑战", "target": 47 },
-                { "id": "seelie", "name": "仙灵", "target": 81 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 1135
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 47
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 81
+                }
               ]
             },
             {
@@ -71,9 +123,21 @@
               "sort": 2,
               "description": "层岩巨渊（地上+地下）。仙灵 37 含与须弥交界处 1 个。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 248 },
-                { "id": "challenge", "name": "限时挑战", "target": 20 },
-                { "id": "seelie", "name": "仙灵", "target": 37 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 248
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 20
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 37
+                }
               ]
             },
             {
@@ -82,9 +146,21 @@
               "sort": 3,
               "description": "沉玉谷（上谷、南陵、来歆山）。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 333 },
-                { "id": "challenge", "name": "限时挑战", "target": 63 },
-                { "id": "seelie", "name": "仙灵", "target": 20 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 333
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 63
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 20
+                }
               ]
             }
           ]
@@ -94,7 +170,12 @@
           "name": "稻妻",
           "image": "/images/inazuma.jpg",
           "sort": 3,
-          "targets": { "chest": 915, "challenge": 98, "seelie": 69, "thunder_spirit": 68 },
+          "targets": {
+            "chest": 915,
+            "challenge": 98,
+            "seelie": 69,
+            "thunder_spirit": 68
+          },
           "areas": [
             {
               "id": "the_islands_of_thunder_and_eternity_series_i",
@@ -102,10 +183,26 @@
               "sort": 1,
               "description": "鸣神岛、神无冢、八酝岛。宝箱按成就数 357 记，做过限时活动会额外多 1 个（共 358）；挑战 35（另有 1 个幻影心流活动挑战）；雷灵 43。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 357 },
-                { "id": "challenge", "name": "限时挑战", "target": 35 },
-                { "id": "seelie", "name": "仙灵", "target": 21 },
-                { "id": "thunder_spirit", "name": "雷灵", "target": 43 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 357
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 35
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 21
+                },
+                {
+                  "id": "thunder_spirit",
+                  "name": "雷灵",
+                  "target": 43
+                }
               ]
             },
             {
@@ -114,10 +211,26 @@
               "sort": 2,
               "description": "海祇岛、清籁岛。挑战 29；雷灵 19。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 204 },
-                { "id": "challenge", "name": "限时挑战", "target": 29 },
-                { "id": "seelie", "name": "仙灵", "target": 6 },
-                { "id": "thunder_spirit", "name": "雷灵", "target": 19 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 204
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 29
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 6
+                },
+                {
+                  "id": "thunder_spirit",
+                  "name": "雷灵",
+                  "target": 19
+                }
               ]
             },
             {
@@ -126,10 +239,26 @@
               "sort": 3,
               "description": "鹤观。挑战 16；雷灵 6（「雾夜的灼灼电影」）。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 169 },
-                { "id": "challenge", "name": "限时挑战", "target": 16 },
-                { "id": "seelie", "name": "仙灵", "target": 6 },
-                { "id": "thunder_spirit", "name": "雷灵", "target": 6 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 169
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 16
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 6
+                },
+                {
+                  "id": "thunder_spirit",
+                  "name": "雷灵",
+                  "target": 6
+                }
               ]
             },
             {
@@ -138,10 +267,26 @@
               "sort": 4,
               "description": "渊下宫。无雷灵分项。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 185 },
-                { "id": "challenge", "name": "限时挑战", "target": 18 },
-                { "id": "seelie", "name": "仙灵", "target": 36 },
-                { "id": "thunder_spirit", "name": "雷灵", "target": 0 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 185
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 18
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 36
+                },
+                {
+                  "id": "thunder_spirit",
+                  "name": "雷灵",
+                  "target": 0
+                }
               ]
             }
           ]
@@ -151,7 +296,11 @@
           "name": "须弥",
           "image": "/images/sumeru.jpg",
           "sort": 4,
-          "targets": { "chest": 1475, "challenge": 160, "seelie": 156 },
+          "targets": {
+            "chest": 1475,
+            "challenge": 160,
+            "seelie": 156
+          },
           "areas": [
             {
               "id": "rainforest_where_profound_knowledge_hides_deep",
@@ -159,9 +308,21 @@
               "sort": 1,
               "description": "须弥雨林 8 区（道成林、二净甸、护世森、桓那兰那、失落的苗圃、香醉坡、水天丛林、善见地）。仙灵按实际 54 记，成就面板因计数 bug 显示 53。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 575 },
-                { "id": "challenge", "name": "限时挑战", "target": 45 },
-                { "id": "seelie", "name": "仙灵", "target": 54 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 575
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 45
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 54
+                }
               ]
             },
             {
@@ -170,9 +331,21 @@
               "sort": 2,
               "description": "列柱沙原、上风蚀地、下风蚀地。含 5 个位于千壑沙地的宝箱（计入本区而非饰金其二）。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 354 },
-                { "id": "challenge", "name": "限时挑战", "target": 52 },
-                { "id": "seelie", "name": "仙灵", "target": 52 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 354
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 52
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 52
+                }
               ]
             },
             {
@@ -181,9 +354,21 @@
               "sort": 3,
               "description": "千壑沙地。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 290 },
-                { "id": "challenge", "name": "限时挑战", "target": 37 },
-                { "id": "seelie", "name": "仙灵", "target": 27 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 290
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 37
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 27
+                }
               ]
             },
             {
@@ -192,9 +377,21 @@
               "sort": 4,
               "description": "荒石苍漠、浮罗遒（3.6 版本新增）。仙灵按 7.x 成就面板 23 记（3.6 初始约 20/21，后续版本新增 2 只）。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 256 },
-                { "id": "challenge", "name": "限时挑战", "target": 26 },
-                { "id": "seelie", "name": "仙灵", "target": 23 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 256
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 26
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 23
+                }
               ]
             }
           ]
@@ -204,7 +401,11 @@
           "name": "枫丹",
           "image": "/images/fontaine.jpg",
           "sort": 5,
-          "targets": { "chest": 945, "challenge": 144, "seelie": 75 },
+          "targets": {
+            "chest": 945,
+            "challenge": 144,
+            "seelie": 75
+          },
           "areas": [
             {
               "id": "dance_of_the_dew_white_springs_i",
@@ -212,9 +413,21 @@
               "sort": 1,
               "description": "枫丹廷区、白露区、苍晶区。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 344 },
-                { "id": "challenge", "name": "限时挑战", "target": 53 },
-                { "id": "seelie", "name": "仙灵", "target": 42 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 344
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 53
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 42
+                }
               ]
             },
             {
@@ -223,9 +436,21 @@
               "sort": 2,
               "description": "黎翡区、动能工程科学研究院区。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 243 },
-                { "id": "challenge", "name": "限时挑战", "target": 28 },
-                { "id": "seelie", "name": "仙灵", "target": 13 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 243
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 28
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 13
+                }
               ]
             },
             {
@@ -234,9 +459,21 @@
               "sort": 3,
               "description": "莫尔泰区、伊黎耶林区。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 207 },
-                { "id": "challenge", "name": "限时挑战", "target": 30 },
-                { "id": "seelie", "name": "仙灵", "target": 13 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 207
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 30
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 13
+                }
               ]
             },
             {
@@ -245,9 +482,21 @@
               "sort": 4,
               "description": "诺思托伊区、旧日之海。仙灵按区域实际 7 个记（成就「金宫引路人」显示门槛为 6）。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 151 },
-                { "id": "challenge", "name": "限时挑战", "target": 33 },
-                { "id": "seelie", "name": "仙灵", "target": 7 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 151
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 33
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 7
+                }
               ]
             }
           ]
@@ -257,7 +506,11 @@
           "name": "纳塔",
           "image": "/images/natlan.jpg",
           "sort": 6,
-          "targets": { "chest": 999, "challenge": 74, "phantasm": 72 },
+          "targets": {
+            "chest": 999,
+            "challenge": 74,
+            "phantasm": 72
+          },
           "areas": [
             {
               "id": "the_land_of_fire_and_competition_i",
@@ -265,9 +518,21 @@
               "sort": 1,
               "description": "万火之瓯、坚岩幽谷、踞石山、涌流地。第三分项为幻写灵 40。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 411 },
-                { "id": "challenge", "name": "限时挑战", "target": 17 },
-                { "id": "phantasm", "name": "幻写灵", "target": 40 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 411
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 17
+                },
+                {
+                  "id": "phantasm",
+                  "name": "幻写灵",
+                  "target": 40
+                }
               ]
             },
             {
@@ -276,9 +541,21 @@
               "sort": 2,
               "description": "镜壁山、翘枝崖、奥奇卡纳塔。第三分项为幻写灵 12。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 202 },
-                { "id": "challenge", "name": "限时挑战", "target": 11 },
-                { "id": "phantasm", "name": "幻写灵", "target": 12 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 202
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 11
+                },
+                {
+                  "id": "phantasm",
+                  "name": "幻写灵",
+                  "target": 12
+                }
               ]
             },
             {
@@ -287,9 +564,21 @@
               "sort": 3,
               "description": "远古圣山、安饶之野。第三分项为幻写灵 14。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 217 },
-                { "id": "challenge", "name": "限时挑战", "target": 14 },
-                { "id": "phantasm", "name": "幻写灵", "target": 14 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 217
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 14
+                },
+                {
+                  "id": "phantasm",
+                  "name": "幻写灵",
+                  "target": 14
+                }
               ]
             },
             {
@@ -298,9 +587,21 @@
               "sort": 4,
               "description": "悠悠度假村（5.8 版本限时海岛，现仍计入成就数）。幻写灵 6（成就「幻写引路人·其三」）。含 5.8 海岛雕像解锁的 3 个宝箱，同时计入璃月·岩与契约的海港成就。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 169 },
-                { "id": "challenge", "name": "限时挑战", "target": 32 },
-                { "id": "phantasm", "name": "幻写灵", "target": 6 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 169
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 32
+                },
+                {
+                  "id": "phantasm",
+                  "name": "幻写灵",
+                  "target": 6
+                }
               ]
             }
           ]
@@ -310,7 +611,11 @@
           "name": "挪德卡莱",
           "image": "/images/nodkrai.jpg",
           "sort": 7,
-          "targets": { "chest": 752, "challenge": 22, "seelie": 0 },
+          "targets": {
+            "chest": 752,
+            "challenge": 22,
+            "seelie": 0
+          },
           "areas": [
             {
               "id": "an_elysium_of_moonlight_and_wanderings_i",
@@ -318,9 +623,21 @@
               "sort": 1,
               "description": "伦波岛、希汐岛、帕哈岛。无仙灵分项。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 299 },
-                { "id": "challenge", "name": "限时挑战", "target": 13 },
-                { "id": "seelie", "name": "仙灵", "target": 0 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 299
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 13
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
               ]
             },
             {
@@ -329,9 +646,21 @@
               "sort": 2,
               "description": "虚海望、逐浪野、烟珞山峰。宝箱按成就数 229 记（部分攻略按三区路线分段合计为 226，差 3 个边域地灵龛）；限时挑战按 5 记（成就门槛即 5，随影月月攻略确认区域挑战为 5 个；个别英文站记 8 个位点，未采用）；无仙灵分项。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 229 },
-                { "id": "challenge", "name": "限时挑战", "target": 5 },
-                { "id": "seelie", "name": "仙灵", "target": 0 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 229
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 5
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
               ]
             },
             {
@@ -340,9 +669,21 @@
               "sort": 3,
               "description": "杜南纳深坑、霜月。无仙灵分项。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 224 },
-                { "id": "challenge", "name": "限时挑战", "target": 4 },
-                { "id": "seelie", "name": "仙灵", "target": 0 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 224
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 4
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 0
+                }
               ]
             }
           ]
@@ -352,7 +693,11 @@
           "name": "至冬",
           "image": "/images/snezhnaya.jpg",
           "sort": 8,
-          "targets": { "chest": 345, "challenge": 31, "seelie": 13 },
+          "targets": {
+            "chest": 345,
+            "challenge": 31,
+            "seelie": 13
+          },
           "areas": [
             {
               "id": "sacred_city_of_ice_and_pale_star_i",
@@ -360,9 +705,21 @@
               "sort": 1,
               "description": "永凝冻土、古兽冰原、焰羽谷、白桦雪葬地、霜殛寒峰。宝箱按成就数 345 记（部分攻略按五区子区域合计为 342，差 3 个任务/隐藏箱）。",
               "items": [
-                { "id": "chest", "name": "宝箱", "target": 345 },
-                { "id": "challenge", "name": "限时挑战", "target": 31 },
-                { "id": "seelie", "name": "仙灵", "target": 13 }
+                {
+                  "id": "chest",
+                  "name": "宝箱",
+                  "target": 345
+                },
+                {
+                  "id": "challenge",
+                  "name": "限时挑战",
+                  "target": 31
+                },
+                {
+                  "id": "seelie",
+                  "name": "仙灵",
+                  "target": 13
+                }
               ]
             }
           ]
@@ -374,7 +731,13 @@
       "id": "starrail",
       "name": "崩坏·星穹铁道",
       "sort": 2,
-      "regions": []
+      "regions": [],
+      "image": "/images/starrail-hero.jpg",
+      "gallery": [
+        "/images/starrail-2.jpg",
+        "/images/starrail-3.jpg",
+        "/images/starrail-4.jpg"
+      ]
     }
   ],
   "settings": {}
