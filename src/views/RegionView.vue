@@ -303,9 +303,9 @@ function handleNoteInput(areaId, event) {
   z-index: -1;
   background: linear-gradient(
     180deg,
-    rgba(11, 17, 29, 0.35) 0%,
-    rgba(11, 17, 29, 0.55) 55%,
-    rgba(11, 17, 29, 0.94) 100%
+    rgba(10, 11, 13, 0.4) 0%,
+    rgba(10, 11, 13, 0.6) 55%,
+    rgba(10, 11, 13, 0.96) 100%
   );
 }
 .region-hero-content {
@@ -338,9 +338,9 @@ function handleNoteInput(areaId, event) {
 .rt-item {
   padding: 2px 10px;
   border-radius: 999px;
-  border: 1px solid var(--line-gold);
-  color: var(--gold);
-  background: var(--gold-tint);
+  border: 1px solid var(--line-strong);
+  color: var(--text-2);
+  background: rgba(255, 255, 255, 0.05);
 }
 .region-title-text {
   margin: 0;
@@ -350,9 +350,9 @@ function handleNoteInput(areaId, event) {
 }
 
 .region-hint {
-  background: var(--gold-tint);
-  border: 1px solid var(--line-gold);
-  color: var(--gold-bright);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line-strong);
+  color: var(--text-2);
   border-radius: var(--r-sm);
   padding: var(--sp-3) var(--sp-4);
   font-size: var(--fz-sm);
@@ -366,12 +366,12 @@ function handleNoteInput(areaId, event) {
   letter-spacing: 0.03em;
 }
 .region-legend strong {
-  color: var(--gold);
+  color: var(--text-2);
   font-weight: 600;
 }
 
 .region-table-wrap {
-  background: rgba(16, 24, 40, 0.6);
+  background: rgba(16, 17, 20, 0.6);
   backdrop-filter: blur(8px);
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
@@ -394,8 +394,8 @@ function handleNoteInput(areaId, event) {
   font-size: var(--fz-xs);
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: var(--gold);
-  background: rgba(211, 188, 142, 0.06);
+  color: var(--text-3);
+  background: rgba(255, 255, 255, 0.03);
   font-family: var(--font-sans);
 }
 .region-table tbody tr {
@@ -432,7 +432,7 @@ function handleNoteInput(areaId, event) {
   padding: 6px 10px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--r-sm);
-  background: rgba(11, 17, 29, 0.6);
+  background: rgba(10, 11, 13, 0.55);
   color: var(--text-1);
   font-size: var(--fz-base);
   text-align: right;
@@ -446,8 +446,8 @@ function handleNoteInput(areaId, event) {
 }
 .cell-input:focus-visible {
   outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px var(--gold-tint);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 .cell-input:disabled {
   background: rgba(255, 255, 255, 0.03);
@@ -478,16 +478,16 @@ function handleNoteInput(areaId, event) {
   cursor: pointer;
 }
 .expand-btn:hover {
-  color: var(--gold);
-  border-color: var(--line-gold);
+  color: var(--text-1);
+  border-color: rgba(255, 255, 255, 0.28);
 }
 .expand-btn.open {
   transform: rotate(90deg);
-  color: var(--gold);
-  border-color: var(--line-gold);
+  color: var(--text-1);
+  border-color: rgba(255, 255, 255, 0.28);
 }
 .note-row td {
-  background: rgba(211, 188, 142, 0.04);
+  background: rgba(255, 255, 255, 0.03);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 .note-wrap {
@@ -505,7 +505,7 @@ function handleNoteInput(areaId, event) {
   padding: var(--sp-3) var(--sp-4);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--r-sm);
-  background: rgba(11, 17, 29, 0.6);
+  background: rgba(10, 11, 13, 0.55);
   color: var(--text-1);
   font-size: var(--fz-base);
   line-height: 1.6;
@@ -515,8 +515,8 @@ function handleNoteInput(areaId, event) {
 }
 .note-input:focus {
   outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px var(--gold-tint);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 .note-view {
   margin: 0;
@@ -574,8 +574,8 @@ function handleNoteInput(areaId, event) {
   transition: var(--t);
 }
 .file-menu-item:hover {
-  background: var(--gold-tint);
-  color: var(--gold);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-1);
 }
 .file-menu-tip {
   margin: var(--sp-1) var(--sp-3) var(--sp-2);

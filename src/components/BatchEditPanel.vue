@@ -220,16 +220,17 @@ function clearGuest() {
   transition: var(--t);
 }
 .batch-region-head:hover {
-  color: var(--gold);
+  color: var(--text-1);
 }
 .batch-caret {
   display: inline-flex;
   align-items: center;
-  color: var(--gold);
+  color: var(--text-3);
   transition: transform 0.2s var(--ease);
 }
 .batch-caret.open {
   transform: rotate(90deg);
+  color: var(--text-1);
 }
 .batch-region-meta {
   margin-left: auto;
@@ -245,7 +246,7 @@ function clearGuest() {
 }
 .batch-area-name {
   font-size: var(--fz-xs);
-  color: var(--gold);
+  color: var(--text-3);
   letter-spacing: 0.1em;
   margin-bottom: var(--sp-2);
 }
@@ -269,7 +270,7 @@ function clearGuest() {
   padding: 5px 10px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--r-sm);
-  background: rgba(11, 17, 29, 0.6);
+  background: rgba(10, 11, 13, 0.55);
   color: var(--text-1);
   font-size: var(--fz-base);
   text-align: right;
@@ -277,8 +278,8 @@ function clearGuest() {
 }
 .batch-input:focus-visible {
   outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px var(--gold-tint);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 .batch-foot {
   display: flex;

@@ -109,7 +109,7 @@ function done() {
   position: fixed;
   inset: 0;
   z-index: 80;
-  background: rgba(4, 7, 13, 0.55);
+  background: rgba(5, 6, 8, 0.6);
 }
 .tour-bubble {
   position: fixed;
@@ -117,9 +117,9 @@ function done() {
   max-width: calc(100vw - 24px);
   padding: var(--sp-4) var(--sp-5);
   background: var(--bg-2);
-  border: 1px solid var(--line-gold);
+  border: 1px solid var(--line-strong);
   border-radius: var(--r-md);
-  box-shadow: var(--shadow-card), var(--shadow-glow);
+  box-shadow: var(--shadow-card);
   color: var(--text-1);
 }
 .tour-head {
@@ -130,7 +130,7 @@ function done() {
 }
 .tour-step {
   font-size: var(--fz-xs);
-  color: var(--gold);
+  color: var(--text-3);
   letter-spacing: 0.14em;
 }
 .tour-skip {

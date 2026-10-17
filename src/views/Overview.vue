@@ -270,29 +270,16 @@ function doImportJson(event) {
   z-index: -1;
   background: linear-gradient(
     100deg,
-    rgba(11, 17, 29, 0.94) 0%,
-    rgba(11, 17, 29, 0.8) 45%,
-    rgba(11, 17, 29, 0.6) 100%
+    rgba(10, 11, 13, 0.96) 0%,
+    rgba(10, 11, 13, 0.84) 45%,
+    rgba(10, 11, 13, 0.66) 100%
   );
 }
 .hero-eyebrow {
-  position: relative;
   margin: 0 0 var(--sp-3);
-  padding-bottom: var(--sp-3);
   font-size: var(--fz-xs);
-  color: var(--gold);
+  color: var(--text-3);
   letter-spacing: 0.2em;
-}
-.hero-eyebrow::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 48px;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--gold);
-  opacity: 0.85;
 }
 .hero-title {
   margin: 0 0 var(--sp-3);
@@ -300,7 +287,6 @@ function doImportJson(event) {
   font-weight: 700;
   letter-spacing: 0.04em;
   line-height: 1.2;
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.45);
 }
 .hero-sub {
   margin: 0 0 var(--sp-6);
@@ -319,7 +305,7 @@ function doImportJson(event) {
   display: none;
 }
 .hero-stat {
-  background: rgba(11, 17, 29, 0.55);
+  background: rgba(10, 11, 13, 0.6);
   backdrop-filter: blur(12px);
   border: 1px solid var(--line-strong);
   border-radius: var(--r-md);
@@ -343,7 +329,7 @@ function doImportJson(event) {
   font-weight: 700;
   color: var(--gold-bright);
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 40px rgba(242, 221, 176, 0.25);
+  text-shadow: 0 0 40px rgba(242, 221, 176, 0.18);
 }
 .hero-stat-unit {
   font-size: var(--fz-xl);
@@ -385,9 +371,9 @@ function doImportJson(event) {
   border-color: var(--line-strong);
 }
 .game-tab.active {
-  color: #1a150a;
-  background: var(--gold);
-  border-color: var(--gold);
+  color: #0a0b0d;
+  background: #f2f3f5;
+  border-color: #f2f3f5;
   font-weight: 600;
 }
 
@@ -421,8 +407,8 @@ function doImportJson(event) {
   color: var(--text-1);
 }
 .sort-btn.active {
-  color: var(--gold);
-  background: var(--gold-tint);
+  color: var(--text-1);
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .region-grid {
@@ -447,7 +433,7 @@ function doImportJson(event) {
   gap: var(--sp-4);
 }
 .note-item .mono {
-  color: var(--gold);
+  color: var(--text-3);
   letter-spacing: 0.2em;
   white-space: nowrap;
 }
@@ -493,8 +479,8 @@ function doImportJson(event) {
   transition: var(--t);
 }
 .file-menu-item:hover {
-  background: var(--gold-tint);
-  color: var(--gold);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-1);
 }
 .file-menu-item input {
   display: none;

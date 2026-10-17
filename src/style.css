@@ -1,24 +1,24 @@
-/* ============ 设计 Token（原神主题 · 深色） ============ */
+/* ============ 设计 Token（Linear 式 · 深色克制） ============ */
 :root {
-  /* 背景三级（深蓝黑，源自游戏内 UI 底色） */
-  --bg: #0b111d;
-  --bg-2: #101828;
-  --bg-3: #17233c;
+  /* 背景三级（近黑，内容唯一焦点；单一受控光源，不用彩色渐变） */
+  --bg: #0a0b0d;
+  --bg-2: #101114;
+  --bg-3: #17181c;
 
-  /* 文字三级（相对 --bg #0b111d 实测对比度 ≥4.6:1，保证次要文字可读） */
-  --text-1: #eef2f8;
-  --text-2: #aebad2;
-  --text-3: #8a99b6;
+  /* 文字三级（中性灰白，主文近白/次文灰/弱化深灰） */
+  --text-1: #f2f3f5;
+  --text-2: #9ea2a8;
+  --text-3: #63666d;
 
-  /* 金色强调色：全站唯一 accent（原神 UI 金） */
+  /* 金色：只作数据信号（探索度数字/进度条/完成状态），不作装饰 */
   --gold: #d3bc8e;
   --gold-bright: #f2ddb0;
-  --gold-tint: rgba(211, 188, 142, 0.12);
+  --gold-tint: rgba(211, 188, 142, 0.1);
 
-  /* 边框 */
+  /* 边框（hairline：1px 半透明白） */
   --line: rgba(255, 255, 255, 0.08);
   --line-strong: rgba(255, 255, 255, 0.14);
-  --line-gold: rgba(211, 188, 142, 0.4);
+  --line-gold: rgba(211, 188, 142, 0.35);
 
   /* 状态色（只用于状态反馈，不参与主题） */
   --green: #7ecf8a;
@@ -29,7 +29,7 @@
   --font-sans: -apple-system, 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', sans-serif;
   --font-mono: 'SF Mono', 'Cascadia Code', Consolas, 'JetBrains Mono', monospace;
 
-  /* 字号阶梯 */
+  /* 字号阶梯（版式承担层级，不靠颜色轰炸） */
   --fz-xs: 12px;
   --fz-sm: 13px;
   --fz-base: 14px;
@@ -50,18 +50,17 @@
   --sp-8: 48px;
   --sp-9: 64px;
 
-  /* 圆角 */
-  --r-sm: 8px;
-  --r-md: 12px;
-  --r-lg: 16px;
+  /* 圆角（Linear：卡片 ≤8px，仅按钮胶囊 9999px） */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 8px;
 
-  /* 动效（全局唯一缓动） */
+  /* 动效（全局唯一缓动；"被工程化"的克制动效） */
   --ease: cubic-bezier(0.645, 0.045, 0.355, 1);
   --t-fast: all 0.15s var(--ease);
   --t: all 0.25s var(--ease);
 
   --shadow-card: 0 8px 28px rgba(0, 0, 0, 0.35);
-  --shadow-glow: 0 0 24px rgba(211, 188, 142, 0.15);
 }
 
 * {
@@ -79,21 +78,20 @@ body {
   line-height: 1.7;
   color: var(--text-1);
   background:
-    radial-gradient(1200px 600px at 78% -10%, rgba(50, 66, 108, 0.22), transparent 60%),
-    radial-gradient(900px 500px at -10% 110%, rgba(74, 58, 34, 0.16), transparent 55%),
+    radial-gradient(900px 500px at 80% -10%, rgba(255, 255, 255, 0.035), transparent 60%),
     var(--bg);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
 }
 
-/* 全局纸感噪点纹理（Shiro 式，深色下仅 2.5% 透明度，几乎不可见但消除纯色塑料感） */
+/* 全局纸感噪点纹理（Shiro 式，2% 透明度，消除纯色塑料感） */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.025;
+  opacity: 0.02;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -103,7 +101,7 @@ body::before {
 }
 
 :focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid rgba(255, 255, 255, 0.5);
   outline-offset: 2px;
 }
 
@@ -111,7 +109,7 @@ body::before {
   outline: none;
 }
 
-/* 自定义滚动条 */
+/* 自定义滚动条（中性） */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -126,7 +124,7 @@ body::before {
   background-clip: content-box;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(211, 188, 142, 0.5);
+  background: rgba(255, 255, 255, 0.28);
   background-clip: content-box;
   border: 2px solid transparent;
 }
@@ -155,14 +153,15 @@ button {
 .btn:active {
   transform: scale(0.97);
 }
+/* 主操作：中性高对比（白底黑字），金色不参与按钮 */
 .btn-primary {
-  background: var(--gold);
-  color: #1a150a;
+  background: #f2f3f5;
+  color: #0a0b0d;
   font-weight: 600;
 }
 .btn-primary:hover {
-  background: var(--gold-bright);
-  box-shadow: var(--shadow-glow);
+  background: #ffffff;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 .btn-ghost {
   border: 1px solid var(--line-strong);
@@ -172,7 +171,8 @@ button {
 }
 .btn-ghost:hover {
   color: var(--text-1);
-  border-color: var(--line-gold);
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.07);
 }
 
 .badge {

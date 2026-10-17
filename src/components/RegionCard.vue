@@ -15,10 +15,6 @@ const status = computed(() => getStatus(props.region, props.progress))
 const percent = computed(() => regionPercent(props.region, props.progress))
 // 探索度数字滚动动效（卡片进入时 0 → 目标值）
 const animPercent = useCountUp(() => percent.value, 800)
-const hasImage = computed(() => Boolean(props.region.image))
-const cardStyle = computed(() =>
-  props.region.image ? { '--card-bg': `url('${props.region.image}')` } : {}
-)
 // 板块目标摘要（权威统计，如「宝箱 755 · 挑战 33 · 仙灵 83」）
 const targetSummary = computed(() => {
   const t = props.region.targets ?? {}
@@ -34,12 +30,11 @@ const targetSummary = computed(() => {
   <button
     type="button"
     class="region-card"
-    :class="{ 'has-image': hasImage }"
-    :style="cardStyle"
     @click="emit('edit', region.id)"
   >
     <div class="card-top">
       <span class="card-index mono">{{ String(index + 1).padStart(2, '0') }}</span>
+      <span class="card-status" :class="status" v-if="status === '已完成'">{{ status }}</span>
     </div>
     <div class="card-bottom">
       <div class="card-name">{{ region.name }}</div>
@@ -66,40 +61,12 @@ const targetSummary = computed(() => {
   border-radius: var(--r-lg);
   border: 1px solid var(--line);
   background: var(--bg-2);
-  overflow: hidden;
-  isolation: isolate;
   transition: var(--t);
 }
-.region-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  background-image: var(--card-bg, none);
-  background-size: cover;
-  background-position: center;
-  transform: scale(1.02);
-  transition: transform 0.6s var(--ease);
-}
-.region-card.has-image::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(
-    180deg,
-    rgba(11, 17, 29, 0.55) 0%,
-    rgba(11, 17, 29, 0.25) 40%,
-    rgba(11, 17, 29, 0.92) 100%
-  );
-}
 .region-card:hover {
-  border-color: var(--line-gold);
-  box-shadow: var(--shadow-card), var(--shadow-glow);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: var(--shadow-card);
   transform: translateY(-2px);
-}
-.region-card:hover::before {
-  transform: scale(1.07);
 }
 .region-card:active {
   transform: translateY(0);
@@ -112,9 +79,12 @@ const targetSummary = computed(() => {
 }
 .card-index {
   font-size: var(--fz-xs);
-  color: var(--gold);
+  color: var(--text-3);
   letter-spacing: 0.12em;
-  opacity: 0.9;
+}
+.card-status {
+  font-size: var(--fz-xs);
+  color: var(--green);
 }
 .card-bottom {
   display: flex;

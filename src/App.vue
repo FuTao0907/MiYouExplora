@@ -235,7 +235,7 @@ function tryRestore() {
   padding: var(--sp-2) var(--sp-4);
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(16, 24, 40, 0.8);
+  background: rgba(10, 11, 13, 0.85);
   backdrop-filter: blur(14px);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
   width: fit-content;
@@ -249,7 +249,7 @@ function tryRestore() {
   font-size: var(--fz-base);
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: var(--gold);
+  color: var(--text-1);
   white-space: nowrap;
 }
 .mode-badge {
@@ -259,14 +259,14 @@ function tryRestore() {
   border-radius: 999px;
 }
 .mode-badge.editable {
-  color: var(--gold);
-  border: 1px solid var(--line-gold);
-  background: var(--gold-tint);
+  color: var(--text-2);
+  border: 1px solid var(--line-strong);
+  background: rgba(255, 255, 255, 0.05);
 }
 .btn.active {
-  color: var(--gold);
-  border-color: var(--line-gold);
-  background: var(--gold-tint);
+  color: var(--text-1);
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.07);
 }
 .pwd-input {
   width: 160px;
@@ -279,8 +279,8 @@ function tryRestore() {
 }
 .pwd-input:focus {
   outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px var(--gold-tint);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 .pwd-error {
   font-size: var(--fz-xs);
@@ -292,7 +292,7 @@ function tryRestore() {
   letter-spacing: 0.04em;
 }
 .save-state.save-saving {
-  color: var(--gold);
+  color: var(--text-2);
 }
 .save-state.save-saved {
   color: #6fcf97;
@@ -318,7 +318,7 @@ function tryRestore() {
   transition: var(--t);
 }
 .foot-link:hover {
-  color: var(--gold);
-  background: var(--gold-tint);
+  color: var(--text-1);
+  background: rgba(255, 255, 255, 0.06);
 }
 </style>
