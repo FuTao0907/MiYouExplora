@@ -55,9 +55,15 @@ const status = computed(() =>
 
 const doneLabel = (item) => (item.name === '宝箱' ? '已搜集' : '已完成')
 
-const heroStyle = computed(() =>
-  region.value?.image ? { '--hero-bg': `url('${region.value.image}')` } : {}
-)
+// 地区景观切片（同一实景图的不同裁切，背景定位错开，构成一行景观带）
+const galleryShots = computed(() => {
+  if (!region.value?.image) return []
+  return [
+    { pos: '20% 30%', label: `${region.value.name} · 远景` },
+    { pos: '55% 55%', label: `${region.value.name} · 中景` },
+    { pos: '85% 70%', label: `${region.value.name} · 近景` }
+  ]
+})
 
 // ---- 单格输入（text 输入 + 上下限校验；-1 表示「无/不适用」） ----
 // 编辑草稿：key = areaId|itemId → 输入框当前文本（未 blur 前原样显示）
@@ -124,24 +130,42 @@ function handleNoteInput(areaId, event) {
 
 <template>
   <div v-if="region">
-    <section class="region-hero reveal" :style="heroStyle">
+    <section class="region-hero reveal">
+      <img
+        v-if="region.image"
+        class="region-hero-img"
+        :src="region.image"
+        :alt="`${region.name}实景`"
+        loading="eager"
+      />
       <div class="region-hero-content">
-        <button class="back-link" @click="goBack" title="返回地区总览">
+        <button class="back-link btn btn-ghost reveal" style="animation-delay: 0.06s" @click="goBack" title="返回地区总览">
           <PhCaretLeft :size="15" /> 返回总览
         </button>
-        <div class="region-title">
+        <div class="region-title reveal" style="animation-delay: 0.12s">
           <h1 class="region-title-text">{{ region.name }}</h1>
-          <span class="region-percent mono" :class="{ done: status === STATUS.COMPLETED }">
+          <span class="region-percent tnum" :class="{ done: status === STATUS.COMPLETED }">
             {{ animPercent }}%
           </span>
         </div>
-        <div class="region-targets mono" v-if="hasTargets">
+        <div class="region-targets tnum reveal" style="animation-delay: 0.18s" v-if="hasTargets">
           <template v-for="item in itemDefs" :key="item.id">
             <span class="rt-item" v-if="regionTargets[item.id]">{{ item.name }} {{ regionTargets[item.id] }}</span>
           </template>
         </div>
       </div>
     </section>
+
+    <div class="region-gallery reveal" v-if="galleryShots.length" style="animation-delay: 0.08s">
+      <figure
+        v-for="(shot, i) in galleryShots"
+        :key="i"
+        class="gallery-card reveal"
+        :style="{ '--shot-img': `url('${region.image}')`, '--shot-pos': shot.pos, animationDelay: (0.1 + i * 0.07) + 's' }"
+      >
+        <figcaption>{{ shot.label }}</figcaption>
+      </figure>
+    </div>
 
     <p class="region-hint reveal" v-if="!hasTargets" style="animation-delay: 0.06s">
       分项目标数量（games.json 中地区 targets）尚未配置，配置后即可录入已搜集数量；探索度将按板块目标完成比例自动计算。
@@ -229,22 +253,31 @@ function handleNoteInput(areaId, event) {
   position: relative;
   display: flex;
   align-items: flex-end;
-  padding: var(--sp-6) var(--sp-6);
-  min-height: 170px;
+  padding: var(--sp-7) var(--sp-7);
+  min-height: clamp(280px, 36vw, 380px);
   margin-bottom: var(--sp-6);
   border-radius: var(--r-lg);
   overflow: hidden;
   isolation: isolate;
   background: var(--bg-2);
 }
-.region-hero::before {
-  content: '';
+.region-hero-img {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
   z-index: -1;
-  background-image: var(--hero-bg, none);
-  background-size: cover;
-  background-position: center 40%;
+  animation: hero-pan 22s ease-in-out infinite alternate;
+}
+@keyframes hero-pan {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.06);
+  }
 }
 .region-hero::after {
   content: '';
@@ -254,9 +287,9 @@ function handleNoteInput(areaId, event) {
   /* 地区实景图上的中性压字 scrim（house rule 唯一允许的渐变）taste-skill-ignore */
   background: linear-gradient( /* taste-skill-ignore */
     180deg,
-    rgba(10, 11, 13, 0.4) 0%,
-    rgba(10, 11, 13, 0.6) 55%,
-    rgba(10, 11, 13, 0.96) 100%
+    rgba(10, 11, 13, 0.42) 0%,
+    rgba(10, 11, 13, 0.58) 52%,
+    rgba(10, 11, 13, 0.94) 100%
   );
 }
 .region-hero-content {
@@ -275,7 +308,7 @@ function handleNoteInput(areaId, event) {
   gap: var(--sp-3);
 }
 .region-percent {
-  font-size: var(--fz-xl);
+  font-size: clamp(40px, 5vw, 64px);
   font-weight: 700;
   color: var(--gold-bright);
   line-height: 1;
@@ -283,20 +316,61 @@ function handleNoteInput(areaId, event) {
 .region-targets {
   display: flex;
   gap: var(--sp-2);
-  font-size: var(--fz-xs);
-  letter-spacing: 0.06em;
+  font-size: var(--fz-sm);
 }
 .rt-item {
   padding: 2px 10px;
   border-radius: var(--r-sm);
-  color: var(--text-2);
-  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-1);
+  background: rgba(10, 11, 13, 0.5);
 }
 .region-title-text {
   margin: 0;
-  font-size: var(--fz-xl);
+  font-size: clamp(34px, 4.5vw, 52px);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
+}
+
+/* 地区景观带：同一实景图的三段裁切，桌面展示 */
+.region-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-6);
+}
+.gallery-card {
+  position: relative;
+  margin: 0;
+  height: 150px;
+  border-radius: var(--r-md);
+  background-image: var(--shot-img, none);
+  background-size: cover;
+  background-position: var(--shot-pos, center);
+  overflow: hidden;
+  transition: transform 0.3s var(--ease);
+}
+.gallery-card:hover {
+  transform: scale(1.02);
+}
+/* 景观卡脚注压字 scrim（house rule 唯一允许的渐变）taste-skill-ignore */
+.gallery-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 11, 13, 0) 55%, rgba(10, 11, 13, 0.8) 100%); /* taste-skill-ignore */
+}
+.gallery-card figcaption {
+  position: absolute;
+  left: var(--sp-3);
+  bottom: var(--sp-2);
+  z-index: 1;
+  font-size: var(--fz-xs);
+  color: var(--text-2);
+}
+@media (max-width: 720px) {
+  .region-gallery {
+    display: none;
+  }
 }
 
 .region-hint {
@@ -479,15 +553,15 @@ function handleNoteInput(areaId, event) {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: var(--sp-1) var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
   border-radius: var(--r-sm);
   font-size: var(--fz-sm);
-  color: var(--text-3);
+  color: var(--text-2);
   transition: var(--t);
   margin-bottom: var(--sp-3);
 }
 .back-link:hover {
   color: var(--text-1);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
 }
 </style>

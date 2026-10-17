@@ -41,12 +41,12 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
 
 <template>
   <section class="hero">
-    <div class="hero-content reveal">
-      <h1 class="hero-title">米游探索度记录</h1>
-      <p class="hero-sub">记录提瓦特每一块土地的探索进度。游客可直接录入自己的进度（保存在本机）；主人解锁后录入，编辑自动保存到云端。</p>
-      <button class="btn btn-primary hero-cta" @click="scrollToCards" title="浏览全部地区的探索进度">查看地区进度</button>
+    <div class="hero-content">
+      <h1 class="hero-title reveal" style="animation-delay: 0s">米游探索度记录</h1>
+      <p class="hero-sub reveal" style="animation-delay: 0.08s">记录提瓦特每一块土地的探索进度。游客可直接录入自己的进度（保存在本机）；主人解锁后录入，编辑自动保存到云端。</p>
+      <button class="btn btn-primary hero-cta reveal" style="animation-delay: 0.16s" @click="scrollToCards" title="浏览全部地区的探索进度">查看地区进度</button>
     </div>
-    <div class="hero-stat reveal" style="animation-delay: 0.14s">
+    <div class="hero-stat reveal" style="animation-delay: 0.22s">
       <div class="hero-stat-value">
         <span class="tnum">{{ overallAnim }}</span><span class="hero-stat-unit">%</span>
       </div>
