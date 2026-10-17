@@ -28,7 +28,7 @@ const img = computed(() => props.region.image || '')
   <button
     type="button"
     class="region-card"
-    :style="img ? { '--region-img': `url(${img})` } : {}"
+    :style="{ '--cols': targetItems.length, ...(img ? { '--region-img': `url(${img})` } : {}) }"
     :aria-label="`查看${region.name}探索详情`"
     @click="emit('edit', region.id)"
   >
@@ -131,7 +131,8 @@ const img = computed(() => props.region.image || '')
 }
 .card-targets {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* 分项数量决定列数（2/3/4 项均单行显示，保持卡片等高） */
+  grid-template-columns: repeat(var(--cols, 3), 1fr);
   gap: var(--sp-2);
   margin-top: 2px;
 }
