@@ -136,7 +136,9 @@ function handleNoteInput(areaId, event) {
           <PhCaretLeft :size="15" /> 返回总览
         </button>
         <div class="region-title reveal" style="animation-delay: 0.12s">
-          <h1 class="region-title-text">{{ region.name }}</h1>
+          <h1 class="region-title-text">
+            <span class="region-title-line"><span>{{ region.name }}</span></span>
+          </h1>
           <span class="region-percent tnum" :class="{ done: status === STATUS.COMPLETED }">
             {{ animPercent }}%
           </span>
@@ -247,7 +249,7 @@ function handleNoteInput(areaId, event) {
   display: flex;
   align-items: flex-end;
   padding: var(--sp-7) var(--sp-7);
-  min-height: clamp(280px, 36vw, 380px);
+  min-height: clamp(340px, 46vh, 540px);
   margin-bottom: var(--sp-6);
   border-radius: var(--r-lg);
   overflow: hidden;
@@ -308,20 +310,35 @@ function handleNoteInput(areaId, event) {
 }
 .region-targets {
   display: flex;
-  gap: var(--sp-2);
+  gap: var(--sp-3);
   font-size: var(--fz-sm);
 }
 .rt-item {
-  padding: 2px 10px;
-  border-radius: var(--r-sm);
   color: var(--text-1);
-  background: rgba(10, 11, 13, 0.5);
 }
 .region-title-text {
   margin: 0;
   font-size: clamp(34px, 4.5vw, 52px);
   font-weight: 700;
   letter-spacing: 0.05em;
+}
+/* 标题从基线下方揭起（masked line） */
+.region-title-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.region-title-line > span {
+  display: block;
+  transform: translateY(112%);
+  animation: region-line-up 0.9s var(--ease) forwards;
+  animation-delay: 0.12s;
+}
+@keyframes region-line-up {
+  to {
+    transform: translateY(0);
+  }
 }
 
 /* 地区景观带：同一实景图的三段裁切，桌面展示 */

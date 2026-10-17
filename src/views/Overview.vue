@@ -55,18 +55,22 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
 
 <template>
   <section class="hero">
-    <img
-      class="hero-img"
-      :src="activeGame?.image ?? '/images/hero.jpg'"
-      :alt="`${activeGame?.name ?? '米游'}实景`"
-      loading="eager"
-    />
-    <div class="hero-content">
-      <h1 class="hero-title reveal" style="animation-delay: 0s">米游探索度记录</h1>
-      <p class="hero-sub reveal" style="animation-delay: 0.08s">{{ heroSub }}</p>
-      <button class="btn btn-primary hero-cta reveal" style="animation-delay: 0.16s" @click="scrollToCards" title="浏览全部地区的探索进度">查看地区进度</button>
+    <div class="hero-media">
+      <img
+        class="hero-img"
+        :src="activeGame?.image ?? '/images/hero.jpg'"
+        :alt="`${activeGame?.name ?? '米游'}实景`"
+        loading="eager"
+      />
     </div>
-    <div class="hero-stat reveal" style="animation-delay: 0.22s">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="hero-title-line"><span>米游探索度记录</span></span>
+      </h1>
+      <p class="hero-sub reveal" style="animation-delay: 0.28s">{{ heroSub }}</p>
+      <button class="btn btn-primary hero-cta reveal" style="animation-delay: 0.36s" @click="scrollToCards" title="浏览全部地区的探索进度">查看地区进度</button>
+    </div>
+    <div class="hero-stat reveal" style="animation-delay: 0.44s">
       <div class="hero-stat-value">
         <span class="tnum">{{ overallAnim }}</span><span class="hero-stat-unit">%</span>
       </div>
@@ -143,23 +147,33 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
   display: grid;
   grid-template-columns: 1.35fr 1fr;
   gap: var(--sp-7);
-  align-items: center;
-  min-height: 320px;
-  padding: var(--sp-9) var(--sp-8);
-  margin-bottom: var(--sp-7);
+  align-items: end;
+  min-height: clamp(480px, 64vh, 680px);
+  padding: clamp(28px, 5vw, 56px) var(--sp-8);
+  margin-bottom: var(--sp-8);
   border-radius: var(--r-lg);
   overflow: hidden;
   isolation: isolate;
   background: var(--bg-2);
 }
-.hero-img {
+/* 签名时刻：hero 实景从底部揭开（shutter）+ 图内慢速 kenburns */
+.hero-media {
   position: absolute;
   inset: 0;
+  overflow: hidden;
+  clip-path: inset(0 0 100% 0);
+  animation: shutter-in 1.1s var(--ease) forwards;
+}
+@keyframes shutter-in {
+  to {
+    clip-path: inset(0);
+  }
+}
+.hero-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 60%;
-  z-index: -1;
+  object-position: center 55%;
   animation: kenburns 16s ease-in-out infinite alternate;
 }
 @keyframes kenburns {
@@ -174,14 +188,19 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
   content: '';
   position: absolute;
   inset: 0;
-  z-index: -1;
+  z-index: 1;
   /* 图片上的中性压字 scrim（house rule 唯一允许的渐变）taste-skill-ignore */
   background: linear-gradient( /* taste-skill-ignore */
     100deg,
     rgba(10, 11, 13, 0.96) 0%,
-    rgba(10, 11, 13, 0.84) 45%,
-    rgba(10, 11, 13, 0.66) 100%
+    rgba(10, 11, 13, 0.82) 45%,
+    rgba(10, 11, 13, 0.6) 100%
   );
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 640px;
 }
 .hero-title {
   margin: 0 0 var(--sp-3);
@@ -189,6 +208,24 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
   font-weight: 700;
   letter-spacing: 0.04em;
   line-height: 1.2;
+}
+/* 标题从基线下方揭起（masked line） */
+.hero-title-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.hero-title-line > span {
+  display: block;
+  transform: translateY(112%);
+  animation: line-up 0.9s var(--ease) forwards;
+  animation-delay: 0.15s;
+}
+@keyframes line-up {
+  to {
+    transform: translateY(0);
+  }
 }
 .hero-sub {
   margin: 0 0 var(--sp-5);
@@ -199,10 +236,12 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
 .hero-cta {
   align-self: flex-start;
 }
+/* 数字区直接压图（去卡片底，更接近 2026 海报式 hero） */
 .hero-stat {
-  background: rgba(10, 11, 13, 0.72);
-  border-radius: var(--r-md);
-  padding: var(--sp-6);
+  position: relative;
+  z-index: 2;
+  justify-self: end;
+  min-width: 300px;
 }
 .hero-stat-value {
   display: flex;
@@ -229,7 +268,7 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
 .hero-bar {
   height: 4px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
   overflow: hidden;
 }
 .hero-bar-fill {
