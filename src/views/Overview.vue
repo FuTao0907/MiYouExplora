@@ -147,10 +147,10 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
   display: grid;
   grid-template-columns: 1.35fr 1fr;
   gap: var(--sp-7);
-  align-items: end;
-  min-height: clamp(480px, 64vh, 680px);
-  padding: clamp(28px, 5vw, 56px) var(--sp-8);
-  margin-bottom: var(--sp-8);
+  align-items: center;
+  min-height: clamp(200px, 30vh, 300px);
+  padding: var(--sp-7) var(--sp-8);
+  margin-bottom: var(--sp-6);
   border-radius: var(--r-lg);
   overflow: hidden;
   isolation: isolate;

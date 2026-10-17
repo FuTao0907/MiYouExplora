@@ -55,7 +55,7 @@ const status = computed(() =>
 
 const doneLabel = (item) => (item.name === '宝箱' ? '已搜集' : '已完成')
 
-// 地区景观带：直接使用该地区 3 张不同的实景图（games.json 的 region.gallery）
+// 地区景观带：3 张不同实景（games.json 的 region.gallery），紧凑一行不抢核心表格
 const galleryShots = computed(() => region.value?.gallery ?? [])
 
 // ---- 单格输入（text 输入 + 上下限校验；-1 表示「无/不适用」） ----
@@ -248,9 +248,9 @@ function handleNoteInput(areaId, event) {
   position: relative;
   display: flex;
   align-items: flex-end;
-  padding: var(--sp-7) var(--sp-7);
-  min-height: clamp(340px, 46vh, 540px);
-  margin-bottom: var(--sp-6);
+  padding: var(--sp-6) var(--sp-7);
+  min-height: clamp(260px, 36vh, 360px);
+  margin-bottom: var(--sp-5);
   border-radius: var(--r-lg);
   overflow: hidden;
   isolation: isolate;
@@ -303,7 +303,7 @@ function handleNoteInput(areaId, event) {
   gap: var(--sp-3);
 }
 .region-percent {
-  font-size: clamp(40px, 5vw, 64px);
+  font-size: clamp(48px, 6.5vw, 104px);
   font-weight: 700;
   color: var(--gold-bright);
   line-height: 1;
@@ -341,17 +341,17 @@ function handleNoteInput(areaId, event) {
   }
 }
 
-/* 地区景观带：同一实景图的三段裁切，桌面展示 */
+/* 地区景观带：3 张不同实景图，紧凑一行（不占核心表格空间） */
 .region-gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--sp-3);
-  margin-bottom: var(--sp-6);
+  margin-bottom: var(--sp-5);
 }
 .gallery-card {
   position: relative;
   margin: 0;
-  height: 150px;
+  height: 112px;
   border-radius: var(--r-md);
   background-image: var(--shot-img, none);
   background-size: cover;
