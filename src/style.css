@@ -236,7 +236,7 @@ button {
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: none; /* 结束态必须为 none，否则保留的 transform 会让内部 fixed 元素（如 modal 遮罩）相对本元素定位 */
   }
 }
 .reveal {

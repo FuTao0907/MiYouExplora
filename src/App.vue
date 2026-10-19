@@ -8,6 +8,7 @@ import {
   PhEye,
   PhEyeSlash,
   PhGameController,
+  PhImageSquare,
   PhLock,
   PhLockOpen,
   PhPencilSimple,
@@ -217,6 +218,17 @@ function doImportJson(event) {
               {{ game.name }}
             </button>
           </nav>
+
+          <!-- 角色图鉴入口（仅原神；其他游戏无图鉴数据） -->
+          <button
+            v-if="store.activeGameId.value === 'genshin'"
+            class="text-link gallery-link"
+            :class="{ active: $route.name === 'characters' }"
+            @click="router.push('/game/genshin/characters')"
+            title="查看全角色证件照与抽卡立绘（图片来自 Project Amber）"
+          >
+            <PhImageSquare :size="14" /> 角色图鉴
+          </button>
 
           <div class="topbar-right">
             <template v-if="store.editable.value">
