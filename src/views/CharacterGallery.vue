@@ -1,24 +1,32 @@
 <script setup>
 /**
- * 角色图鉴页
- * - 数据：public/data/genshin-characters.json（由 scripts/fetch_characters.py 生成，源：Project Amber）
- * - 图片：实时直链 gi.yatta.moe/assets/UI/（证件照 256²、抽卡立绘 2048×1024）
+ * 角色图鉴页（多游戏框架）
+ * - 数据：public/data/characters/<gameId>.json（由 scripts/fetch_characters.py 按游戏生成）
+ * - 图片：实时直链对应素材站（原神 = Project Amber /assets/UI/）
  * - 加载：数据骨架 / 头像懒加载+骨架+失败重试 / 立绘 modal 加载+失败重试 / 空态
  */
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { PhX, PhArrowClockwise, PhDownloadSimple, PhWarningCircle } from '@phosphor-icons/vue'
+import { downloadImage } from '../utils/downloadImage.js'
 
 const props = defineProps({
   store: { type: Object, required: true },
   gameId: { type: String, default: 'genshin' }
 })
 
-// 仅原神有角色图鉴；其他游戏访问此路由时显示空态提示
-const isGenshin = computed(() => props.store.activeGameId.value === 'genshin')
+// 按当前游戏加载对应角色数据；文件不存在（404）视为"该游戏暂未开放"
+const gameId = computed(() => props.store.activeGameId.value || 'genshin')
+const dataUrl = computed(() => `/data/characters/${gameId.value}.json`)
+const gameName = computed(() => {
+  const g = props.store.games.value.find((x) => x.id === gameId.value)
+  return g ? g.name : gameId.value
+})
 
 const loading = ref(true)
 const error = ref('')
+const notOpen = ref(false) // 该游戏未提供图鉴数据
 const characters = ref([])
+const source = ref({ name: '', url: '' }) // 数据源元信息（脚本写入）
 const activeElement = ref('全部')
 const failed = ref(new Set()) // 头像加载失败的角色 id
 const retryTick = ref(0)
@@ -34,12 +42,22 @@ const ELEMENT_COLOR = {
 async function loadData() {
   loading.value = true
   error.value = ''
+  notOpen.value = false
   try {
-    const res = await fetch('/data/genshin-characters.json', { cache: 'no-cache' })
+    const res = await fetch(dataUrl.value, { cache: 'no-cache' })
+    // SPA fallback（Vite dev / EdgeOne rewrites）会把不存在的数据文件回退成 index.html（200 text/html），
+    // 因此除 404 外还要按 Content-Type 判别：不是 JSON 一律视为"该游戏未提供图鉴数据"。
+    const ct = res.headers.get('content-type') || ''
+    if (res.status === 404 || !ct.includes('application/json')) {
+      notOpen.value = true
+      return
+    }
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const data = await res.json()
-    if (!Array.isArray(data) || data.length === 0) throw new Error('数据为空')
-    characters.value = data
+    const items = Array.isArray(data) ? data : data.items // 兼容纯数组与带 source 的对象结构
+    if (!Array.isArray(items) || items.length === 0) throw new Error('数据为空')
+    characters.value = items
+    source.value = (data && data.source) || { name: '', url: '' }
   } catch (e) {
     error.value = e.message || String(e)
   } finally {
@@ -48,11 +66,6 @@ async function loadData() {
 }
 
 onMounted(() => {
-  // 非原神游戏不加载原神角色数据，直接显示空态
-  if (!isGenshin.value) {
-    loading.value = false
-    return
-  }
   loadData()
 })
 
@@ -95,6 +108,7 @@ function openModal(c) {
 }
 function closeModal() {
   modal.value = null
+  downloadError.value = ''
 }
 function onArtLoaded() {
   modalState.value = 'ok'
@@ -114,6 +128,34 @@ function onKeydown(e) {
 }
 onMounted(() => window.addEventListener('keydown', onKeydown))
 onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
+
+// ---- 下载（同源代理：生产 /api/img Functions，开发 Vite proxy）----
+const downloading = ref(false)
+const downloadError = ref('')
+async function downloadArt() {
+  if (!modal.value || downloading.value) return
+  downloading.value = true
+  downloadError.value = ''
+  try {
+    await downloadImage(modal.value.art, `${modal.value.name}·抽卡立绘.png`)
+  } catch (e) {
+    downloadError.value = e.message || '网络错误'
+  } finally {
+    downloading.value = false
+  }
+}
+async function downloadAvatar() {
+  if (!modal.value || downloading.value) return
+  downloading.value = true
+  downloadError.value = ''
+  try {
+    await downloadImage(modal.value.avatar, `${modal.value.name}·证件照.png`)
+  } catch (e) {
+    downloadError.value = e.message || '网络错误'
+  } finally {
+    downloading.value = false
+  }
+}
 </script>
 
 <template>
@@ -122,7 +164,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
     <header class="gallery-head">
       <h1 class="gallery-title">角色图鉴</h1>
       <p class="gallery-sub">
-        原神全角色证件照与抽卡立绘。图片实时加载自 Project Amber，点击任意角色查看高清立绘。
+        {{ gameName }}全角色证件照与抽卡立绘。图片实时加载自素材站，点击任意角色查看高清立绘，可下载到本地。
       </p>
     </header>
 
@@ -135,16 +177,16 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
       </div>
     </div>
 
-    <!-- 非原神游戏：暂无图鉴 -->
-    <div v-else-if="!isGenshin" class="state-box">
+    <!-- 非本游戏图鉴：暂未开放（数据文件 404） -->
+    <div v-else-if="notOpen" class="state-box">
       <p>该游戏暂未开放角色图鉴。</p>
-      <p class="state-hint">角色图鉴目前仅收录《原神》。</p>
+      <p class="state-hint">角色图鉴需对应游戏的角色数据文件（public/data/characters/{{ gameId }}.json）存在时才会显示。</p>
     </div>
 
     <!-- 数据加载失败 -->
     <div v-else-if="error" class="state-box error" role="alert">
       <p><PhWarningCircle :size="18" /> 角色数据加载失败：{{ error }}</p>
-      <p class="state-hint">请确认 public/data/genshin-characters.json 存在且为合法 JSON。</p>
+      <p class="state-hint">请确认 public/data/characters/{{ gameId }}.json 存在且为合法 JSON。</p>
       <button class="btn btn-ghost" @click="loadData" title="重新加载角色数据">
         <PhArrowClockwise :size="14" /> 重试
       </button>
@@ -154,7 +196,15 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
       <!-- 统计 + 元素筛选（纯文本，无胶囊按钮） -->
       <p class="gallery-stats">
         <span class="tnum">{{ totalCount }}</span> 位角色 · 图片来自
-        <a class="ext-link" href="https://gi.yatta.moe" target="_blank" rel="noreferrer" title="Project Amber 数据站，新版本角色自动更新">Project Amber</a>
+        <a
+          v-if="source.url"
+          class="ext-link"
+          :href="source.url"
+          target="_blank"
+          rel="noreferrer"
+          :title="source.name + ' 素材站，新版本角色自动更新'"
+        >{{ source.name }}</a>
+        <span v-else>{{ source.name || gameName }}</span>
       </p>
 
       <nav class="filter-row" aria-label="按元素筛选">
@@ -229,7 +279,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
       <footer class="gallery-foot">
         <p>
           角色立绘与证件照版权归米哈游所有，本页面仅作个人记录与学习用途。
-          素材实时加载自 Project Amber（gi.yatta.moe），数据随游戏版本更新；个别图片加载失败可点击重试。
+          素材实时加载自{{ source.name || gameName }}（{{ source.url || '对应游戏素材站' }}），数据随游戏版本更新；个别图片加载失败可点击重试。
         </p>
       </footer>
     </template>
@@ -281,13 +331,27 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
                 {{ modal.element }} · {{ modal.rarity }}星 · {{ modal.weapon || '—' }}
               </span>
               <div class="modal-actions">
-                <a class="text-link" :href="modal.art" target="_blank" rel="noreferrer" title="在新标签页打开立绘原图（2048×1024）">
-                  <PhDownloadSimple :size="14" /> 立绘原图
-                </a>
-                <a class="text-link" :href="modal.avatar" target="_blank" rel="noreferrer" title="在新标签页打开证件照原图（256×256）">
-                  <PhDownloadSimple :size="14" /> 证件照原图
-                </a>
+                <button
+                  class="btn btn-primary"
+                  :disabled="downloading"
+                  @click="downloadArt"
+                  :title="'下载' + modal.name + ' 抽卡立绘（2048×1024）'"
+                >
+                  <PhDownloadSimple :size="14" /> {{ downloading ? '下载中…' : '下载立绘' }}
+                </button>
+                <button
+                  class="btn btn-ghost"
+                  :disabled="downloading"
+                  @click="downloadAvatar"
+                  :title="'下载' + modal.name + ' 证件照（256×256）'"
+                >
+                  <PhDownloadSimple :size="14" /> 下载证件照
+                </button>
               </div>
+              <p v-if="downloadError" class="modal-dl-error" role="alert">
+                <PhWarningCircle :size="14" /> 下载失败：{{ downloadError }}。
+                <a class="text-link" :href="modal.art" target="_blank" rel="noreferrer">打开原图</a>
+              </p>
             </div>
           </div>
         </div>
@@ -663,6 +727,16 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 }
 .modal-body.ok .modal-actions {
   margin-left: auto;
+}
+.modal-dl-error {
+  margin: 0;
+  width: 100%;
+  font-size: var(--fz-sm);
+  color: var(--danger, #e08a8a);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
 }
 .modal-art {
   max-width: 100%;

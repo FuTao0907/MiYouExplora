@@ -18,7 +18,7 @@
 
 * **Tour 漫游引导**：首次访问自动弹出分步气泡引导（欢迎 → 地区卡片 → 录入表格 → 一键修改 → 导出），可跳过、可点「重播引导」再看一遍。
 
-* **角色图鉴（仅原神）**：顶栏「角色图鉴」入口（`/game/genshin/characters`）。收录 122 位原神角色的**证件照**（256×256 透明底）与**抽卡立绘**（2048×1024），按国家分组、可按元素筛选（纯文本链接，金色下划线表示当前筛选）。图片**实时直链**自 Project Amber（gi.yatta.moe），不落本地，新版本角色随数据文件更新自动出现。点击任意角色卡片弹出立绘大图（加载骨架 → 失败可重试 / 打开原图；Esc 或点遮罩关闭）。头像懒加载 + 加载失败显示占位可单卡重试；页面级数据加载有骨架屏与失败重试。数据文件 `public/data/genshin-characters.json` 由 `scripts/fetch_characters.py` 从 Amber API 自动生成（拉取 EN/CHS 合并、排除演示人偶、旅行者男女合并）。
+* **角色图鉴（多游戏框架）**：顶栏「角色图鉴」入口（`/game/<gameId>/characters`，仅当 games.json 中该游戏带 `"characters": true` 时显示）。目前收录**原神 122 位角色**（证件照 256×256 透明底、抽卡立绘 2048×1024），按国家分组、可按元素筛选（纯文本链接，金色下划线表示当前筛选）。图片**实时直链**自对应素材站（原神 = Project Amber gi.yatta.moe），不落本地，新版本角色随数据文件更新自动出现。点击任意角色卡片弹出立绘大图（加载骨架 → 失败可重试 / 打开原图；Esc 或点遮罩关闭）。**下载立绘 / 下载证件照**为真实下载：素材站图片不带 CORS 头，前端走**同源代理**（生产 `functions/api/img` 转发并加 `Content-Disposition: attachment`，开发 `yarn dev` 由 Vite proxy 承担），下载中有反馈、失败可打开原图兜底。头像懒加载 + 失败占位可单卡重试；页面级数据加载有骨架屏与失败重试。数据文件 `public/data/characters/<gameId>.json`（含 `source` 来源元信息）由 `scripts/fetch_characters.py <gameId>` 从对应素材站 API 自动生成（原神：拉取 EN/CHS 合并、排除演示人偶、旅行者男女合并）。**新增游戏**：脚本配置表加数据源 → 生成 `characters/<id>.json` → games.json 该游戏加 `"characters": true`，入口与页面自动生效。
 
 * **表格录入**：游客/主人均可直接在「已搜集 / 已完成」列输入。输入框为文本输入（非数字滚轮），**上限为该子区域目标数、下限 0，可输入 -1 表示该分项对你不适用 / 没有**（-1 不参与探索度计算，也不计入完成；超上限自动收紧到上限，小于 -1 自动收紧到 -1）。游客借用主人值时，输入框以**金色描边 + 金色数字**标示（本地已改的格子不再显示金色），不再逐格堆「参考」标签；▸ 展开行可写描述备注。
 
@@ -78,10 +78,13 @@ yarn preview      # 本地预览构建产物（默认 http://localhost:4173）
 ```
 浏览器（Vue SPA）
  ├─ /data/games.json     固定值（游戏/地区/子区域/目标数）——静态文件
+ ├─ /data/characters/<gameId>.json  角色图鉴数据（按游戏分文件，静态文件）
  ├─ GET  /api/progress   读取云端进度（EdgeOne Blob；首次为空时前端回退种子数据）
  ├─ PUT  /api/progress   写入进度（需 x-edit-password 头；写前自动备份旧版到 progress.prev）
  ├─ POST /api/auth       校验编辑密码（环境变量 EDIT_PASSWORD）
- └─ POST /api/progress/restore  从云端备份恢复
+ ├─ POST /api/progress/restore  从云端备份恢复
+ └─ GET  /api/img/assets/UI/...  图片下载代理（转发素材站同构路径并加 Content-Disposition: attachment；
+                                 开发环境由 vite.config.js 的 /api/img proxy 承担）
 ```
 
 数据模型与游戏解耦：`games.json` 的 `games[]` 数组可追加新游戏（星穹铁道/绝区零等），`progress.json` 按地区/子区域分键存储，未来加游戏或功能无需改架构。
@@ -92,10 +95,10 @@ yarn preview      # 本地预览构建产物（默认 http://localhost:4173）
 | ------------- | --------------------------- | ------------------------------------- |
 | games.json    | `public/data/games.json`    | 固定值：游戏、地区、子区域、分项及目标数量（写死在项目中，改后需重新部署） |
 | progress.json | `public/data/progress.json` | 种子/备份数据（生产环境首次部署时云端为空，前端回退此文件；此后以云端为准，导出可作备份） |
-| genshin-characters.json | `public/data/genshin-characters.json` | 原神角色图鉴数据（122 条：id/name/element/region/rarity/weapon + 头像/立绘直链；由脚本生成，勿手改） |
+| characters/genshin.json | `public/data/characters/genshin.json` | 原神角色图鉴数据（122 条：id/name/element/region/rarity/weapon + 头像/立绘直链 + source 来源元信息；由脚本生成，勿手改） |
 | images/       | `public/images/`            | 各地区实景图（个人使用；`games.json` 中 `region.image` 引用，如 `/images/mondstadt.jpg`） |
 | functions/    | `functions/api/...`         | 服务端函数（路由见上「架构与数据流」） |
-| scripts/fetch_characters.py | `scripts/fetch_characters.py` | 角色图鉴数据生成脚本（Amber API → JSON；更新数据：`python scripts/fetch_characters.py`） |
+| scripts/fetch_characters.py | `scripts/fetch_characters.py` | 角色图鉴数据生成脚本（多游戏配置表；更新数据：`python scripts/fetch_characters.py <gameId>`） |
 
 ### games.json 结构（v2）
 

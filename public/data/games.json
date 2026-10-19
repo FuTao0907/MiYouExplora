@@ -5,6 +5,7 @@
       "id": "genshin",
       "name": "原神",
       "sort": 1,
+      "characters": true,
       "regions": [
         {
           "id": "mondstadt",

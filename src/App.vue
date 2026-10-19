@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useProgress } from './composables/useProgress.js'
 import {
   PhArchiveBox,
@@ -24,6 +24,7 @@ import TourGuide from './components/TourGuide.vue'
 const store = useProgress()
 store.init()
 const router = useRouter()
+const route = useRoute()
 
 // ---- 顶部阅读进度条（滚动即动，Mizuki 式 3px 纯色条；纯色不触发渐变规则） ----
 const readProgress = ref(0)
@@ -104,6 +105,29 @@ function switchGame(id) {
   if (id !== store.activeGameId.value) router.push(`/game/${id}`)
   menuOpen.value = false
 }
+
+// 当前游戏（games.json 配置；characters 标记控制角色图鉴入口显示）
+const currentGame = computed(() =>
+  store.games.value.find((g) => g.id === store.activeGameId.value)
+)
+
+// 路由驱动游戏：任何 /game/:gameId/... 页面直达时都同步当前游戏
+// （此前仅在 Overview 内同步，图鉴页等深链直达会拿到默认游戏，这里全局兜底）
+// 注意：store.init() 异步加载 games，immediate 触发时可能未就绪（setActiveGame 校验失败），
+// 因此 store 加载完成后补同步一次，保证直达 URL 能切到正确游戏。
+watch(
+  () => route.params.gameId,
+  (id) => {
+    if (typeof id === 'string' && id && !store.loading.value) store.setActiveGame(id)
+  },
+  { immediate: true }
+)
+watch(
+  () => store.loading.value,
+  (loading) => {
+    if (!loading && route.params.gameId) store.setActiveGame(route.params.gameId)
+  }
+)
 
 // ---- 解锁编辑（默认游客模式；生产环境密码校验在服务端） ----
 const unlockOpen = ref(false)
@@ -219,13 +243,13 @@ function doImportJson(event) {
             </button>
           </nav>
 
-          <!-- 角色图鉴入口（仅原神；其他游戏无图鉴数据） -->
+          <!-- 角色图鉴入口（按 games.json 中该游戏的 characters 标记显示；加新游戏并放置角色数据后自动出现） -->
           <button
-            v-if="store.activeGameId.value === 'genshin'"
+            v-if="currentGame && currentGame.characters"
             class="text-link gallery-link"
             :class="{ active: $route.name === 'characters' }"
-            @click="router.push('/game/genshin/characters')"
-            title="查看全角色证件照与抽卡立绘（图片来自 Project Amber）"
+            @click="router.push(`/game/${store.activeGameId.value}/characters`)"
+            title="查看全部角色证件照与抽卡立绘（图片来自对应游戏素材站）"
           >
             <PhImageSquare :size="14" /> 角色图鉴
           </button>
