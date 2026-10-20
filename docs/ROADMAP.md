@@ -35,6 +35,7 @@
 | 角色图鉴（原神 122 位） | ✅ 已有 | Project Amber 数据源，多游戏框架化 |
 | 图片下载（同源代理） | ✅ 已有 | 生产 functions + 开发 Vite proxy |
 | 抽卡分析（一期数据层+页面） | ✅ 已有 | UIGF v4.x / legacy v2.x / SRGF v1.0 解析；按游戏/UID/池统计保底与欧非；数据仅存 localStorage（本地档） |
+| 崩铁角色图鉴数据源调研 | ✅ 已有 | 结论：Mar-7th/StarRailRes（社区标准仓库）；主通道 aiko-chan-ai GitHub Pages 镜像（98 角色）；落地见一期行动 4 |
 
 ### 2.3 候选功能池（按数据档位分类）
 
@@ -61,9 +62,9 @@
 - **关键行动**：
   1. ~~抽卡记录导入：UIGF v4.x / legacy v2.x / SRGF v1.0 解析 → 存 localStorage~~（✅ 完成：src/gacha/parseGacha.js + storage.js）
   2. ~~统计视图：池分组、五星/四星计数、保底进度、总抽数、欧非指数~~（✅ 完成：src/gacha/stats.js + GachaAnalysis.vue）
-  3. 导出：UIGF（原神）/ SRGF（崩铁）文件导出（导入已支持，导出待补；当前数据可经 localStorage 保留）
-  4. 崩铁角色图鉴数据源调研（类 Amber 的开源镜像；无则暂用静态数据文件）。
-- **依赖**：抽卡解析实现（已自研，字段以 UIGF 官方 schema 为准）；崩铁数据源调研结果。
+  3. 导出：UIGF（原神）/ SRGF（崩铁）文件导出（✅ 完成：src/gacha/exportGacha.js，UIGF v4.1 往返无损；提交 b93e82d）
+  4. 崩铁角色图鉴数据源调研（✅ 完成：**Mar-7th/StarRailRes**——社区标准资源仓库，数据源 Dimbreath 拆包；`index_new/cn/characters.json` 提供 id/名字/星级/命途/元素 + icon/preview/portrait 三档图片路径，与原神图鉴模块一一对应；本机实测主通道 `aiko-chan-ai.github.io/StarRailRes`（GitHub Pages fork，2026-03 更新，98 角色：五星 75/四星 23，图片全可达）；备选 `vizualabstract.github.io/StarRailStaticAPI`（2025-11 更新，56 角色，落后一年）；本体 github.com 因网络间歇不可达，恢复后可从 raw.githubusercontent.com 拉最新（当前 4.6 版本角色 100+））。
+- **依赖**：抽卡解析实现（已自研，字段以 UIGF 官方 schema 为准）；崩铁数据源调研结果（✅ 已定：StarRailRes）。
 - **结果信号**：端到端"导入 → 统计可见"在本地与生产均可跑通。（✅ 本地已实测；生产待部署验证）
 - **退出条件**：抽卡导入链路可用且至少一游戏落地；统计口径与用户认知一致。
 - **重排触发器**：官方收紧 authkey 导出机制 → 降级为"手动录入抽卡"（本地档）。
@@ -114,3 +115,4 @@
 
 - 2026-10-20：初始版本。基于用户确认的产品方向（参考提瓦特小助手/星穹工坊小助手；探索度手动；灰档不做）编写。
 - 2026-10-20（同日）：一期数据层与页面落地。解析器（三格式）、统计（保底/欧非）、本地存档、GachaAnalysis 视图与路由接入完成；实测 UIGF v4 双游戏文件导入链路通过（提交 86af735/ca26c02/eb054f3）。
+- 2026-10-20（同日）：一期导出完成（UIGF v4.1 往返无损，提交 b93e82d）；崩铁图鉴数据源调研完成（结论 Mar-7th/StarRailRes，主通道 aiko fork 镜像，98 角色）。一期 4 项行动全部闭环。
