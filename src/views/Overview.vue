@@ -1,9 +1,25 @@
 <script setup>
-import { computed, watch } from 'vue'
+/**
+ * 探索度首页（工具首页）
+ * 首屏 = 当前游戏总览（进度数字/条） + 数据操作区（导入导出/一键修改/备份） + 地区卡片
+ * 数据操作原在全局顶栏 ⋮ 菜单，随 IA 重构下沉到本页（它们操作的是探索度数据）
+ */
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { PhListBullets, PhMapTrifold, PhPercent } from '@phosphor-icons/vue'
+import {
+  PhListBullets,
+  PhMapTrifold,
+  PhPercent,
+  PhPencilSimple,
+  PhTable,
+  PhFileCode,
+  PhArchiveBox
+} from '@phosphor-icons/vue'
 import RegionCard from '../components/RegionCard.vue'
+import BatchEditPanel from '../components/BatchEditPanel.vue'
 import { useCountUp } from '../composables/useCountUp.js'
+import { importProgress } from '../api/data.js'
+import { toast } from '../utils/toast.js'
 
 const props = defineProps({
   store: { type: Object, required: true }
@@ -12,7 +28,7 @@ const props = defineProps({
 const route = useRoute()
 const router = useRouter()
 
-// 当前游戏（含 image/gallery 字段，供 hero 背景与空态景观带使用）
+// 当前游戏（含 image/gallery 字段，供空态景观带使用）
 const activeGame = computed(
   () => props.store.games.value.find((g) => g.id === props.store.activeGameId.value) ?? null
 )
@@ -30,58 +46,141 @@ function openRegion(id) {
   router.push(`/game/${props.store.activeGameId.value}/region/${id}`)
 }
 
-// 首屏主操作：平滑滚动到地区卡片区
-function scrollToCards() {
-  document.querySelector('.region-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
-
 const overallPercent = computed(() => {
   const { done, total } = props.store.overall.value
   return total ? Math.round((done / total) * 100) : 0
 })
 
+// 总探索度数字滚动动效（进入页面时 0 → 目标值）
+const overallAnim = useCountUp(() => overallPercent.value, 900)
+
 // 首屏副文：原神保留「提瓦特」表述，其他游戏用通用说法
-const heroSub = computed(() => {
+const overviewSub = computed(() => {
   if (activeGame.value?.id === 'genshin') {
-    return '记录提瓦特每一块土地的探索进度。游客可直接录入自己的进度（保存在本机）；主人解锁后录入，编辑自动保存到云端。'
+    return '记录提瓦特每一块土地的探索进度。游客直接录入（存本机）；主人解锁后录入，自动保存到云端。'
   }
   const name = activeGame.value?.name ?? '米游'
-  return `记录${name}每一块地图的探索进度。游客可直接录入自己的进度（保存在本机）；主人解锁后录入，编辑自动保存到云端。`
+  return `记录${name}每一块地图的探索进度。游客直接录入（存本机）；主人解锁后录入，自动保存到云端。`
 })
 
-// 总探索度数字滚动动效（进入页面时 0 → 目标值）
-const overallAnim = useCountUp(() => overallPercent.value, 1100)
+// ---- 数据操作（探索度数据：一键修改 / 导入导出 / 备份恢复） ----
+const batchOpen = ref(false)
+function openBatch() {
+  batchOpen.value = true
+}
+
+async function doExportXlsx() {
+  const { exportProgressXlsx } = await import('../utils/xlsx.js')
+  const game = props.store.activeGame.value
+  const my = props.store.editable.value
+    ? props.store.cloudProgress.value
+    : props.store.guestProgress.value
+  const ref = props.store.editable.value ? null : props.store.cloudProgress.value
+  try {
+    exportProgressXlsx(game, my, ref)
+    toast('已导出 .xlsx 表格文件', 'success')
+  } catch (e) {
+    toast('导出失败：' + e.message, 'error')
+  }
+}
+function doExportJson() {
+  try {
+    props.store.exportMyProgress()
+    toast('已导出 .json 完整存档', 'success')
+  } catch (e) {
+    toast('导出失败：' + e.message, 'error')
+  }
+}
+
+async function doImportXlsx(event) {
+  const file = event.target.files?.[0]
+  event.target.value = ''
+  if (!file) return
+  try {
+    const { importProgressXlsx } = await import('../utils/xlsx.js')
+    const { progress, errors } = await importProgressXlsx(file, props.store.activeGame.value)
+    if (errors.length) {
+      const head = errors
+        .slice(0, 5)
+        .map((e) => `第 ${e.row} 行：${e.message}`)
+        .join('\n')
+      const more = errors.length > 5 ? `\n…共 ${errors.length} 行无法识别` : ''
+      if (!window.confirm(`有 ${errors.length} 行无法识别：\n${head}${more}\n\n继续导入其余有效行吗？`)) return
+    }
+    props.store.applyImported(progress)
+    toast(
+      `导入成功${errors.length ? `（忽略 ${errors.length} 行问题）` : ''}`,
+      errors.length ? 'info' : 'success'
+    )
+  } catch (e) {
+    toast('导入失败：' + e.message, 'error')
+  }
+}
+
+function doImportJson(event) {
+  const file = event.target.files?.[0]
+  event.target.value = ''
+  if (!file) return
+  importProgress(file)
+    .then((data) => {
+      props.store.applyImported(data)
+      toast('导入成功', 'success')
+    })
+    .catch((err) => toast(err.message || '导入失败', 'error'))
+}
+
+function tryRestore() {
+  const confirmed = window.confirm('将用云端自动备份（上一次保存前的数据）覆盖当前进度，确定恢复？')
+  if (!confirmed) return
+  props.store.restoreFromBackup()
+  toast('已从云端备份恢复', 'success')
+}
 </script>
 
 <template>
-  <section class="hero">
-    <div class="hero-media">
-      <img
-        class="hero-img"
-        :src="activeGame?.image ?? '/images/hero.jpg'"
-        :alt="`${activeGame?.name ?? '米游'}实景`"
-        loading="eager"
-      />
+  <!-- 工具首页头：当前游戏 + 总进度 + 数据操作，无全屏展示 hero -->
+  <section class="overview-head reveal">
+    <div class="overview-info">
+      <h1 class="overview-title">{{ activeGame?.name ?? '米游' }}</h1>
+      <p class="overview-sub">{{ overviewSub }}</p>
     </div>
-    <div class="hero-content">
-      <h1 class="hero-title">
-        <span class="hero-title-line"><span>米游探索度记录</span></span>
-      </h1>
-      <p class="hero-sub reveal" style="animation-delay: 0.28s">{{ heroSub }}</p>
-      <button class="btn btn-primary hero-cta reveal" style="animation-delay: 0.36s" @click="scrollToCards" title="浏览全部地区的探索进度">查看地区进度</button>
-    </div>
-    <div class="hero-stat reveal" style="animation-delay: 0.44s">
-      <div class="hero-stat-value">
-        <span class="tnum">{{ overallAnim }}</span><span class="hero-stat-unit">%</span>
+    <div class="overview-stat">
+      <div class="stat-value">
+        <span class="tnum">{{ overallAnim }}</span><span class="stat-unit">%</span>
       </div>
-      <div class="hero-stat-meta tnum">{{ store.overall.value.done }} / {{ store.overall.value.total }} 个地区已完成</div>
-      <div class="hero-bar">
-        <div class="hero-bar-fill" :style="{ width: overallPercent + '%' }"></div>
+      <div class="stat-meta tnum">{{ store.overall.value.done }} / {{ store.overall.value.total }} 个地区已完成</div>
+      <div class="stat-bar">
+        <div class="stat-bar-fill" :style="{ width: overallPercent + '%' }"></div>
       </div>
     </div>
   </section>
 
-  <section class="list-head reveal" style="animation-delay: 0.22s">
+  <!-- 数据操作区：探索度数据的导入导出 / 一键修改 / 备份恢复 -->
+  <section class="toolbar reveal" style="animation-delay: 0.14s">
+    <button class="tool-btn" @click="openBatch" title="把所有可修改项聚拢到一个面板里批量编辑">
+      <PhPencilSimple :size="15" /> 一键修改
+    </button>
+    <span class="toolbar-sep" aria-hidden="true"></span>
+    <button class="tool-btn" @click="doExportXlsx" title="导出为 WPS/Excel 可直接打开的表格">
+      <PhTable :size="15" /> 导出 .xlsx
+    </button>
+    <button class="tool-btn" @click="doExportJson" title="导出完整数据存档（JSON 文件）">
+      <PhFileCode :size="15" /> 导出 .json
+    </button>
+    <label class="tool-btn" title="导入 WPS 表格（在表格里改「已搜集」列后导回）">
+      <PhTable :size="15" /> 导入 .xlsx
+      <input type="file" accept=".xlsx" @change="doImportXlsx" />
+    </label>
+    <label class="tool-btn" title="导入完整数据存档（JSON 文件）">
+      <PhFileCode :size="15" /> 导入 .json
+      <input type="file" accept="application/json,.json" @change="doImportJson" />
+    </label>
+    <button v-if="store.editable.value" class="tool-btn" @click="tryRestore" title="用云端自动备份覆盖当前进度">
+      <PhArchiveBox :size="15" /> 从备份恢复
+    </button>
+  </section>
+
+  <section class="list-head reveal" style="animation-delay: 0.2s">
     <span class="list-count tnum">共 {{ store.sortedRegions.value.length }} 个地区</span>
     <div class="sort-switch">
       <button
@@ -139,151 +238,111 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
       <p><strong>账号 UID 212114083</strong>：已搜集进度数据来自该原神账号（游戏内成就「总计」口径）。</p>
     </div>
   </footer>
+
+  <BatchEditPanel v-if="batchOpen" :store="store" @close="batchOpen = false" />
 </template>
 
 <style scoped>
-.hero {
-  position: relative;
+/* ---- 工具首页头：左信息 + 右总进度 ---- */
+.overview-head {
   display: grid;
-  grid-template-columns: 1.35fr 1fr;
+  grid-template-columns: 1fr auto;
   gap: var(--sp-7);
-  align-items: center;
-  min-height: clamp(200px, 30vh, 300px);
-  padding: var(--sp-7) var(--sp-8);
-  margin-bottom: var(--sp-6);
-  border-radius: var(--r-lg);
-  overflow: hidden;
-  isolation: isolate;
-  background: var(--bg-2);
+  align-items: end;
+  padding: var(--sp-6) 0;
+  margin-bottom: var(--sp-4);
 }
-/* 签名时刻：hero 实景从底部揭开（shutter）+ 图内慢速 kenburns */
-.hero-media {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  clip-path: inset(0 0 100% 0);
-  animation: shutter-in 1.1s var(--ease) forwards;
-}
-@keyframes shutter-in {
-  to {
-    clip-path: inset(0);
-  }
-}
-.hero-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 55%;
-  animation: kenburns 16s ease-in-out infinite alternate;
-}
-@keyframes kenburns {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.08);
-  }
-}
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  /* 图片上的中性压字 scrim（house rule 唯一允许的渐变）taste-skill-ignore */
-  background: linear-gradient( /* taste-skill-ignore */
-    100deg,
-    rgba(10, 11, 13, 0.96) 0%,
-    rgba(10, 11, 13, 0.82) 45%,
-    rgba(10, 11, 13, 0.6) 100%
-  );
-}
-.hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 640px;
-}
-.hero-title {
-  margin: 0 0 var(--sp-3);
-  font-size: var(--fz-display);
+.overview-title {
+  margin: 0 0 var(--sp-2);
+  font-size: clamp(28px, 4vw, 44px);
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   line-height: 1.2;
 }
-/* 标题从基线下方揭起（masked line） */
-.hero-title-line {
-  display: block;
-  overflow: hidden;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
-}
-.hero-title-line > span {
-  display: block;
-  transform: translateY(112%);
-  animation: line-up 0.9s var(--ease) forwards;
-  animation-delay: 0.15s;
-}
-@keyframes line-up {
-  to {
-    transform: translateY(0);
-  }
-}
-.hero-sub {
-  margin: 0 0 var(--sp-5);
-  max-width: 54ch;
+.overview-sub {
+  margin: 0;
+  max-width: 56ch;
   font-size: var(--fz-base);
   color: var(--text-2);
 }
-.hero-cta {
-  align-self: flex-start;
+.overview-stat {
+  min-width: 280px;
+  text-align: right;
 }
-/* 数字区直接压图（去卡片底，更接近 2026 海报式 hero） */
-.hero-stat {
-  position: relative;
-  z-index: 2;
-  justify-self: end;
-  min-width: 300px;
-}
-.hero-stat-value {
+.stat-value {
   display: flex;
   align-items: baseline;
+  justify-content: flex-end;
   gap: 4px;
   line-height: 1;
   margin-bottom: var(--sp-2);
 }
-.hero-stat-value span {
-  font-size: var(--fz-hero);
+.stat-value span {
+  font-size: clamp(40px, 5.6vw, 72px);
   font-weight: 700;
   color: var(--gold-bright);
   font-variant-numeric: tabular-nums;
 }
-.hero-stat-unit {
+.stat-unit {
   font-size: var(--fz-xl);
   color: var(--gold);
 }
-.hero-stat-meta {
+.stat-meta {
   font-size: var(--fz-sm);
   color: var(--text-2);
-  margin-bottom: var(--sp-4);
+  margin-bottom: var(--sp-3);
 }
-.hero-bar {
+.stat-bar {
   height: 4px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.14);
   overflow: hidden;
 }
-.hero-bar-fill {
+.stat-bar-fill {
   height: 100%;
   border-radius: 999px;
   background: var(--gold);
   transition: width 0.4s var(--ease);
 }
 
-.game-switch {
+/* ---- 数据操作区：一排克制的小工具按钮 ---- */
+.toolbar {
   display: flex;
-  gap: var(--sp-2);
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-3);
   margin-bottom: var(--sp-6);
+  border-radius: var(--r-md);
+  background: var(--bg-2);
+}
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-sm);
+  font-size: var(--fz-sm);
+  color: var(--text-2);
+  transition: var(--t);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.tool-btn:hover {
+  color: var(--text-1);
+  background: rgba(255, 255, 255, 0.06);
+}
+.tool-btn input {
+  display: none;
+}
+.toolbar-sep {
+  width: 1px;
+  height: 16px;
+  margin: 0 var(--sp-1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
+/* ---- 地区列表 ---- */
 .list-head {
   display: flex;
   justify-content: space-between;
@@ -318,6 +377,13 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
 .sort-btn.active {
   color: var(--text-1);
 }
+
+.region-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--sp-5);
+}
+
 .empty-regions {
   display: flex;
   flex-direction: column;
@@ -377,12 +443,6 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
   }
 }
 
-.region-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: var(--sp-5);
-}
-
 .data-note {
   display: flex;
   flex-direction: column;
@@ -410,10 +470,16 @@ const overallAnim = useCountUp(() => overallPercent.value, 1100)
 }
 
 @media (max-width: 720px) {
-  .hero {
+  .overview-head {
     grid-template-columns: 1fr;
-    min-height: 0;
-    padding: var(--sp-6) var(--sp-5);
+    gap: var(--sp-4);
+  }
+  .overview-stat {
+    text-align: left;
+    min-width: 0;
+  }
+  .stat-value {
+    justify-content: flex-start;
   }
   .note-item {
     flex-direction: column;

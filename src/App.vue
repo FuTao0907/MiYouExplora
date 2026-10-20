@@ -1,33 +1,33 @@
 <script setup>
+/**
+ * 应用外壳：两级导航
+ *  - 第一行（全局）：品牌 + 游戏切换（一级）
+ *  - 第二行（游戏内）：功能 tab（探索度 / 角色图鉴 / 抽卡分析，按 games.json 标记显示）+ 右侧轻量操作
+ * 权限（解锁/锁定）与帮助收敛为图标；探索度数据操作（导入导出/一键修改/备份）下沉到探索度页内
+ */
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useProgress } from './composables/useProgress.js'
 import {
-  PhArchiveBox,
-  PhDotsThreeVertical,
-  PhEye,
-  PhEyeSlash,
   PhGameController,
   PhImageSquare,
   PhChartLine,
   PhLock,
   PhLockOpen,
-  PhPencilSimple,
+  PhEye,
+  PhEyeSlash,
   PhPlayCircle,
-  PhTable,
-  PhFileCode,
-  PhUploadSimple
+  PhQuestion
 } from '@phosphor-icons/vue'
-import { importProgress } from './api/data.js'
-import BatchEditPanel from './components/BatchEditPanel.vue'
 import TourGuide from './components/TourGuide.vue'
+import ToastHost from './components/ToastHost.vue'
 
 const store = useProgress()
 store.init()
 const router = useRouter()
 const route = useRoute()
 
-// ---- 顶部阅读进度条（滚动即动，Mizuki 式 3px 纯色条；纯色不触发渐变规则） ----
+// ---- 顶部阅读进度条（滚动即动，3px 纯色条） ----
 const readProgress = ref(0)
 function onScroll() {
   const doc = document.documentElement
@@ -40,16 +40,13 @@ onMounted(() => {
 })
 onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
 
-const batchOpen = ref(false)
-const menuOpen = ref(false)
-
 // ---- Tour 漫游引导：首次访问自动播放（localStorage 标记），可重播 ----
 const TOUR_KEY = 'miyou_tour_done'
 const tourOpen = ref(!localStorage.getItem(TOUR_KEY))
 
 const tourSteps = [
   {
-    selector: '.hero',
+    selector: '.overview-head',
     title: '欢迎来到米游探索度记录',
     body: '这是一个记录《原神》探索进度的个人网站。你不需要注册：直接就能录入自己的游戏数据，用来整理进度、查漏补缺。',
     placement: 'bottom'
@@ -61,15 +58,15 @@ const tourSteps = [
     placement: 'bottom'
   },
   {
-    selector: '.topbar',
-    title: '顶部导航',
-    body: '顶部左侧切换游戏；右侧「解锁编辑」可进入主人模式（录入保存到云端）；右上角 ⋮ 里集中了导入导出、一键修改等操作。',
+    selector: '.func-nav',
+    title: '游戏内功能',
+    body: '顶部第二行是当前游戏的功能入口：探索度、角色图鉴、抽卡分析。切换游戏时功能会跟着变化。',
     placement: 'bottom'
   },
   {
-    selector: '.menu-trigger',
-    title: '更多操作',
-    body: '「一键修改」把所有修改项聚拢到一个面板一次改完；也支持导出 / 导入 WPS 表格（.xlsx）或 JSON 文件。游客导出的文件只包含自己的数据。',
+    selector: '.topbar-right',
+    title: '解锁与帮助',
+    body: '右侧可解锁编辑（录入保存到云端）、查看参考进度、重播本引导。',
     placement: 'bottom'
   },
   {
@@ -89,33 +86,48 @@ function tourClose() {
 }
 function replayTour() {
   tourOpen.value = false
-  menuOpen.value = false
+  helpOpen.value = false
   // 延迟一帧再打开，避免与菜单关闭动画冲突
   setTimeout(() => {
     tourOpen.value = true
   }, 50)
 }
 
-function openBatch() {
-  batchOpen.value = true
-  menuOpen.value = false
-}
-
 // ---- 游戏切换：走路由（URL 可直达/分享/刷新不丢状态） ----
 function switchGame(id) {
   if (id !== store.activeGameId.value) router.push(`/game/${id}`)
-  menuOpen.value = false
 }
 
-// 当前游戏（games.json 配置；characters 标记控制角色图鉴入口显示）
+// 当前游戏（games.json 配置；characters/gacha 标记控制功能 tab 显示）
 const currentGame = computed(() =>
   store.games.value.find((g) => g.id === store.activeGameId.value)
 )
 
+// 功能 tab 列表（games.json 标记驱动；探索度恒有）
+const featureTabs = computed(() => {
+  const tabs = [{ key: 'overview', name: '探索度' }]
+  if (currentGame.value?.characters) tabs.push({ key: 'characters', name: '角色图鉴' })
+  if (currentGame.value?.gacha) tabs.push({ key: 'gacha', name: '抽卡分析' })
+  return tabs
+})
+
+// 当前功能（路由名 → 高亮）
+const activeFeature = computed(() => {
+  const name = route.name
+  if (name === 'region') return 'overview'
+  if (name === 'characters') return 'characters'
+  if (name === 'gacha') return 'gacha'
+  return 'overview'
+})
+
+function gotoFeature(key) {
+  const base = `/game/${store.activeGameId.value}`
+  if (key === 'characters') router.push(`${base}/characters`)
+  else if (key === 'gacha') router.push(`${base}/gacha`)
+  else router.push(base)
+}
+
 // 路由驱动游戏：任何 /game/:gameId/... 页面直达时都同步当前游戏
-// （此前仅在 Overview 内同步，图鉴页等深链直达会拿到默认游戏，这里全局兜底）
-// 注意：store.init() 异步加载 games，immediate 触发时可能未就绪（setActiveGame 校验失败），
-// 因此 store 加载完成后补同步一次，保证直达 URL 能切到正确游戏。
 watch(
   () => route.params.gameId,
   (id) => {
@@ -157,64 +169,8 @@ function lockNow() {
   unlockError.value = false
 }
 
-function tryRestore() {
-  const confirmed = window.confirm('将用云端自动备份（上一次保存前的数据）覆盖当前进度，确定恢复？')
-  if (!confirmed) return
-  store.restoreFromBackup()
-  menuOpen.value = false
-}
-
-// ---- 导入 / 导出（XLSX 与 JSON 双格式，动态加载 xlsx 库；集中放在顶栏 ⋮ 菜单） ----
-async function doExportXlsx() {
-  const { exportProgressXlsx } = await import('./utils/xlsx.js')
-  const game = store.activeGame.value
-  const my = store.editable.value
-    ? store.cloudProgress.value
-    : store.guestProgress.value
-  const ref = store.editable.value ? null : store.cloudProgress.value
-  exportProgressXlsx(game, my, ref)
-  menuOpen.value = false
-}
-function doExportJson() {
-  store.exportMyProgress()
-  menuOpen.value = false
-}
-
-async function doImportXlsx(event) {
-  const file = event.target.files?.[0]
-  event.target.value = ''
-  if (!file) return
-  try {
-    const { importProgressXlsx } = await import('./utils/xlsx.js')
-    const { progress, errors } = await importProgressXlsx(file, store.activeGame.value)
-    if (errors.length) {
-      const head = errors
-        .slice(0, 5)
-        .map((e) => `第 ${e.row} 行：${e.message}`)
-        .join('\n')
-      const more = errors.length > 5 ? `\n…共 ${errors.length} 行无法识别` : ''
-      if (!window.confirm(`有 ${errors.length} 行无法识别：\n${head}${more}\n\n继续导入其余有效行吗？`)) return
-    }
-    store.applyImported(progress)
-    alert(`导入成功${errors.length ? `（忽略 ${errors.length} 行问题）` : ''}`)
-    menuOpen.value = false
-  } catch (e) {
-    alert('导入失败：' + e.message)
-  }
-}
-
-function doImportJson(event) {
-  const file = event.target.files?.[0]
-  event.target.value = ''
-  if (!file) return
-  importProgress(file)
-    .then((data) => {
-      store.applyImported(data)
-      alert('导入成功')
-      menuOpen.value = false
-    })
-    .catch((err) => alert(err.message))
-}
+// ---- 帮助菜单（只含轻量帮助类操作；数据操作已下沉到页面内） ----
+const helpOpen = ref(false)
 </script>
 
 <template>
@@ -227,7 +183,8 @@ function doImportJson(event) {
     </div>
     <template v-else>
       <header class="topbar reveal">
-        <div class="topbar-inner">
+        <!-- 第一行：品牌 + 游戏切换（一级导航） -->
+        <div class="topbar-row">
           <span class="site-brand" title="米游探索度记录">
             <PhGameController :size="18" /> 米游探索度记录
           </span>
@@ -243,28 +200,23 @@ function doImportJson(event) {
               {{ game.name }}
             </button>
           </nav>
+        </div>
 
-          <!-- 角色图鉴入口（按 games.json 中该游戏的 characters 标记显示；加新游戏并放置角色数据后自动出现） -->
-          <button
-            v-if="currentGame && currentGame.characters"
-            class="text-link gallery-link"
-            :class="{ active: $route.name === 'characters' }"
-            @click="router.push(`/game/${store.activeGameId.value}/characters`)"
-            title="查看全部角色证件照与抽卡立绘（图片来自对应游戏素材站）"
-          >
-            <PhImageSquare :size="14" /> 角色图鉴
-          </button>
-
-          <!-- 抽卡分析入口（按 games.json 中该游戏的 gacha 标记显示；导入的抽卡记录仅存本机） -->
-          <button
-            v-if="currentGame && currentGame.gacha"
-            class="text-link gallery-link"
-            :class="{ active: $route.name === 'gacha' }"
-            @click="router.push(`/game/${store.activeGameId.value}/gacha`)"
-            title="导入祈愿/跃迁记录，查看保底进度与欧非统计（数据仅存本机）"
-          >
-            <PhChartLine :size="14" /> 抽卡分析
-          </button>
+        <!-- 第二行：游戏内功能 tab + 右侧轻量操作 -->
+        <div class="topbar-row topbar-func">
+          <nav class="func-nav" aria-label="功能">
+            <button
+              v-for="tab in featureTabs"
+              :key="tab.key"
+              class="func-tab"
+              :class="{ active: activeFeature === tab.key }"
+              @click="gotoFeature(tab.key)"
+            >
+              <PhImageSquare v-if="tab.key === 'characters'" :size="13" />
+              <PhChartLine v-else-if="tab.key === 'gacha'" :size="13" />
+              {{ tab.name }}
+            </button>
+          </nav>
 
           <div class="topbar-right">
             <template v-if="store.editable.value">
@@ -275,8 +227,8 @@ function doImportJson(event) {
               <button v-if="store.saveState.value === 'error'" class="text-link" @click="store.doCloudSave" title="重新尝试保存到云端">
                 重试保存
               </button>
-              <button class="text-link" @click="lockNow" title="锁定为游客模式：之后的改动只保存到本机">
-                <PhLock :size="14" /> 锁定
+              <button class="icon-btn" @click="lockNow" title="锁定为游客模式：之后的改动只保存到本机">
+                <PhLock :size="16" />
               </button>
             </template>
             <template v-else>
@@ -287,22 +239,29 @@ function doImportJson(event) {
                 :title="store.showReference.value ? '正在显示主人的进度作参考，点击关闭' : '点击显示主人的进度作参考'"
               >
                 <component :is="store.showReference.value ? PhEye : PhEyeSlash" :size="14" />
-                参考：{{ store.showReference.value ? '开' : '关' }}
+                {{ store.showReference.value ? '参考开' : '参考关' }}
               </button>
-              <button class="text-link" @click="unlockOpen = !unlockOpen" title="输入密码进入主人模式，录入保存到云端">
-                <PhLockOpen :size="14" /> 解锁编辑
+              <button class="icon-btn" @click="unlockOpen = !unlockOpen" title="输入密码进入主人模式，录入保存到云端">
+                <PhLockOpen :size="16" />
               </button>
             </template>
 
-            <button
-              class="icon-btn menu-trigger"
-              :class="{ open: menuOpen }"
-              @click="menuOpen = !menuOpen"
-              :title="menuOpen ? '收起操作菜单' : '更多操作：一键修改 / 导入导出 / 引导'"
-              aria-label="更多操作"
-            >
-              <PhDotsThreeVertical :size="18" />
-            </button>
+            <div class="help-wrap">
+              <button
+                class="icon-btn"
+                :class="{ open: helpOpen }"
+                @click="helpOpen = !helpOpen"
+                title="帮助：重播新手引导"
+                aria-label="帮助"
+              >
+                <PhQuestion :size="16" />
+              </button>
+              <div v-if="helpOpen" class="help-menu" @click.stop>
+                <button class="menu-item" @click="replayTour" title="重新播放新手引导（分步气泡）">
+                  <PhPlayCircle :size="15" /> 重播引导
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -319,35 +278,6 @@ function doImportJson(event) {
             {{ unlocking ? '校验中…' : '确认' }}
           </button>
           <span v-if="unlockError" class="pwd-error">密码错误</span>
-        </div>
-
-        <div v-if="menuOpen" class="top-menu" @click.stop>
-          <button class="menu-item" @click="openBatch" title="把所有可修改项聚拢到一个面板里批量编辑">
-            <PhPencilSimple :size="16" /> 一键修改
-          </button>
-          <button class="menu-item" @click="doExportXlsx" title="导出为 WPS/Excel 可直接打开的表格">
-            <PhTable :size="16" /> 导出 .xlsx（WPS 表格）
-          </button>
-          <button class="menu-item" @click="doExportJson" title="导出完整数据存档（JSON 文件）">
-            <PhFileCode :size="16" /> 导出 .json（完整存档）
-          </button>
-          <label class="menu-item" title="导入 WPS 表格（在表格里改「已搜集」列后导回）">
-            <PhTable :size="16" /> 导入 .xlsx（WPS 表格）
-            <input type="file" accept=".xlsx" @change="doImportXlsx" />
-          </label>
-          <label class="menu-item" title="导入完整数据存档（JSON 文件）">
-            <PhFileCode :size="16" /> 导入 .json（完整存档）
-            <input type="file" accept="application/json,.json" @change="doImportJson" />
-          </label>
-          <template v-if="store.editable.value">
-            <button class="menu-item" @click="tryRestore" title="用云端自动备份覆盖当前进度">
-              <PhArchiveBox :size="16" /> 从备份恢复
-            </button>
-          </template>
-          <button class="menu-item" @click="replayTour" title="重新播放新手引导（分步气泡）">
-            <PhPlayCircle :size="16" /> 重播引导
-          </button>
-          <p class="menu-tip">表格方便在 WPS/Excel 里查看和修改；JSON 是完整数据存档。游客导出的只含你自己的数据。</p>
         </div>
       </header>
 
@@ -366,7 +296,7 @@ function doImportJson(event) {
         />
       </router-view>
 
-      <BatchEditPanel v-if="batchOpen" :store="store" @close="batchOpen = false" />
+      <ToastHost />
     </template>
   </div>
 </template>
@@ -400,7 +330,7 @@ function doImportJson(event) {
   color: var(--text-3);
 }
 
-/* ---- 顶栏（全站导航） ---- */
+/* ---- 顶栏（全站导航：第一行游戏 / 第二行功能） ---- */
 .topbar {
   position: sticky;
   top: 0;
@@ -411,13 +341,15 @@ function doImportJson(event) {
   background: rgba(10, 11, 13, 0.82);
   backdrop-filter: blur(14px);
 }
-.topbar-inner {
+.topbar-row {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: var(--sp-2) var(--sp-6);
-  min-height: 52px;
-  padding: var(--sp-2) 0;
+  gap: var(--sp-4);
+  min-height: 44px;
+}
+.topbar-func {
+  min-height: 38px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 .site-brand {
   display: inline-flex;
@@ -433,12 +365,14 @@ function doImportJson(event) {
   display: flex;
   align-items: center;
   gap: var(--sp-1);
+  margin-left: var(--sp-4);
 }
 .game-tab {
-  padding: var(--sp-2) var(--sp-3);
+  padding: var(--sp-1) var(--sp-3);
   border-radius: var(--r-sm);
   font-size: var(--fz-base);
   color: var(--text-3);
+  white-space: nowrap;
   transition: var(--t);
 }
 .game-tab:hover {
@@ -450,10 +384,41 @@ function doImportJson(event) {
   background: rgba(255, 255, 255, 0.1);
   font-weight: 600;
 }
+
+/* ---- 第二行：功能 tab ---- */
+.func-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.func-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-sm);
+  font-size: var(--fz-sm);
+  color: var(--text-3);
+  white-space: nowrap;
+  transition: var(--t);
+}
+.func-tab:hover {
+  color: var(--text-1);
+  background: rgba(255, 255, 255, 0.05);
+}
+.func-tab.active {
+  color: var(--gold-bright);
+  background: var(--gold-tint);
+  font-weight: 600;
+}
+.func-tab.active svg {
+  color: var(--gold);
+}
+
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: var(--sp-4);
+  gap: var(--sp-2);
   margin-left: auto;
 }
 .text-link {
@@ -509,6 +474,8 @@ function doImportJson(event) {
 .save-state.save-error {
   color: #e5484d;
 }
+
+/* ---- 解锁密码行 ---- */
 .unlock-row {
   display: flex;
   align-items: center;
@@ -534,13 +501,16 @@ function doImportJson(event) {
   color: #e5484d;
 }
 
-/* ---- 顶栏操作菜单 ---- */
-.top-menu {
+/* ---- 帮助菜单 ---- */
+.help-wrap {
+  position: relative;
+}
+.help-menu {
   position: absolute;
-  right: var(--sp-5);
+  right: 0;
   top: calc(100% + 6px);
   z-index: 70;
-  min-width: 270px;
+  min-width: 180px;
   padding: var(--sp-2);
   background: var(--bg-3);
   border-radius: var(--r-md);
@@ -567,27 +537,20 @@ function doImportJson(event) {
 .menu-item:hover {
   background: rgba(255, 255, 255, 0.07);
 }
-.menu-item input {
-  display: none;
-}
-.menu-tip {
-  margin: var(--sp-1) var(--sp-3) var(--sp-2);
-  font-size: var(--fz-xs);
-  color: var(--text-3);
-  line-height: 1.6;
-}
 
-/* ---- 窄屏：导航紧凑换行，保持单项不折行 ---- */
+/* ---- 窄屏：两行各自紧凑换行 ---- */
 @media (max-width: 640px) {
-  .topbar-inner {
-    gap: var(--sp-1) var(--sp-4);
+  .topbar-row {
+    gap: var(--sp-1) var(--sp-3);
+    flex-wrap: wrap;
   }
   .game-tab {
     font-size: var(--fz-sm);
     padding: var(--sp-1) var(--sp-2);
   }
-  .topbar-right {
-    gap: var(--sp-2);
+  .func-tab {
+    font-size: var(--fz-sm);
+    padding: var(--sp-1) var(--sp-2);
   }
   .text-link {
     font-size: var(--fz-sm);
