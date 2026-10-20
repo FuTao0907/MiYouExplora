@@ -6,7 +6,7 @@
  * - 加载：数据骨架 / 头像懒加载+骨架+失败重试 / 立绘 modal 加载+失败重试 / 空态
  */
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { PhX, PhArrowClockwise, PhDownloadSimple, PhWarningCircle } from '@phosphor-icons/vue'
+import { PhX, PhArrowClockwise, PhDownloadSimple, PhWarningCircle, PhStar } from '@phosphor-icons/vue'
 import { downloadImage } from '../utils/downloadImage.js'
 
 const props = defineProps({
@@ -240,7 +240,7 @@ async function downloadAvatar() {
             :class="{ failed: failed.has(c.id) }"
             :style="{ '--i': i }"
             @click="openModal(c)"
-            :title="c.name + '（' + (c.element || '无') + '·' + c.rarity + '星）——点击查看高清立绘'"
+            :title="c.name + '（' + (c.element || '无') + '·' + c.rarity + '星），点击查看高清立绘'"
           >
             <span class="card-art">
               <!-- 骨架：图片未加载完成时显示 -->
@@ -267,7 +267,7 @@ async function downloadAvatar() {
             <span class="card-meta">
               <span class="card-name">{{ c.name }}</span>
               <span class="card-info">
-                <span class="card-rarity">{{ '★'.repeat(c.rarity) }}</span>
+                <span class="card-rarity"><PhStar :size="11" weight="fill" /> {{ c.rarity }}</span>
                 <span class="card-sub">{{ c.element || '未知' }} · {{ c.weapon || '—' }}</span>
               </span>
             </span>
@@ -412,21 +412,22 @@ async function downloadAvatar() {
   display: flex;
   flex-wrap: wrap;
   gap: 2px var(--sp-5);
-  padding-bottom: var(--sp-4);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: var(--sp-5);
 }
 .filter-link {
   font-size: var(--fz-base);
   color: var(--text-3);
-  padding: var(--sp-1) var(--sp-1);
-  transition: color var(--t-fast);
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-sm);
+  transition: color var(--t-fast), background-color var(--t-fast);
 }
 .filter-link:hover {
   color: var(--text-1);
+  background: rgba(255, 255, 255, 0.05);
 }
 .filter-link.active {
   color: var(--gold-bright);
-  box-shadow: inset 0 -2px 0 var(--gold); /* 当前筛选态：金色下划线 */
+  background: var(--gold-tint);
 }
 
 /* ---- 国家分组 ---- */
@@ -462,13 +463,11 @@ async function downloadAvatar() {
   background: var(--bg-2);
   border-radius: var(--r-md);
   overflow: hidden;
-  border: 1px solid transparent;
-  transition: border-color var(--t-fast), background-color var(--t-fast);
+  transition: background-color var(--t-fast);
   animation: cardIn 0.4s var(--ease) both;
   animation-delay: calc(var(--i, 0) * 22ms);
 }
 .char-card:hover {
-  border-color: var(--line-strong);
   background: var(--bg-3);
 }
 .char-card:focus-visible {
@@ -529,7 +528,7 @@ async function downloadAvatar() {
 .card-art:has(img.loaded) .card-skeleton-fill {
   display: none;
 }
-/* 元素圆点（数据信号，8px） */
+/* 元素圆点（数据信号，8px；实色描边提升浅色图上的可辨识度） */
 .card-element {
   position: absolute;
   top: 6px;
@@ -537,7 +536,7 @@ async function downloadAvatar() {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  box-shadow: 0 0 0 2px rgba(10, 11, 13, 0.7); /* 深色描边，提升在浅色图上的可辨识度 */
+  border: 2px solid var(--bg); /* taste-skill-ignore */
 }
 /* 失败占位 */
 .card-fallback {
@@ -553,15 +552,14 @@ async function downloadAvatar() {
 }
 .retry-link {
   font-size: var(--fz-xs);
-  color: var(--text-2);
-  padding: 2px 8px;
+  color: var(--text-1);
+  padding: 2px 10px;
   border-radius: var(--r-sm);
-  border: 1px solid var(--line-strong);
-  transition: var(--t-fast);
+  background: rgba(255, 255, 255, 0.1);
+  transition: background-color var(--t-fast);
 }
 .retry-link:hover {
-  color: var(--text-1);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.16);
 }
 
 /* 卡片文字区 */
@@ -590,6 +588,9 @@ async function downloadAvatar() {
   overflow: hidden;
 }
 .card-rarity {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
   color: var(--gold);
   letter-spacing: 0.02em;
   font-size: 11px;
@@ -601,8 +602,7 @@ async function downloadAvatar() {
 
 /* ---- 页脚 ---- */
 .gallery-foot {
-  padding-top: var(--sp-6);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: var(--sp-7);
 }
 .gallery-foot p {
   margin: 0;

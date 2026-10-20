@@ -502,7 +502,6 @@ function handleNoteInput(areaId, event) {
   width: 24px;
   height: 24px;
   border-radius: var(--r-sm);
-  border: 1px solid var(--line);
   background: transparent;
   color: var(--text-3);
   line-height: 1;
@@ -511,12 +510,12 @@ function handleNoteInput(areaId, event) {
 }
 .expand-btn:hover {
   color: var(--text-1);
-  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.08);
 }
 .expand-btn.open {
   transform: rotate(90deg);
   color: var(--text-1);
-  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.08);
 }
 .note-row td {
   background: rgba(255, 255, 255, 0.03);

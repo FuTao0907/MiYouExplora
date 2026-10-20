@@ -532,11 +532,10 @@ onMounted(() => {
   padding: var(--sp-5);
   background: var(--bg-2);
   border-radius: var(--r-md);
-  border: 1px solid transparent;
-  transition: border-color var(--t);
+  transition: background-color var(--t);
 }
 .pool-card:hover {
-  border-color: var(--line-strong);
+  background: var(--bg-3);
 }
 .pool-head {
   display: flex;
@@ -582,8 +581,7 @@ onMounted(() => {
 
 /* 五星记录折叠列表 */
 .five-list {
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  padding-top: var(--sp-3);
+  margin-top: var(--sp-4);
 }
 .five-list summary {
   display: inline-flex;
@@ -621,7 +619,6 @@ onMounted(() => {
   align-items: center;
   gap: var(--sp-2);
   padding: var(--sp-2) 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   font-size: var(--fz-sm);
 }
 .five-rows li svg {
@@ -639,8 +636,7 @@ onMounted(() => {
 
 /* ---- 页脚 ---- */
 .gacha-foot {
-  padding-top: var(--sp-6);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: var(--sp-7);
 }
 .gacha-foot p {
   margin: 0;

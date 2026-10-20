@@ -54,13 +54,13 @@ const overallPercent = computed(() => {
 // 总探索度数字滚动动效（进入页面时 0 → 目标值）
 const overallAnim = useCountUp(() => overallPercent.value, 900)
 
-// 首屏副文：原神保留「提瓦特」表述，其他游戏用通用说法
+// 首屏副文：一句话（桌面完整、窄屏再短版），不占首屏三行以上
 const overviewSub = computed(() => {
   if (activeGame.value?.id === 'genshin') {
-    return '记录提瓦特每一块土地的探索进度。游客直接录入（存本机）；主人解锁后录入，自动保存到云端。'
+    return '记录提瓦特每块土地的探索进度。游客录入存本机，主人解锁后录入自动存云端。'
   }
   const name = activeGame.value?.name ?? '米游'
-  return `记录${name}每一块地图的探索进度。游客直接录入（存本机）；主人解锁后录入，自动保存到云端。`
+  return `记录${name}每块地图的探索进度。游客录入存本机，主人解锁后录入自动存云端。`
 })
 
 // ---- 数据操作（探索度数据：一键修改 / 导入导出 / 备份恢复） ----
@@ -155,28 +155,30 @@ function tryRestore() {
     </div>
   </section>
 
-  <!-- 数据操作区：探索度数据的导入导出 / 一键修改 / 备份恢复 -->
-  <section class="toolbar reveal" style="animation-delay: 0.14s">
-    <button class="tool-btn" @click="openBatch" title="把所有可修改项聚拢到一个面板里批量编辑">
-      <PhPencilSimple :size="15" /> 一键修改
+  <!-- 数据操作区：一行文本入口（图标+文字，无底色按钮；hover 才显反馈） -->
+  <section class="toolbar reveal" style="animation-delay: 0.14s" aria-label="数据操作">
+    <span class="toolbar-title">数据</span>
+    <button class="tool-link" @click="openBatch" title="把所有可修改项聚拢到一个面板里批量编辑">
+      <PhPencilSimple :size="14" /> 一键修改
     </button>
     <span class="toolbar-sep" aria-hidden="true"></span>
-    <button class="tool-btn" @click="doExportXlsx" title="导出为 WPS/Excel 可直接打开的表格">
-      <PhTable :size="15" /> 导出 .xlsx
+    <button class="tool-link" @click="doExportXlsx" title="导出为 WPS/Excel 可直接打开的表格">
+      <PhTable :size="14" /> 导出 .xlsx
     </button>
-    <button class="tool-btn" @click="doExportJson" title="导出完整数据存档（JSON 文件）">
-      <PhFileCode :size="15" /> 导出 .json
+    <button class="tool-link" @click="doExportJson" title="导出完整数据存档（JSON 文件）">
+      <PhFileCode :size="14" /> 导出 .json
     </button>
-    <label class="tool-btn" title="导入 WPS 表格（在表格里改「已搜集」列后导回）">
-      <PhTable :size="15" /> 导入 .xlsx
+    <span class="toolbar-sep" aria-hidden="true"></span>
+    <label class="tool-link" title="导入 WPS 表格（在表格里改「已搜集」列后导回）">
+      <PhTable :size="14" /> 导入 .xlsx
       <input type="file" accept=".xlsx" @change="doImportXlsx" />
     </label>
-    <label class="tool-btn" title="导入完整数据存档（JSON 文件）">
-      <PhFileCode :size="15" /> 导入 .json
+    <label class="tool-link" title="导入完整数据存档（JSON 文件）">
+      <PhFileCode :size="14" /> 导入 .json
       <input type="file" accept="application/json,.json" @change="doImportJson" />
     </label>
-    <button v-if="store.editable.value" class="tool-btn" @click="tryRestore" title="用云端自动备份覆盖当前进度">
-      <PhArchiveBox :size="15" /> 从备份恢复
+    <button v-if="store.editable.value" class="tool-link" @click="tryRestore" title="用云端自动备份覆盖当前进度">
+      <PhArchiveBox :size="14" /> 从备份恢复
     </button>
   </section>
 
@@ -254,7 +256,7 @@ function tryRestore() {
 }
 .overview-title {
   margin: 0 0 var(--sp-2);
-  font-size: clamp(28px, 4vw, 44px);
+  font-size: clamp(24px, 3.2vw, 36px);
   font-weight: 700;
   letter-spacing: 0.02em;
   line-height: 1.2;
@@ -305,22 +307,26 @@ function tryRestore() {
   transition: width 0.4s var(--ease);
 }
 
-/* ---- 数据操作区：一排克制的小工具按钮 ---- */
+/* ---- 数据操作区：纯文本入口行（无底色按钮） ---- */
 .toolbar {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--sp-1);
-  padding: var(--sp-2) var(--sp-3);
-  margin-bottom: var(--sp-6);
-  border-radius: var(--r-md);
-  background: var(--bg-2);
+  padding: var(--sp-1) 0;
+  margin-bottom: var(--sp-7);
 }
-.tool-btn {
+.toolbar-title {
+  font-size: var(--fz-xs);
+  color: var(--text-3);
+  letter-spacing: 0.18em;
+  margin-right: var(--sp-2);
+}
+.tool-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: var(--sp-1) var(--sp-3);
+  padding: var(--sp-1) var(--sp-2);
   border-radius: var(--r-sm);
   font-size: var(--fz-sm);
   color: var(--text-2);
@@ -328,18 +334,18 @@ function tryRestore() {
   white-space: nowrap;
   cursor: pointer;
 }
-.tool-btn:hover {
+.tool-link:hover {
   color: var(--text-1);
   background: rgba(255, 255, 255, 0.06);
 }
-.tool-btn input {
+.tool-link input {
   display: none;
 }
 .toolbar-sep {
   width: 1px;
-  height: 16px;
+  height: 14px;
   margin: 0 var(--sp-1);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 /* ---- 地区列表 ---- */

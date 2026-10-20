@@ -256,7 +256,7 @@ function clearGuest() {
 .batch-input {
   width: 84px;
   padding: 5px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.14); /* 表单输入框允许边框 taste-skill-ignore */
   border-radius: var(--r-sm);
   background: rgba(10, 11, 13, 0.55);
   color: var(--text-1);

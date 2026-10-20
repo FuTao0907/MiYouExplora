@@ -40,7 +40,7 @@ import { toastState } from '../utils/toast.js'
   color: var(--text-1);
   font-size: var(--fz-sm);
   line-height: 1.5;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-card); /* 悬浮浮层，允许阴影 taste-skill-ignore */
 }
 .toast-success {
   border-left: 3px solid var(--green);

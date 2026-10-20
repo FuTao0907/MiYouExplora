@@ -46,15 +46,15 @@ const tourOpen = ref(!localStorage.getItem(TOUR_KEY))
 
 const tourSteps = [
   {
-    selector: '.overview-head',
+    selector: '.toolbar',
     title: '欢迎来到米游探索度记录',
-    body: '这是一个记录《原神》探索进度的个人网站。你不需要注册：直接就能录入自己的游戏数据，用来整理进度、查漏补缺。',
-    placement: 'bottom'
+    body: '这是记录《原神》《崩坏·星穹铁道》探索进度的个人网站，不用注册：直接就能录入自己的游戏数据，用来整理进度、查漏补缺。',
+    placement: 'top'
   },
   {
-    selector: '.region-card',
-    title: '看探索度',
-    body: '每张卡片是一个地区，显示探索进度百分比。点击卡片进入表格，可以看到每个章节的宝箱 / 限时挑战 / 仙灵（幻写灵）已搜集数量。',
+    selector: '.overview-stat',
+    title: '看总进度',
+    body: '这里是你当前游戏的总探索度。每张卡片是一个地区，点进卡片可以看到每个章节的宝箱 / 限时挑战 / 仙灵（幻写灵）已搜集数量。',
     placement: 'bottom'
   },
   {
@@ -70,7 +70,7 @@ const tourSteps = [
     placement: 'bottom'
   },
   {
-    selector: '.region-table',
+    selector: '.region-card',
     title: '直接录入',
     body: '表格里的输入框可以直接修改（数字 0 到目标数之间；输入 -1 表示该分项对你不适用）。游客的改动只保存在这台电脑上；主人的数据（UID 212114083）会作为参考显示。',
     placement: 'top'
@@ -316,7 +316,6 @@ const helpOpen = ref(false)
 
 .state-box {
   background: var(--bg-2);
-  border: 1px solid var(--line);
   border-radius: var(--r-lg);
   padding: var(--sp-8) var(--sp-6);
   text-align: center;
@@ -339,7 +338,7 @@ const helpOpen = ref(false)
   margin-inline: calc(-1 * var(--sp-5));
   padding: 0 var(--sp-5);
   background: rgba(10, 11, 13, 0.82);
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px); /* 唯一 sticky 导航条，允许玻璃效果 taste-skill-ignore */
 }
 .topbar-row {
   display: flex;
@@ -349,7 +348,6 @@ const helpOpen = ref(false)
 }
 .topbar-func {
   min-height: 38px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 .site-brand {
   display: inline-flex;
@@ -485,7 +483,7 @@ const helpOpen = ref(false)
 .pwd-input {
   width: 160px;
   padding: 5px 12px;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line-strong); /* 表单输入框允许边框 taste-skill-ignore */
   border-radius: var(--r-sm);
   background: var(--bg);
   color: var(--text-1);
