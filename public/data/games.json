@@ -6,6 +6,7 @@
       "name": "原神",
       "sort": 1,
       "characters": true,
+      "gacha": true,
       "regions": [
         {
           "id": "mondstadt",
@@ -772,6 +773,7 @@
       "id": "starrail",
       "name": "崩坏·星穹铁道",
       "sort": 2,
+      "gacha": true,
       "regions": [],
       "image": "/images/starrail-hero.jpg",
       "gallery": [

@@ -2,6 +2,7 @@
 // - /game/:gameId            地区总览（默认游戏由 store 初始化决定）
 // - /game/:gameId/region/:regionId   单地区录入表格
 // - /game/:gameId/characters         角色图鉴（仅原神有数据，其他游戏显示空态）
+// - /game/:gameId/gacha             抽卡分析（原神 UIGF / 崩铁 SRGF，多游戏框架）
 // URL 可直达 / 分享 / 刷新不丢状态；未匹配路径重定向到默认游戏
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -21,6 +22,11 @@ const routes = [
     path: '/game/:gameId/characters',
     name: 'characters',
     component: () => import('./views/CharacterGallery.vue')
+  },
+  {
+    path: '/game/:gameId/gacha',
+    name: 'gacha',
+    component: () => import('./views/GachaAnalysis.vue')
   },
   { path: '/:pathMatch(.*)*', redirect: '/game/genshin' }
 ]

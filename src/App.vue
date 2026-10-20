@@ -9,6 +9,7 @@ import {
   PhEyeSlash,
   PhGameController,
   PhImageSquare,
+  PhChartLine,
   PhLock,
   PhLockOpen,
   PhPencilSimple,
@@ -252,6 +253,17 @@ function doImportJson(event) {
             title="查看全部角色证件照与抽卡立绘（图片来自对应游戏素材站）"
           >
             <PhImageSquare :size="14" /> 角色图鉴
+          </button>
+
+          <!-- 抽卡分析入口（按 games.json 中该游戏的 gacha 标记显示；导入的抽卡记录仅存本机） -->
+          <button
+            v-if="currentGame && currentGame.gacha"
+            class="text-link gallery-link"
+            :class="{ active: $route.name === 'gacha' }"
+            @click="router.push(`/game/${store.activeGameId.value}/gacha`)"
+            title="导入祈愿/跃迁记录，查看保底进度与欧非统计（数据仅存本机）"
+          >
+            <PhChartLine :size="14" /> 抽卡分析
           </button>
 
           <div class="topbar-right">
