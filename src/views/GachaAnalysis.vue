@@ -20,6 +20,7 @@ import {
   PhCoin
 } from '@phosphor-icons/vue'
 import { parseGachaJson } from '../gacha/parseGacha.js'
+import { exportGachaJson } from '../gacha/exportGacha.js'
 import { computeGachaStats, REFERENCE_AVG } from '../gacha/stats.js'
 import { loadGachaData, saveGachaData, clearGachaData } from '../gacha/storage.js'
 
@@ -159,6 +160,26 @@ function clearData() {
   importNotice.value = ''
 }
 
+// 导出：把本机全部抽卡记录导出为 UIGF v4.1 文件（含所有游戏，可迁移/备份/再导入）
+function exportData() {
+  if (!archive.value) return
+  const json = exportGachaJson(archive.value.records)
+  if (!json) return // 无可导出记录（理论上不会走到：有存档必有记录）
+  const blob = new Blob([json], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  const d = new Date()
+  const pad = (n) => String(n).padStart(2, '0')
+  a.href = url
+  a.download =
+    `miyou-gacha-export-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}` +
+    `-${pad(d.getHours())}${pad(d.getMinutes())}.json`
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
+}
+
 onMounted(() => {
   archive.value = loadGachaData()
 })
@@ -220,6 +241,9 @@ onMounted(() => {
       </p>
       <p class="gacha-meta">
         上次导入：{{ new Date(archive.meta.importedAt).toLocaleString() }} · 格式 {{ archive.meta.version || '未知' }}
+        <button class="clear-link" @click="exportData" title="导出本机全部抽卡记录为 UIGF v4.1 文件（含所有游戏，可迁移、可再导入）">
+          <PhDownloadSimple :size="13" /> 导出记录
+        </button>
         <button class="clear-link" @click="clearData" title="清除本机保存的全部抽卡记录（不可恢复）">
           <PhTrash :size="13" /> 清除本机数据
         </button>

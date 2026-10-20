@@ -114,7 +114,8 @@ function parseLegacyList(obj, game, req, hasPoolId, records, skipped) {
 /**
  * 把单条来源记录归一化为内部记录。
  * 内部记录字段（统计/展示统一使用）：
- *   { id, game, gachaType, gachaTypeKey, gachaTypeName, itemId, name, itemType, rankType, time, uid }
+ *   { id, game, gachaType, gachaTypeKey, gachaTypeName, gachaId, itemId, name, itemType, rankType, time, uid }
+ *   gachaId：崩铁 v4/SRGF 必填的卡池 id（导出 UIGF v4 时需要还原）；原神格式无此字段，记为空串。
  */
 function normalizeRecord(item, game, uid, req, hasPoolId, skipped) {
   if (!item || typeof item !== 'object') {
@@ -140,6 +141,7 @@ function normalizeRecord(item, game, uid, req, hasPoolId, skipped) {
     gachaType: typeStr,
     gachaTypeKey: typeInfo.key,
     gachaTypeName: typeInfo.name,
+    gachaId: item.gacha_id != null ? String(item.gacha_id) : '',
     itemId: item.item_id != null ? String(item.item_id) : '',
     name: String(item.name ?? ''),
     itemType: String(item.item_type ?? ''),
